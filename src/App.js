@@ -1,15 +1,10 @@
-// import Button from "components/Button";
-import { Button } from 'antd';
-
+import { Home } from './pages/Home'
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-         Weigh Bridge Application
-         <Button type="primary">Primary Button</Button>
-      </header>
-    </div>
+        <div className="container">
+            <Home></Home>
+        </div>
   );
 }
 
