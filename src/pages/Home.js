@@ -1,86 +1,82 @@
-
-import { Component } from 'react';
-import { Layout, Menu } from 'antd';
+import { Component } from "react";
+import { Layout, Menu } from "antd";
 import {
-    UserOutlined,
-    LaptopOutlined,
-    NotificationOutlined
-  } from '@ant-design/icons';
+  DeploymentUnitOutlined,
+  DollarOutlined,
+  AppstoreOutlined,
+  GlobalOutlined,
+  UsergroupAddOutlined,
+} from "@ant-design/icons";
+import { WeighManagement } from "./WeightManagement";
 
-const { Header,Sider,Breadcrumb,Content } = Layout;
-const { SubMenu } = Menu;
+const { Header, Sider, Content } = Layout;
 export class Home extends Component {
-    
-    state = {
-        collapsed: false,
-    };
+  state = {
+    collapsed: false,
+  };
 
-    onCollapse = collapsed => {
-        console.log(collapsed);
-        this.setState({ collapsed });
-    };
+  onCollapse = (collapsed) => {
+    console.log(collapsed);
+    this.setState({ collapsed });
+  };
 
-      
-    render() { 
-    
-      return ( 
-     
+  render() {
+    return (
+      <Layout style={{ height: "100vh" }}>
+        <Header className="header">
+          <div className="logo">Al Dakheel Carton Factory</div>
+          <Menu
+            style={{ justifyContent: "flex-end" }}
+            theme="dark"
+            mode="horizontal"
+            defaultSelectedKeys={["2"]}
+          >
+            <Menu.Item key="1">nav 1</Menu.Item>
+            <Menu.Item key="2">nav 2</Menu.Item>
+            <Menu.Item key="3">nav 3</Menu.Item>
+          </Menu>
+        </Header>
         <Layout>
-    <Header className="header">
-      <div className="logo">Al Dakheel Carton Factory</div>
-      <Menu style={{justifyContent: 'flex-end'}} theme="dark" mode="horizontal" defaultSelectedKeys={['2']}>
-        <Menu.Item key="1">nav 1</Menu.Item>
-        <Menu.Item key="2">nav 2</Menu.Item>
-        <Menu.Item key="3">nav 3</Menu.Item>
-      </Menu>
-    </Header>
-    <Layout>
-      <Sider width={200} className="site-layout-background">
-        <Menu
-          mode="inline"
-          defaultSelectedKeys={['1']}
-          defaultOpenKeys={['sub1']}
-          style={{ height: '100%', borderRight: 0 }}
-        >
-          <SubMenu key="sub1" icon={<UserOutlined />} title="subnav 1">
-            <Menu.Item key="1">option1</Menu.Item>
-            <Menu.Item key="2">option2</Menu.Item>
-            <Menu.Item key="3">option3</Menu.Item>
-            <Menu.Item key="4">option4</Menu.Item>
-          </SubMenu>
-          <SubMenu key="sub2" icon={<LaptopOutlined />} title="subnav 2">
-            <Menu.Item key="5">option5</Menu.Item>
-            <Menu.Item key="6">option6</Menu.Item>
-            <Menu.Item key="7">option7</Menu.Item>
-            <Menu.Item key="8">option8</Menu.Item>
-          </SubMenu>
-          <SubMenu key="sub3" icon={<NotificationOutlined />} title="subnav 3">
-            <Menu.Item key="9">option9</Menu.Item>
-            <Menu.Item key="10">option10</Menu.Item>
-            <Menu.Item key="11">option11</Menu.Item>
-            <Menu.Item key="12">option12</Menu.Item>
-          </SubMenu>
-        </Menu>
-      </Sider>
-      <Layout style={{ padding: '0 24px 24px' }}>
-        <Content
-          className="site-layout-background"
-          style={{
-            padding: 24,
-            margin: 0,
-            minHeight: 280,
-          }}
-        >
-          Content
-        </Content>
+          <Sider width={250} className="site-layout-background">
+            <Menu
+              mode="inline"
+              defaultSelectedKeys={["4"]}
+              defaultOpenKeys={["sub1"]}
+              style={{ height: "100%", borderRight: 0 }}
+            >
+              <Menu.Item key="1" icon={<AppstoreOutlined />}>
+                Dashboard
+              </Menu.Item>
+              <Menu.Item key="2" icon={<UsergroupAddOutlined />}>
+                Employee Management
+              </Menu.Item>
+              <Menu.Item key="3" icon={<DollarOutlined />}>
+                Transactions
+              </Menu.Item>
+              <Menu.Item key="4" icon={<DeploymentUnitOutlined />}>
+                Weight Management
+              </Menu.Item>
+              <Menu.Item key="5" icon={<GlobalOutlined />}>
+                Material Management
+              </Menu.Item>
+            </Menu>
+          </Sider>
+          <Layout style={{ padding: "0 24px 24px" }}>
+            <Content
+              className="site-layout-background"
+              style={{
+                padding: 24,
+                margin: 0,
+                minHeight: 280,
+              }}
+            >
+              <WeighManagement />
+            </Content>
+          </Layout>
+        </Layout>
       </Layout>
-    </Layout>
-  </Layout>
-          
-            
-       );
-    }
+    );
+  }
 }
- 
-export default Home;
 
+export default Home;
