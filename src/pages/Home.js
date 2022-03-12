@@ -1,5 +1,5 @@
 import { Component } from "react";
-import { BrowserRouter as Router, Route, Link, Switch } from "react-router-dom";
+import { BrowserRouter as Router, Route, Link, Routes } from "react-router-dom";
 import { Layout, Menu } from "antd";
 import {
   DeploymentUnitOutlined,
@@ -11,6 +11,7 @@ import {
 import { HeaderComp } from "./Header";
 import { WeighManagement } from "./WeightManagement";
 import { TransactionHistory } from "./TransactionHistory";
+import { NotFound } from "./NotFound";
 
 // import { Login } from "./Login";
 
@@ -30,47 +31,60 @@ export class Home extends Component {
     return (
       <Layout style={{ height: "100vh" }}>
         {/* <Login /> */}
-        <HeaderComp />
-        <Layout>
-          <Sider width={250} className="site-layout-background">
-            <Menu
-              mode="inline"
-              defaultSelectedKeys={["4"]}
-              defaultOpenKeys={["sub1"]}
-              style={{ height: "100%", borderRight: 0 }}
+        <Router>
+          <HeaderComp />
+          <Layout>
+            <Sider width={250} className="site-layout-background">
+              <Menu
+                mode="inline"
+                defaultSelectedKeys={["4"]}
+                defaultOpenKeys={["sub1"]}
+                style={{ height: "100%", borderRight: 0 }}
+              >
+                <Menu.Item key="1" icon={<AppstoreOutlined />}>
+                  Dashboard
+                </Menu.Item>
+                <Menu.Item key="2" icon={<UsergroupAddOutlined />}>
+                  Employee Management
+                </Menu.Item>
+                <Menu.Item key="3" icon={<DollarOutlined />}>
+                  <Link to="/transactions">Transactions</Link>
+                </Menu.Item>
+                <Menu.Item key="4" icon={<DeploymentUnitOutlined />}>
+                  <Link to="/weighm">Weight Management</Link>
+                </Menu.Item>
+                <Menu.Item key="5" icon={<GlobalOutlined />}>
+                  Material Management
+                </Menu.Item>
+              </Menu>
+            </Sider>
+
+            <Layout
+              style={{ padding: "0 24px 0", height: "100vh", overflow: "auto" }}
             >
-              <Menu.Item key="1" icon={<AppstoreOutlined />}>
-                Dashboard
-              </Menu.Item>
-              <Menu.Item key="2" icon={<UsergroupAddOutlined />}>
-                Employee Management
-              </Menu.Item>
-              <Menu.Item key="3" icon={<DollarOutlined />}>
-                Transactions
-              </Menu.Item>
-              <Menu.Item key="4" icon={<DeploymentUnitOutlined />}>
-                Weight Management
-              </Menu.Item>
-              <Menu.Item key="5" icon={<GlobalOutlined />}>
-                Material Management
-              </Menu.Item>
-            </Menu>
-          </Sider>
-          <Layout
-            style={{ padding: "0 24px 0", height: "100vh", overflow: "auto" }}
-          >
-            <Content
-              className="site-layout-background"
-              style={{
-                padding: 24,
-                margin: 0,
-              }}
-            >
-              <TransactionHistory />
-              {/* <WeighManagement /> */}
-            </Content>
+              <Content
+                className="site-layout-background"
+                style={{
+                  padding: 24,
+                  margin: 0,
+                }}
+              >
+                <Routes>
+                  <Route exact path="/" element={<TransactionHistory />} />
+                  <Route
+                    exact
+                    path="/transactions"
+                    element={<TransactionHistory />}
+                  />
+                  <Route exact path="/weighm" element={<WeighManagement />} />
+                  <Route path="*" element={<NotFound />} />
+                </Routes>
+                {/* <TransactionHistory /> */}
+                {/* <WeighManagement /> */}
+              </Content>
+            </Layout>
           </Layout>
-        </Layout>
+        </Router>
       </Layout>
     );
   }

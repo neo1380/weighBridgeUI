@@ -1,5 +1,5 @@
 import React from "react";
-import { Table, Tag, Space } from "antd";
+import { Table } from "antd";
 
 export function TransactionHistory() {
   //   const columns = [
@@ -7,7 +7,7 @@ export function TransactionHistory() {
   //       title: "Name",
   //       dataIndex: "name",
   //       key: "name",
-  //       render: (text) => <a>{text}</a>,
+  //       render: (text) => <span>{text}</span>,
   //     },
   //     {
   //       title: "Age",
@@ -56,73 +56,73 @@ export function TransactionHistory() {
       title: "Transaction ID",
       dataIndex: "transactionId",
       key: "transactionId",
-      render: (text) => <a>{text}</a>,
+      render: (text) => <span>{text}</span>,
     },
     {
       title: "Customer ID",
       dataIndex: "customerID",
       key: "customerID",
-      render: (text) => <a>{text}</a>,
+      render: (text) => <span>{text}</span>,
     },
     {
       title: "Customer Type",
       dataIndex: "customerType",
       key: "customerType",
-      render: (text) => <a>{text}</a>,
+      render: (text) => <span>{text}</span>,
     },
     {
       title: "Vehicle No",
       dataIndex: "vehicleNo",
       key: "vehicleNo",
-      render: (text) => <a>{text}</a>,
+      render: (text) => <span>{text}</span>,
     },
     {
       title: "Created At",
       dataIndex: "createdAt",
       key: "createdAt",
-      render: (text) => <a>{text}</a>,
+      render: (text) => <span>{text}</span>,
     },
     {
       title: "Created By",
       dataIndex: "createdBy",
       key: "createdBy",
-      render: (text) => <a>{text}</a>,
+      render: (text) => <span>{text}</span>,
     },
     {
       title: "Closed At",
       dataIndex: "closedAt",
       key: "closedAt",
-      render: (text) => <a>{text}</a>,
+      render: (text) => <span>{text}</span>,
     },
     {
       title: "Closed By",
       dataIndex: "closedBy",
       key: "closedBy",
-      render: (text) => <a>{text}</a>,
+      render: (text) => <span>{text}</span>,
     },
     {
       title: "Status",
       dataIndex: "status",
       key: "status",
-      render: (text) => <a>{text}</a>,
+      render: (text) => <span>{text}</span>,
     },
     {
       title: "Material",
       dataIndex: "material",
       key: "material",
-      render: (text) => <a>{text}</a>,
+      render: (text) => <span>{text}</span>,
     },
     {
       title: "Price Total",
       dataIndex: "totalPrice",
       key: "totalPrice",
-      render: (text) => <a>{text}</a>,
+      render: (text) => <span>{text}</span>,
     },
     {
       title: "Remarks",
       dataIndex: "comments",
       key: "comments",
-      render: (text) => <a>{text}</a>,
+      render: (text) => <span>{text}</span>,
     },
   ];
 
