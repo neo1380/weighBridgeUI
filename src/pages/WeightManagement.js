@@ -13,77 +13,59 @@ export const WeighManagement = () => {
   return (
     <Form
       labelCol={{
-        span: 4,
+        offset: 2,
+        span: 16,
       }}
       wrapperCol={{
-        span: 14,
+        offset: 2,
+        span: 8,
       }}
-      layout="horizontal"
+      layout="vertical"
       initialValues={{
         size: componentSize,
       }}
       onValuesChange={onFormLayoutChange}
       size={componentSize}
     >
-      <Form.Item
-        wrapperCol={{
-          offset: 8,
-          span: 16,
-        }}
-      >
+      <Form.Item>
         <Title
           wrapperCol={{
-            offset: 8,
+            offset: 4,
             span: 16,
           }}
-          level={2}
+          level={5}
         >
           Add Transaction
         </Title>
       </Form.Item>
-
-      {/*  <Form.Item label="Form Size" name="size">
-        <Radio.Group>
-          <Radio.Button value="small">Small</Radio.Button>
-          <Radio.Button value="default">Default</Radio.Button>
-          <Radio.Button value="large">Large</Radio.Button>
-        </Radio.Group>
-      </Form.Item> */}
       <Form.Item label="Customer Name">
-        <Input />
+        <Input placeholder="Enter Customer Name" />
       </Form.Item>
       <Form.Item label="Customer Type">
-        <Select>
+        <Select placeholder="Select a Customer Type">
           <Select.Option value="merchant">Merchant</Select.Option>
           <Select.Option value="Layman">Layman</Select.Option>
           <Select.Option value="vehicleOnly">Vehicle-Only</Select.Option>
         </Select>
       </Form.Item>
       <Form.Item label="Customer ID">
-        <Input />
+        <Input placeholder="Enter Customer ID" />
       </Form.Item>
       <Form.Item label="Material">
-        <Input />
+        <Input placeholder="Enter Material" />
       </Form.Item>
       <Form.Item label="Driver Count">
-        <Input />
+        <Input placeholder="Enter Driver Count" />
       </Form.Item>
       <Form.Item label="First Weight">
-        <Input />
+        <Input placeholder="Enter weight before unload" />
       </Form.Item>
       <Form.Item label="Second Weight">
-        <Input />
+        <Input placeholder="Enter weight after unload" />
       </Form.Item>
 
-      <Form.Item
-        wrapperCol={{
-          offset: 8,
-          span: 16,
-        }}
-      >
-        <Button type="primary" htmlType="submit">
-          Save Transaction
-        </Button>
+      <Form.Item>
+        <Button type="primary">Submit</Button>
       </Form.Item>
     </Form>
   );

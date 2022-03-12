@@ -1,4 +1,5 @@
 import { Component } from "react";
+import { BrowserRouter as Router, Route, Link, Switch } from "react-router-dom";
 import { Layout, Menu } from "antd";
 import {
   DeploymentUnitOutlined,
@@ -7,9 +8,14 @@ import {
   GlobalOutlined,
   UsergroupAddOutlined,
 } from "@ant-design/icons";
+import { HeaderComp } from "./Header";
 import { WeighManagement } from "./WeightManagement";
+import { TransactionHistory } from "./TransactionHistory";
 
-const { Header, Sider, Content } = Layout;
+// import { Login } from "./Login";
+
+const { Sider, Content } = Layout;
+
 export class Home extends Component {
   state = {
     collapsed: false,
@@ -23,19 +29,8 @@ export class Home extends Component {
   render() {
     return (
       <Layout style={{ height: "100vh" }}>
-        <Header className="header">
-          <div className="logo">Al Dakheel Carton Factory</div>
-          <Menu
-            style={{ justifyContent: "flex-end" }}
-            theme="dark"
-            mode="horizontal"
-            defaultSelectedKeys={["2"]}
-          >
-            <Menu.Item key="1">nav 1</Menu.Item>
-            <Menu.Item key="2">nav 2</Menu.Item>
-            <Menu.Item key="3">nav 3</Menu.Item>
-          </Menu>
-        </Header>
+        {/* <Login /> */}
+        <HeaderComp />
         <Layout>
           <Sider width={250} className="site-layout-background">
             <Menu
@@ -61,16 +56,18 @@ export class Home extends Component {
               </Menu.Item>
             </Menu>
           </Sider>
-          <Layout style={{ padding: "0 24px 24px" }}>
+          <Layout
+            style={{ padding: "0 24px 0", height: "100vh", overflow: "auto" }}
+          >
             <Content
               className="site-layout-background"
               style={{
                 padding: 24,
                 margin: 0,
-                minHeight: 280,
               }}
             >
-              <WeighManagement />
+              <TransactionHistory />
+              {/* <WeighManagement /> */}
             </Content>
           </Layout>
         </Layout>
