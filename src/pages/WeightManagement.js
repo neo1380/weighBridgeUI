@@ -92,6 +92,9 @@ export const WeighManagement = () => {
         <Input placeholder="Enter Customer ID" />
       </Form.Item>
       <ShowMaterial />
+      <Form.Item label="Vehicle Number" name="vehicleNumber">
+        <Input placeholder="Enter Vehicle Number" />
+      </Form.Item>
       <Form.Item label="Driver Count" name="driverCount">
         <Input placeholder="Enter Driver Count" />
       </Form.Item>
