@@ -39,7 +39,7 @@ export class Home extends Component {
     const state = { ...this.state };
     console.log(state);
     return (
-      <Layout style={{ height: "100vh" }}>
+      <Layout style={{ minHeight: "100vh" }}>
         {!state.isLoggedIn ? (
           <Layout>
             <Content className="site-layout-background">
