@@ -13,7 +13,8 @@ import { WeighManagement } from "./WeightManagement";
 import { TransactionHistory } from "./TransactionHistory";
 import { NotFound } from "./NotFound";
 import { Login } from "./Login";
-import EmployeeManagement from "./EmployeeManagement";
+import { EmployeeManagement } from "./EmployeeManagement";
+import { MaterialManagement } from "./MaterialManagement";
 
 const { Sider, Content } = Layout;
 
@@ -48,7 +49,6 @@ export class Home extends Component {
         ) : (
           <Router>
             <HeaderComp />
-
             <Layout>
               <Sider width={250} className="site-layout-background">
                 <Menu
@@ -70,7 +70,7 @@ export class Home extends Component {
                     <Link to="/weighm">Weight Management</Link>
                   </Menu.Item>
                   <Menu.Item key="5" icon={<GlobalOutlined />}>
-                    Material Management
+                    <Link to="/material"> Material Management</Link>
                   </Menu.Item>
                 </Menu>
               </Sider>
@@ -100,10 +100,13 @@ export class Home extends Component {
                       element={<EmployeeManagement />}
                     />
                     <Route exact path="/weighm" element={<WeighManagement />} />
+                    <Route
+                      exact
+                      path="/material"
+                      element={<MaterialManagement />}
+                    />
                     <Route path="*" element={<NotFound />} />
                   </Routes>
-                  {/* <TransactionHistory /> */}
-                  {/* <WeighManagement /> */}
                 </Content>
               </Layout>
             </Layout>
