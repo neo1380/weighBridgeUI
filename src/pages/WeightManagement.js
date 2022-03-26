@@ -262,8 +262,8 @@ export const WeighManagement = () => {
                   <Title type="primary" level={5} className="mt-2">
                     List of Active transactions
                   </Title>
-                  <a href="#">TN18R7498</a>
-                  <a href="#">TN18AL3501</a>
+                  <Button type="link">TN18R7498</Button>
+                  <Button type="link">TN18AL3501</Button>
                 </Space>
               </Col>
             </Row>
