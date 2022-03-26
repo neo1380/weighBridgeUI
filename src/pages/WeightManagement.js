@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
-import { Form, Input, Button, Select, Typography, Space, Card } from "antd";
+import { Form, Input, Button, Select, Typography, Space } from "antd";
 import { Statistic, Row, Col } from "antd";
 import "antd-css-utilities/utility.min.css";
 
-const { Title, Text } = Typography;
+const { Title } = Typography;
 
 export const WeighManagement = () => {
   const [componentSize, setComponentSize] = useState("default");
