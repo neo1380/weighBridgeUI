@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 import { Form, Input, Button, Select, Typography } from "antd";
 
 const { Title } = Typography;
@@ -6,19 +6,95 @@ const { Title } = Typography;
 export const WeighManagement = () => {
   const [componentSize, setComponentSize] = useState("default");
   const [userType, setUserType] = useState("merchant");
+  const [transactionType, setTransactionType] = useState("temporary");
+  const [customerType,setCustomerType] = useState([]);
+  const [materials,setMaterials] = useState([]);
+
+  
 
   const onFormLayoutChange = ({ size }) => {
     setComponentSize(size);
   };
+
+  useEffect(() => {
+    // GET request using fetch to load customer types
+     fetch('https://api.npms.io/v2/search?q=react')
+        .then(response => response.json())
+        .then(data =>{ console.log(data)
+            
+            const custtypes = [
+                {
+                    "value":1,
+                    "label":"Merchant"
+                },
+                {
+                    "value":2,
+                    "label":"Layman"
+                },
+                {
+                    "value":3,
+                    "label":"Vehicle-only"
+                }
+            ];
+            setCustomerType(custtypes);            
+        });
+
+    // GET request using fetch to load material types
+
+        fetch('https://api.npms.io/v2/search?q=react')
+        .then(response => response.json())
+        .then(data =>{ console.log(data)
+            
+            const materials = [
+                {
+                    "label":"Paper",
+                    "value":"Paper"
+                },
+                {
+                    "label":"Carton",
+                    "value":"Carton"
+                },   {
+                    "label":"Duplex",
+                    "value":"Duplex"
+                },   {
+                    "label":"Mix",
+                    "value":"Mix"
+                },   {
+                    "label":"Plastic",
+                    "value":"Plastic"
+                },
+                {
+                    "label":"Magazine",
+                    "value":"Magazine"
+                },
+            ]
+            setMaterials(materials);            
+        });
+
+// empty dependency array means this effect will only run once (like componentDidMount in classes)
+}, []);
+
+
+useEffect(() => {
+    // GET request using fetch inside useEffect React hook
+    // this.setState({setTransactionType:'final'});
+    setTransactionType('temporary');
+    setTransactionType('final');
+// empty dependency array means this effect will only run once (like componentDidMount in classes)
+}, []);
 
   const onChangeUserType = (type) => {
     console.log("from user type");
     console.log(type);
     setUserType(type);
   };
+  const onChangeMaterialType = (type) => {
+    console.log("from material type");
+    console.log(type);
+  };
 
   const ShowSecondWeight = () => {
-    if (userType !== "vehicleOnly") {
+    if (userType !== 3 && transactionType === 'final') {
       return (
         <Form.Item label="Second Weight" name="secondWeight">
           <Input placeholder="Enter weight after unload" />
@@ -32,9 +108,23 @@ export const WeighManagement = () => {
   const ShowMaterial = () => {
     if (userType !== "vehicleOnly") {
       return (
-        <Form.Item label="Material" name="material">
-          <Input placeholder="Enter Material" />
-        </Form.Item>
+      
+        <Form.Item label="Select Material" name="material">
+        <Select
+          placeholder="Select Material"
+          onChange={onChangeMaterialType}
+          loading={!materials.length}
+        >
+        {materials.map(opt => (
+            <Select.Option key={opt.value} value={opt.value}>
+              {opt.label}
+            </Select.Option>
+          ))}
+
+       
+        </Select>
+      </Form.Item>
+     
       );
     } else {
       return null;
@@ -82,10 +172,15 @@ export const WeighManagement = () => {
         <Select
           placeholder="Select a Customer Type"
           onChange={onChangeUserType}
+          loading={!customerType.length}
         >
-          <Select.Option value="merchant">Merchant</Select.Option>
-          <Select.Option value="Layman">Layman</Select.Option>
-          <Select.Option value="vehicleOnly">Vehicle-Only</Select.Option>
+        {customerType.map(opt => (
+            <Select.Option key={opt.value} value={opt.value}>
+              {opt.label}
+            </Select.Option>
+          ))}
+
+       
         </Select>
       </Form.Item>
       <Form.Item label="Customer ID" name="customerID">
