@@ -5,7 +5,7 @@ const { Title } = Typography;
 
 export const WeighManagement = () => {
   const [componentSize, setComponentSize] = useState("default");
-  const [userType, setUserType] = useState("merchant");
+  const [selectedCustType, setSelectedCustType] = useState("merchant");
   const [transactionType, setTransactionType] = useState("temporary");
   const [customerType,setCustomerType] = useState([]);
   const [materials,setMaterials] = useState([]);
@@ -86,7 +86,7 @@ useEffect(() => {
   const onChangeUserType = (type) => {
     console.log("from user type");
     console.log(type);
-    setUserType(type);
+    setSelectedCustType(type);
   };
   const onChangeMaterialType = (type) => {
     console.log("from material type");
@@ -94,7 +94,7 @@ useEffect(() => {
   };
 
   const ShowSecondWeight = () => {
-    if (userType !== 3 && transactionType === 'final') {
+    if (selectedCustType !== 3 && transactionType === 'final') {
       return (
         <Form.Item label="Second Weight" name="secondWeight">
           <Input placeholder="Enter weight after unload" />
@@ -106,7 +106,7 @@ useEffect(() => {
   };
 
   const ShowMaterial = () => {
-    if (userType !== "vehicleOnly") {
+    if (selectedCustType !== "vehicleOnly") {
       return (
       
         <Form.Item label="Select Material" name="material">
@@ -125,6 +125,42 @@ useEffect(() => {
         </Select>
       </Form.Item>
      
+      );
+    } else {
+      return null;
+    }
+  };
+
+  const ShowVehicleNumber = () => {
+    if (selectedCustType !== 2) {
+      return (
+        <Form.Item label="Vehicle Number" name="vehicleNumber">
+        <Input placeholder="Enter Vehicle Number" />
+      </Form.Item>
+      );
+    } else {
+      return null;
+    }
+  };
+
+  const ShowCustomerID = () => {
+    if (selectedCustType !== 2) {
+      return (
+        <Form.Item label="Customer ID" name="customerID">
+        <Input placeholder="Enter Customer ID" />
+      </Form.Item>
+      );
+    } else {
+      return null;
+    }
+  };
+
+  const ShowDriverCount = () => {
+    if (selectedCustType !== 2) {
+      return (
+      <Form.Item label="Driver Count" name="driverCount">
+        <Input placeholder="Enter Driver Count" />
+      </Form.Item>
       );
     } else {
       return null;
@@ -183,16 +219,11 @@ useEffect(() => {
        
         </Select>
       </Form.Item>
-      <Form.Item label="Customer ID" name="customerID">
-        <Input placeholder="Enter Customer ID" />
-      </Form.Item>
+     <ShowCustomerID/>
       <ShowMaterial />
-      <Form.Item label="Vehicle Number" name="vehicleNumber">
-        <Input placeholder="Enter Vehicle Number" />
-      </Form.Item>
-      <Form.Item label="Driver Count" name="driverCount">
-        <Input placeholder="Enter Driver Count" />
-      </Form.Item>
+     <ShowVehicleNumber/>
+     <ShowDriverCount/>
+    
       <Form.Item label="First Weight" name="firstWeight">
         <Input placeholder="Enter weight before unload" />
       </Form.Item>
