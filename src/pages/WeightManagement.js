@@ -227,6 +227,12 @@ export const WeighManagement = () => {
   const onChangeMaterialType = (type) => {};
 
   const onFinish = (values) => {
+    if (typeof values.customerID === "undefined") {
+      let newCustomerID = null;
+      const { customerName, customerPhoneNo } = values;
+      newCustomerID = { customerID: `${customerName}_${customerPhoneNo}` };
+      values = { ...values, ...newCustomerID };
+    }
     console.log("Received values of form: ", values);
     const message = {
       initiated: "Transaction creation is in progress.",
