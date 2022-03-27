@@ -330,10 +330,16 @@ export const WeighManagement = () => {
                   <Title type="primary" level={5} className="mt-2">
                     List of Active transactions
                   </Title>
-                  <Button type="link" onClick={() => loadTempTransaction("7")}>
+                  <Button
+                    type="link"
+                    className="pl-0"
+                    onClick={() => loadTempTransaction("7")}
+                  >
                     TN18R7498
                   </Button>
-                  <Button type="link">TN18AL3501</Button>
+                  <Button type="link" className="pl-0">
+                    TN18AL3501
+                  </Button>
                 </Space>
               </Col>
             </Row>
