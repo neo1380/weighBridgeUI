@@ -1,11 +1,9 @@
 {
-    "customerName": "Teddy",
-    "customerType": 1,
-    "customerID": "AA",
-    "vehicleNumber": "3501",
-    "driverCount": "2",
-    "firstWeight": "1000",
-    "material": "Paper",
-    "secondWeight": "500"
+  "customerName": "Mohan",
+  "customerType": 1,
+  "customerID": "AA",
+  "vehicleNumber": "3589",
+  "driverCount": "2",
+  "firstWeight": "900",
+  "material": "Plastic"
 }
-

@@ -1,19 +1,138 @@
 import React, { useState, useEffect } from "react";
-import { Form, Input, Button, Select, Typography, Space } from "antd";
+import { Form, Input, Button, Select, Typography, Space, Modal } from "antd";
 import { Statistic, Row, Col } from "antd";
 import "antd-css-utilities/utility.min.css";
 
 const { Title } = Typography;
+const { TextArea } = Input;
 
 export const WeighManagement = () => {
   const [componentSize, setComponentSize] = useState("default");
   const [selectedCustType, setSelectedCustType] = useState("merchant");
-  const [transactionType, setTransactionType] = useState("temporary");
   const [customerType, setCustomerType] = useState([]);
   const [materials, setMaterials] = useState([]);
+  const [transactionCreation, setTransactionCreation] = useState(null);
+  const [form] = Form.useForm();
+  const [isModalVisible, setIsModalVisible] = useState(false);
+
+  const showModal = () => {
+    setIsModalVisible(true);
+  };
+
+  const handleOk = () => {
+    setIsModalVisible(false);
+  };
+
+  const handleCancel = () => {
+    setIsModalVisible(false);
+  };
 
   const onFormLayoutChange = ({ size }) => {
     setComponentSize(size);
+  };
+
+  const ShowSecondWeight = (props) => {
+    if (selectedCustType !== 3 && transactionCreation === "IN_PROGRESS") {
+      return (
+        <Form.Item label="Second Weight" name="secondWeight">
+          <Input placeholder="Enter weight after unload" />
+        </Form.Item>
+      );
+    } else {
+      return null;
+    }
+  };
+
+  const ShowMaterial = ({ disabled }) => {
+    if (selectedCustType !== "vehicleOnly") {
+      return (
+        <Form.Item label="Select Material" name="material">
+          <Select
+            placeholder="Select Material"
+            onChange={onChangeMaterialType}
+            loading={!materials.length}
+            disabled={disabled === "IN_PROGRESS"}
+          >
+            {materials.map((opt) => (
+              <Select.Option
+                key={opt.value}
+                value={opt.value}
+                disabled={disabled === "IN_PROGRESS"}
+              >
+                {opt.label}
+              </Select.Option>
+            ))}
+          </Select>
+        </Form.Item>
+      );
+    } else {
+      return null;
+    }
+  };
+
+  const ShowVehicleNumber = ({ disabled }) => {
+    if (selectedCustType !== 2) {
+      return (
+        <Form.Item label="Vehicle Number" name="vehicleNumber">
+          <Input
+            placeholder="Enter Vehicle Number"
+            disabled={disabled === "IN_PROGRESS"}
+          />
+        </Form.Item>
+      );
+    } else {
+      return null;
+    }
+  };
+
+  const ShowCustomerID = () => {
+    if (selectedCustType !== 2) {
+      return (
+        <Form.Item label="Customer ID" name="customerID">
+          <Input placeholder="Enter Customer ID" />
+        </Form.Item>
+      );
+    } else {
+      return null;
+    }
+  };
+
+  const ShowDriverCount = ({ disabled }) => {
+    if (selectedCustType !== 2) {
+      return (
+        <Form.Item label="Driver Count" name="driverCount">
+          <Input
+            placeholder="Enter Driver Count"
+            disabled={disabled === "IN_PROGRESS"}
+          />
+        </Form.Item>
+      );
+    } else {
+      return null;
+    }
+  };
+
+  const CancelModal = () => {
+    const onChange = (e) => {};
+
+    return (
+      <Modal
+        title="Cancel Transaction"
+        visible={isModalVisible}
+        onOk={handleOk}
+        onCancel={handleCancel}
+      >
+        <Form.Item>
+          <TextArea
+            showCount
+            maxLength={100}
+            style={{ height: 120 }}
+            onChange={onChange}
+          />
+          ,
+        </Form.Item>
+      </Modal>
+    );
   };
 
   useEffect(() => {
@@ -79,103 +198,44 @@ export const WeighManagement = () => {
     // empty dependency array means this effect will only run once (like componentDidMount in classes)
   }, []);
 
-  useEffect(() => {
-    // GET request using fetch inside useEffect React hook
-    // this.setState({setTransactionType:'final'});
-    setTransactionType("temporary");
-    setTransactionType("final");
-    // empty dependency array means this effect will only run once (like componentDidMount in classes)
-  }, []);
-
   const onChangeUserType = (type) => {
-    console.log("from user type");
-    console.log(type);
     setSelectedCustType(type);
   };
-  const onChangeMaterialType = (type) => {
-    console.log("from material type");
-    console.log(type);
-  };
 
-  const ShowSecondWeight = () => {
-    if (selectedCustType !== 3 && transactionType === "final") {
-      return (
-        <Form.Item label="Second Weight" name="secondWeight">
-          <Input placeholder="Enter weight after unload" />
-        </Form.Item>
-      );
-    } else {
-      return null;
-    }
-  };
-
-  const ShowMaterial = () => {
-    if (selectedCustType !== "vehicleOnly") {
-      return (
-        <Form.Item label="Select Material" name="material">
-          <Select
-            placeholder="Select Material"
-            onChange={onChangeMaterialType}
-            loading={!materials.length}
-          >
-            {materials.map((opt) => (
-              <Select.Option key={opt.value} value={opt.value}>
-                {opt.label}
-              </Select.Option>
-            ))}
-          </Select>
-        </Form.Item>
-      );
-    } else {
-      return null;
-    }
-  };
-
-  const ShowVehicleNumber = () => {
-    if (selectedCustType !== 2) {
-      return (
-        <Form.Item label="Vehicle Number" name="vehicleNumber">
-          <Input placeholder="Enter Vehicle Number" />
-        </Form.Item>
-      );
-    } else {
-      return null;
-    }
-  };
-
-  const ShowCustomerID = () => {
-    if (selectedCustType !== 2) {
-      return (
-        <Form.Item label="Customer ID" name="customerID">
-          <Input placeholder="Enter Customer ID" />
-        </Form.Item>
-      );
-    } else {
-      return null;
-    }
-  };
-
-  const ShowDriverCount = () => {
-    if (selectedCustType !== 2) {
-      return (
-        <Form.Item label="Driver Count" name="driverCount">
-          <Input placeholder="Enter Driver Count" />
-        </Form.Item>
-      );
-    } else {
-      return null;
-    }
-  };
+  const onChangeMaterialType = (type) => {};
 
   const onFinish = (values) => {
     console.log("Received values of form: ", values);
+  };
+
+  const loadTempTransaction = (id) => {
+    //Make API call to load temp transaction
+    setTransactionCreation("IN_PROGRESS");
+    const mockData = {
+      customerName: "Mohan",
+      customerType: 1,
+      customerID: "AA",
+      vehicleNumber: "3589",
+      driverCount: "2",
+      firstWeight: "900",
+      material: "Plastic",
+    };
+    form.setFieldsValue(mockData);
+  };
+
+  const cancelTransaction = (id) => {
+    if (transactionCreation === "IN_PROGRESS") {
+      showModal();
+    }
   };
 
   return (
     <>
       <Row>
         <Col span={12}>
+          <CancelModal />
           <Form
+            form={form}
             labelCol={{
               offset: 2,
               span: 16,
@@ -208,6 +268,7 @@ export const WeighManagement = () => {
                 placeholder="Select a Customer Type"
                 onChange={onChangeUserType}
                 loading={!customerType.length}
+                disabled={transactionCreation === "IN_PROGRESS"}
               >
                 {customerType.map((opt) => (
                   <Select.Option key={opt.value} value={opt.value}>
@@ -221,19 +282,26 @@ export const WeighManagement = () => {
             </Form.Item>
 
             <ShowCustomerID />
-            <ShowMaterial />
-            <ShowVehicleNumber />
-            <ShowDriverCount />
+            <ShowMaterial disabled={transactionCreation} />
+            <ShowVehicleNumber disabled={transactionCreation} />
+            <ShowDriverCount disabled={transactionCreation} />
 
             <Form.Item label="First Weight" name="firstWeight">
-              <Input placeholder="Enter weight before unload" />
+              <Input
+                placeholder="Enter weight before unload"
+                disabled={transactionCreation === "IN_PROGRESS"}
+              />
             </Form.Item>
             <ShowSecondWeight />
             <Form.Item>
               <Button type="primary" htmlType="submit" className="mr-3">
                 Create transaction
               </Button>
-              <Button type="secondary" htmlType="submit">
+              <Button
+                type="secondary"
+                htmlType="submit"
+                onClick={() => cancelTransaction()}
+              >
                 Cancel
               </Button>
             </Form.Item>
@@ -262,7 +330,9 @@ export const WeighManagement = () => {
                   <Title type="primary" level={5} className="mt-2">
                     List of Active transactions
                   </Title>
-                  <Button type="link">TN18R7498</Button>
+                  <Button type="link" onClick={() => loadTempTransaction("7")}>
+                    TN18R7498
+                  </Button>
                   <Button type="link">TN18AL3501</Button>
                 </Space>
               </Col>
