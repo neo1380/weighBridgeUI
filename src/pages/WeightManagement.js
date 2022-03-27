@@ -1,5 +1,15 @@
 import React, { useState, useEffect } from "react";
-import { Form, Input, Button, Select, Typography, Space, Modal } from "antd";
+import {
+  Form,
+  Input,
+  Button,
+  Select,
+  Typography,
+  Space,
+  Modal,
+  InputNumber,
+  message,
+} from "antd";
 import { Statistic, Row, Col } from "antd";
 import "antd-css-utilities/utility.min.css";
 
@@ -112,6 +122,18 @@ export const WeighManagement = () => {
     }
   };
 
+  const ShowPhoneNumber = () => {
+    return (
+      <Form.Item label="Phone Number" name="customerPhoneNo">
+        <InputNumber
+          addonBefore="+966"
+          style={{ width: "100%" }}
+          placeholder="Enter Phone Number"
+        />
+      </Form.Item>
+    );
+  };
+
   const CancelModal = () => {
     const onChange = (e) => {};
 
@@ -206,19 +228,25 @@ export const WeighManagement = () => {
 
   const onFinish = (values) => {
     console.log("Received values of form: ", values);
+    const message = {
+      initiated: "Transaction creation is in progress.",
+      completed: "Transaction successfully completed",
+    };
+    openMessage(message);
   };
 
   const loadTempTransaction = (id) => {
     //Make API call to load temp transaction
     setTransactionCreation("IN_PROGRESS");
     const mockData = {
-      customerName: "Mohan",
+      customerName: "Gowtham Asokan",
       customerType: 1,
       customerID: "AA",
       vehicleNumber: "3589",
       driverCount: "2",
       firstWeight: "900",
       material: "Plastic",
+      customerPhoneNo: "9884978723",
     };
     form.setFieldsValue(mockData);
   };
@@ -227,6 +255,19 @@ export const WeighManagement = () => {
     if (transactionCreation === "IN_PROGRESS") {
       showModal();
     }
+  };
+
+  const openMessage = ({ initiated, completed }) => {
+    console.log("message");
+    const key = "updatable";
+
+    message.loading({ content: initiated, key });
+    setTimeout(() => {
+      message.success({ content: completed, key, duration: 2 }).then(() => {
+        setTransactionCreation(null);
+        form.resetFields();
+      });
+    }, 1000);
   };
 
   return (
@@ -260,7 +301,9 @@ export const WeighManagement = () => {
                 }}
                 level={5}
               >
-                Add Weight before unload
+                {transactionCreation === "IN_PROGRESS"
+                  ? "Add Weight After unload"
+                  : "Add Weight Before unload"}
               </Title>
             </Form.Item>
             <Form.Item label="Customer Type" name="customerType">
@@ -280,7 +323,7 @@ export const WeighManagement = () => {
             <Form.Item label="Customer Name" name="customerName">
               <Input placeholder="Enter Customer Name" />
             </Form.Item>
-
+            <ShowPhoneNumber />
             <ShowCustomerID />
             <ShowMaterial disabled={transactionCreation} />
             <ShowVehicleNumber disabled={transactionCreation} />
