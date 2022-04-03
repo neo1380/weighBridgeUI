@@ -57,11 +57,13 @@ export const WeighManagement = () => {
         {
           value: 3,
           label: "Vehicle Only",
-          selected: true,
         },
       ];
       setSelectedCustType(3);
       setCustomerTypeOptions(types);
+      form.setFieldsValue({
+        customerType: 3,
+      });
     } else {
       const types = [
         {
@@ -75,6 +77,9 @@ export const WeighManagement = () => {
       ];
       setSelectedCustType(1);
       setCustomerTypeOptions(types);
+      form.setFieldsValue({
+        customerType: 1,
+      });
     }
   };
 
@@ -82,10 +87,26 @@ export const WeighManagement = () => {
     return (
       <Form.Item label="Transaction type" name="transactionType">
         <Radio.Group
+          buttonStyle="solid"
+          onChange={onChangeTransactionType}
+          value={transactionType}
+        >
+          {transactionTypes.map(({ label, value }) => (
+            <Radio.Button
+              value={value}
+              key={value}
+              onChange={onChangeTransactionType}
+            >
+              {label}
+            </Radio.Button>
+          ))}
+        </Radio.Group>
+        {/* <Radio.Group
+          buttonStyle="solid"
           options={transactionTypes}
           onChange={onChangeTransactionType}
           value={transactionType}
-        />
+        /> */}
       </Form.Item>
     );
   };
@@ -212,7 +233,7 @@ export const WeighManagement = () => {
       .then((response) => response.json())
       .then((data) => {
         console.log(data);
-        handleCustomerTypes(transactionType);
+        handleCustomerTypes("outgoing");
       });
 
     // GET request using fetch to load material types
@@ -250,6 +271,8 @@ export const WeighManagement = () => {
         ];
         setMaterials(materials);
       });
+
+    setTransactionType("outgoing");
 
     // empty dependency array means this effect will only run once (like componentDidMount in classes)
   }, []);
