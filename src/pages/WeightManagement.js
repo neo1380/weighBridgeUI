@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import {
   Form,
   Input,
@@ -49,38 +49,6 @@ export const WeighManagement = () => {
   const onChangeTransactionType = (event) => {
     setTransactionType(event.target.value);
     handleCustomerTypes(event.target.value);
-  };
-
-  const handleCustomerTypes = (type) => {
-    if (type === "incoming") {
-      const types = [
-        {
-          value: 3,
-          label: "Vehicle Only",
-        },
-      ];
-      setSelectedCustType(3);
-      setCustomerTypeOptions(types);
-      form.setFieldsValue({
-        customerType: 3,
-      });
-    } else {
-      const types = [
-        {
-          value: 1,
-          label: "Merchant",
-        },
-        {
-          value: 2,
-          label: "Layman",
-        },
-      ];
-      setSelectedCustType(1);
-      setCustomerTypeOptions(types);
-      form.setFieldsValue({
-        customerType: 1,
-      });
-    }
   };
 
   const TransactionType = () => {
@@ -227,6 +195,42 @@ export const WeighManagement = () => {
     );
   };
 
+  // Keep the function reference
+  const handleCustomerTypes = useCallback(
+    (type) => {
+      if (type === "incoming") {
+        const types = [
+          {
+            value: 3,
+            label: "Vehicle Only",
+          },
+        ];
+        setSelectedCustType(3);
+        setCustomerTypeOptions(types);
+        form.setFieldsValue({
+          customerType: 3,
+        });
+      } else {
+        const types = [
+          {
+            value: 1,
+            label: "Merchant",
+          },
+          {
+            value: 2,
+            label: "Layman",
+          },
+        ];
+        setSelectedCustType(1);
+        setCustomerTypeOptions(types);
+        form.setFieldsValue({
+          customerType: 1,
+        });
+      }
+    },
+    [form]
+  );
+
   useEffect(() => {
     // GET request using fetch to load customer types
     fetch("https://api.npms.io/v2/search?q=react")
@@ -275,8 +279,7 @@ export const WeighManagement = () => {
     setTransactionType("outgoing");
 
     // empty dependency array means this effect will only run once (like componentDidMount in classes)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [handleCustomerTypes]);
 
   const onChangeUserType = (event) => {
     setSelectedCustType(event.target.value);
