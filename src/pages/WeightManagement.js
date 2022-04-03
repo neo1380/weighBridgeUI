@@ -275,6 +275,7 @@ export const WeighManagement = () => {
     setTransactionType("outgoing");
 
     // empty dependency array means this effect will only run once (like componentDidMount in classes)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const onChangeUserType = (event) => {
