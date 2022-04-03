@@ -8,7 +8,7 @@ import {
   GlobalOutlined,
   UsergroupAddOutlined,
 } from "@ant-design/icons";
-import { HeaderComp } from "./Header";
+import { HeaderComp } from "../Header";
 import { WeighManagement } from "./WeightManagement";
 import { TransactionHistory } from "./TransactionHistory";
 import { NotFound } from "./NotFound";

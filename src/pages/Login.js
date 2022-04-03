@@ -1,7 +1,7 @@
 import React from "react";
 import { Form, Input, Button } from "antd";
 import { UserOutlined, LockOutlined } from "@ant-design/icons";
-import { HeaderComp } from "./Header";
+import { HeaderComp } from "../Header";
 import { Layout } from "antd";
 
 export const Login = (props) => {

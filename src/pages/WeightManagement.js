@@ -9,6 +9,7 @@ import {
   Modal,
   InputNumber,
   message,
+  Radio,
 } from "antd";
 import { Statistic, Row, Col } from "antd";
 import "antd-css-utilities/utility.min.css";
@@ -17,14 +18,18 @@ const { Title } = Typography;
 const { TextArea } = Input;
 
 export const WeighManagement = () => {
+  const [transactionType, setTransactionType] = useState("outgoing");
   const [componentSize, setComponentSize] = useState("default");
-  const [selectedCustType, setSelectedCustType] = useState("merchant");
-  const [customerType, setCustomerType] = useState([]);
+  const [selectedCustType, setSelectedCustType] = useState(null);
+  const [customerTypeOptions, setCustomerTypeOptions] = useState([]);
   const [materials, setMaterials] = useState([]);
   const [transactionCreation, setTransactionCreation] = useState(null);
   const [form] = Form.useForm();
   const [isModalVisible, setIsModalVisible] = useState(false);
-
+  const transactionTypes = [
+    { label: "Outgoing", value: "outgoing" },
+    { label: "Incoming", value: "incoming" },
+  ];
   const showModal = () => {
     setIsModalVisible(true);
   };
@@ -41,6 +46,50 @@ export const WeighManagement = () => {
     setComponentSize(size);
   };
 
+  const onChangeTransactionType = (event) => {
+    setTransactionType(event.target.value);
+    handleCustomerTypes(event.target.value);
+  };
+
+  const handleCustomerTypes = (type) => {
+    if (type === "incoming") {
+      const types = [
+        {
+          value: 3,
+          label: "Vehicle Only",
+          selected: true,
+        },
+      ];
+      setSelectedCustType(3);
+      setCustomerTypeOptions(types);
+    } else {
+      const types = [
+        {
+          value: 1,
+          label: "Merchant",
+        },
+        {
+          value: 2,
+          label: "Layman",
+        },
+      ];
+      setSelectedCustType(1);
+      setCustomerTypeOptions(types);
+    }
+  };
+
+  const TransactionType = () => {
+    return (
+      <Form.Item label="Transaction type" name="transactionType">
+        <Radio.Group
+          options={transactionTypes}
+          onChange={onChangeTransactionType}
+          value={transactionType}
+        />
+      </Form.Item>
+    );
+  };
+
   const ShowSecondWeight = (props) => {
     if (selectedCustType !== 3 && transactionCreation === "IN_PROGRESS") {
       return (
@@ -54,7 +103,7 @@ export const WeighManagement = () => {
   };
 
   const ShowMaterial = ({ disabled }) => {
-    if (selectedCustType !== "vehicleOnly") {
+    if (selectedCustType !== 3) {
       return (
         <Form.Item label="Select Material" name="material">
           <Select
@@ -163,22 +212,7 @@ export const WeighManagement = () => {
       .then((response) => response.json())
       .then((data) => {
         console.log(data);
-
-        const custtypes = [
-          {
-            value: 1,
-            label: "Merchant",
-          },
-          {
-            value: 2,
-            label: "Layman",
-          },
-          {
-            value: 3,
-            label: "Vehicle-only",
-          },
-        ];
-        setCustomerType(custtypes);
+        handleCustomerTypes(transactionType);
       });
 
     // GET request using fetch to load material types
@@ -220,8 +254,8 @@ export const WeighManagement = () => {
     // empty dependency array means this effect will only run once (like componentDidMount in classes)
   }, []);
 
-  const onChangeUserType = (type) => {
-    setSelectedCustType(type);
+  const onChangeUserType = (event) => {
+    setSelectedCustType(event.target.value);
   };
 
   const onChangeMaterialType = (type) => {};
@@ -294,12 +328,14 @@ export const WeighManagement = () => {
             layout="vertical"
             initialValues={{
               size: componentSize,
+              transactionType: "outgoing",
+              customerType: transactionType === "outgoing" ? 1 : 3,
             }}
             onValuesChange={onFormLayoutChange}
             size={componentSize}
             onFinish={onFinish}
           >
-            <Form.Item>
+            {/* <Form.Item>
               <Title
                 wrapperCol={{
                   offset: 4,
@@ -311,21 +347,28 @@ export const WeighManagement = () => {
                   ? "Add Weight After unload"
                   : "Add Weight Before unload"}
               </Title>
-            </Form.Item>
-            <Form.Item label="Customer Type" name="customerType">
-              <Select
-                placeholder="Select a Customer Type"
-                onChange={onChangeUserType}
-                loading={!customerType.length}
-                disabled={transactionCreation === "IN_PROGRESS"}
-              >
-                {customerType.map((opt) => (
-                  <Select.Option key={opt.value} value={opt.value}>
-                    {opt.label}
-                  </Select.Option>
+            </Form.Item> */}
+
+            <TransactionType />
+            <Form.Item
+              label="Customer Type"
+              name="customerType"
+              value={selectedCustType}
+            >
+              <Radio.Group buttonStyle="solid">
+                {customerTypeOptions.map(({ label, value }) => (
+                  <Radio.Button
+                    value={value}
+                    key={value}
+                    onChange={onChangeUserType}
+                    disabled={transactionCreation === "IN_PROGRESS"}
+                  >
+                    {label}
+                  </Radio.Button>
                 ))}
-              </Select>
+              </Radio.Group>
             </Form.Item>
+
             <Form.Item label="Customer Name" name="customerName">
               <Input placeholder="Enter Customer Name" />
             </Form.Item>
