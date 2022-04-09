@@ -25,39 +25,40 @@ export const WeighManagement = () => {
   const [materials, setMaterials] = useState([]);
   const [transactionCreation, setTransactionCreation] = useState(null);
   const [form] = Form.useForm();
+  const [cancelForm] = Form.useForm();
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const [canReason, setCanReason] = useState("");
   const transactionTypes = [
     { label: "Outgoing", value: "outgoing" },
     { label: "Incoming", value: "incoming" },
   ];
-  const showModal = () => {
-    setIsModalVisible(true);
+  const formInitValues = {
+    size: componentSize,
+    transactionType: "outgoing",
+    customerType: transactionType === "outgoing" ? 1 : 3,
   };
 
-  const handleOk = () => {
-    setIsModalVisible(false);
-  };
+  const cancelReasons = [
+    {
+      label: "Incorrect customer information",
+      value: "incorrect_customer_info",
+    },
+    {
+      label: "Others",
+      value: "Others",
+    },
+  ];
 
-  const handleCancel = () => {
-    setIsModalVisible(false);
-  };
+  /** Component composition */
 
-  const onFormLayoutChange = ({ size }) => {
-    setComponentSize(size);
-  };
-
-  const onChangeTransactionType = (event) => {
-    setTransactionType(event.target.value);
-    handleCustomerTypes(event.target.value);
-  };
-
-  const TransactionType = () => {
+  const TransactionType = ({ disabled }) => {
     return (
       <Form.Item label="Transaction type" name="transactionType">
         <Radio.Group
           buttonStyle="solid"
           onChange={onChangeTransactionType}
           value={transactionType}
+          disabled={disabled === "IN_PROGRESS"}
         >
           {transactionTypes.map(({ label, value }) => (
             <Radio.Button
@@ -79,11 +80,26 @@ export const WeighManagement = () => {
     );
   };
 
-  const ShowSecondWeight = (props) => {
+  const FirstWeight = (props) => {
+    return (
+      <Form.Item label="First Weight" name="firstWeight">
+        {/* <Input
+          placeholder="Enter weight before unload"
+          disabled={transactionCreation === "IN_PROGRESS"}
+        /> */}
+        <InputNumber
+          placeholder="Weight before unload"
+          disabled={transactionCreation === "IN_PROGRESS"}
+          addonAfter="Tonnes"
+        />
+      </Form.Item>
+    );
+  };
+  const SecondWeight = (props) => {
     if (selectedCustType !== 3 && transactionCreation === "IN_PROGRESS") {
       return (
         <Form.Item label="Second Weight" name="secondWeight">
-          <Input placeholder="Enter weight after unload" />
+          <InputNumber placeholder="Weight after unload" addonAfter="Tonnes" />
         </Form.Item>
       );
     } else {
@@ -91,7 +107,7 @@ export const WeighManagement = () => {
     }
   };
 
-  const ShowMaterial = ({ disabled }) => {
+  const Materials = ({ disabled }) => {
     if (selectedCustType !== 3) {
       return (
         <Form.Item label="Select Material" name="material">
@@ -118,7 +134,7 @@ export const WeighManagement = () => {
     }
   };
 
-  const ShowVehicleNumber = ({ disabled }) => {
+  const VehicleNumber = ({ disabled }) => {
     if (selectedCustType !== 2) {
       return (
         <Form.Item label="Vehicle Number" name="vehicleNumber">
@@ -133,11 +149,14 @@ export const WeighManagement = () => {
     }
   };
 
-  const ShowCustomerID = () => {
+  const CustomerID = ({ disabled }) => {
     if (selectedCustType !== 2) {
       return (
         <Form.Item label="Customer ID" name="customerID">
-          <Input placeholder="Enter Customer ID" />
+          <Input
+            placeholder="Enter Customer ID"
+            disabled={disabled === "IN_PROGRESS"}
+          />
         </Form.Item>
       );
     } else {
@@ -145,7 +164,7 @@ export const WeighManagement = () => {
     }
   };
 
-  const ShowDriverCount = ({ disabled }) => {
+  const DriverCount = ({ disabled }) => {
     if (selectedCustType !== 2) {
       return (
         <Form.Item label="Driver Count" name="driverCount">
@@ -160,20 +179,145 @@ export const WeighManagement = () => {
     }
   };
 
-  const ShowPhoneNumber = () => {
+  const CustomerType = ({ disabled }) => {
+    return (
+      <Form.Item
+        label="Customer Type"
+        name="customerType"
+        value={selectedCustType}
+      >
+        <Radio.Group buttonStyle="solid">
+          {customerTypeOptions.map(({ label, value }) => (
+            <Radio.Button
+              value={value}
+              key={value}
+              onChange={onChangeUserType}
+              disabled={transactionCreation === "IN_PROGRESS"}
+            >
+              {label}
+            </Radio.Button>
+          ))}
+        </Radio.Group>
+      </Form.Item>
+    );
+  };
+
+  const CustomerName = ({ disabled }) => {
+    return (
+      <Form.Item label="Customer Name" name="customerName">
+        <Input
+          placeholder="Enter Customer Name"
+          disabled={disabled === "IN_PROGRESS"}
+        />
+      </Form.Item>
+    );
+  };
+
+  const PhoneNumber = ({ disabled }) => {
     return (
       <Form.Item label="Phone Number" name="customerPhoneNo">
         <InputNumber
           addonBefore="+966"
           style={{ width: "100%" }}
           placeholder="Enter Phone Number"
+          disabled={disabled === "IN_PROGRESS"}
         />
       </Form.Item>
     );
   };
 
+  const CancellationReasons = () => {
+    const onSelectCanReason = (reason) => {
+      console.log(reason);
+      setCanReason(reason);
+    };
+
+    return (
+      <Form form={cancelForm} layout="vertical" autoComplete="off">
+        <Form.Item
+          label="Select a Cancellation Reason"
+          name="cancellationReason"
+        >
+          <Select
+            placeholder="Select Cancellation Reason"
+            onChange={onSelectCanReason}
+          >
+            {cancelReasons.map((opt) => (
+              <Select.Option key={opt.value} value={opt.value}>
+                {opt.label}
+              </Select.Option>
+            ))}
+          </Select>
+        </Form.Item>
+      </Form>
+    );
+  };
+
+  const CancellationOthers = ({ change }) => {
+    return (
+      <Form.Item>
+        <TextArea
+          showCount
+          maxLength={100}
+          style={{ height: 120 }}
+          onChange={change}
+        />
+        ,
+      </Form.Item>
+    );
+  };
+
+  const ActionButtons = ({ state }) => {
+    if (state !== "IN_PROGRESS") {
+      return (
+        <Form.Item>
+          <Button type="primary" htmlType="submit" className="mr-3">
+            Create transaction
+          </Button>
+        </Form.Item>
+      );
+    } else {
+      return (
+        <Form.Item>
+          <Button type="primary" htmlType="submit" className="mr-3">
+            Create transaction
+          </Button>
+          <Button
+            type="secondary"
+            htmlType="submit"
+            onClick={() => cancelTransaction()}
+          >
+            Cancel
+          </Button>
+        </Form.Item>
+      );
+    }
+  };
+
+  /** Event handlers */
+  const showModal = () => {
+    setIsModalVisible(true);
+  };
+
+  const handleOk = () => {
+    setIsModalVisible(false);
+  };
+
+  const handleCancel = () => {
+    setIsModalVisible(false);
+  };
+
+  const onFormLayoutChange = ({ size }) => {
+    setComponentSize(size);
+  };
+
+  const onChangeTransactionType = (event) => {
+    setTransactionType(event.target.value);
+    handleCustomerTypes(event.target.value);
+  };
+
   const CancelModal = () => {
-    const onChange = (e) => {};
+    const otherReason = (e) => {};
 
     return (
       <Modal
@@ -182,15 +326,10 @@ export const WeighManagement = () => {
         onOk={handleOk}
         onCancel={handleCancel}
       >
-        <Form.Item>
-          <TextArea
-            showCount
-            maxLength={100}
-            style={{ height: 120 }}
-            onChange={onChange}
-          />
-          ,
-        </Form.Item>
+        <CancellationReasons />
+        {canReason.toLowerCase() === "others" ? (
+          <CancellationOthers change={otherReason} />
+        ) : null}
       </Modal>
     );
   };
@@ -199,32 +338,32 @@ export const WeighManagement = () => {
   const handleCustomerTypes = useCallback(
     (type) => {
       if (type === "incoming") {
+        setSelectedCustType(1);
+        const types = [
+          {
+            value: 1,
+            label: "Layman",
+          },
+          {
+            value: 3,
+            label: "Vehicle",
+          },
+        ];
+        setCustomerTypeOptions(types);
+        form.setFieldsValue({
+          customerType: 1,
+        });
+      } else {
         const types = [
           {
             value: 3,
-            label: "Vehicle Only",
+            label: "Vehicle",
           },
         ];
         setSelectedCustType(3);
         setCustomerTypeOptions(types);
         form.setFieldsValue({
           customerType: 3,
-        });
-      } else {
-        const types = [
-          {
-            value: 1,
-            label: "Merchant",
-          },
-          {
-            value: 2,
-            label: "Layman",
-          },
-        ];
-        setSelectedCustType(1);
-        setCustomerTypeOptions(types);
-        form.setFieldsValue({
-          customerType: 1,
         });
       }
     },
@@ -233,12 +372,13 @@ export const WeighManagement = () => {
 
   useEffect(() => {
     // GET request using fetch to load customer types
-    fetch("https://api.npms.io/v2/search?q=react")
-      .then((response) => response.json())
-      .then((data) => {
-        console.log(data);
-        handleCustomerTypes("outgoing");
-      });
+    handleCustomerTypes("outgoing");
+    // fetch("https://api.npms.io/v2/search?q=react")
+    //   .then((response) => response.json())
+    //   .then((data) => {
+    //     //console.log(data);
+    //     // handleCustomerTypes("outgoing");
+    //   });
 
     // GET request using fetch to load material types
 
@@ -316,6 +456,7 @@ export const WeighManagement = () => {
       customerPhoneNo: "9884978723",
     };
     form.setFieldsValue(mockData);
+    setSelectedCustType(mockData.customerType);
   };
 
   const cancelTransaction = (id) => {
@@ -353,77 +494,23 @@ export const WeighManagement = () => {
               span: 24,
             }}
             layout="vertical"
-            initialValues={{
-              size: componentSize,
-              transactionType: "outgoing",
-              customerType: transactionType === "outgoing" ? 1 : 3,
-            }}
+            autoComplete="off"
+            initialValues={formInitValues}
             onValuesChange={onFormLayoutChange}
             size={componentSize}
             onFinish={onFinish}
           >
-            {/* <Form.Item>
-              <Title
-                wrapperCol={{
-                  offset: 4,
-                  span: 16,
-                }}
-                level={5}
-              >
-                {transactionCreation === "IN_PROGRESS"
-                  ? "Add Weight After unload"
-                  : "Add Weight Before unload"}
-              </Title>
-            </Form.Item> */}
-
-            <TransactionType />
-            <Form.Item
-              label="Customer Type"
-              name="customerType"
-              value={selectedCustType}
-            >
-              <Radio.Group buttonStyle="solid">
-                {customerTypeOptions.map(({ label, value }) => (
-                  <Radio.Button
-                    value={value}
-                    key={value}
-                    onChange={onChangeUserType}
-                    disabled={transactionCreation === "IN_PROGRESS"}
-                  >
-                    {label}
-                  </Radio.Button>
-                ))}
-              </Radio.Group>
-            </Form.Item>
-
-            <Form.Item label="Customer Name" name="customerName">
-              <Input placeholder="Enter Customer Name" />
-            </Form.Item>
-            <ShowPhoneNumber />
-            <ShowCustomerID />
-            <ShowMaterial disabled={transactionCreation} />
-            <ShowVehicleNumber disabled={transactionCreation} />
-            <ShowDriverCount disabled={transactionCreation} />
-
-            <Form.Item label="First Weight" name="firstWeight">
-              <Input
-                placeholder="Enter weight before unload"
-                disabled={transactionCreation === "IN_PROGRESS"}
-              />
-            </Form.Item>
-            <ShowSecondWeight />
-            <Form.Item>
-              <Button type="primary" htmlType="submit" className="mr-3">
-                Create transaction
-              </Button>
-              <Button
-                type="secondary"
-                htmlType="submit"
-                onClick={() => cancelTransaction()}
-              >
-                Cancel
-              </Button>
-            </Form.Item>
+            <TransactionType disabled={transactionCreation} />
+            <CustomerType disabled={transactionCreation} />
+            <CustomerName disabled={transactionCreation} />
+            <PhoneNumber disabled={transactionCreation} />
+            <CustomerID disabled={transactionCreation} />
+            <Materials disabled={transactionCreation} />
+            <VehicleNumber disabled={transactionCreation} />
+            <DriverCount disabled={transactionCreation} />
+            <FirstWeight />
+            <SecondWeight />
+            <ActionButtons state={transactionCreation} />
           </Form>
         </Col>
         <Col span={10} offset={2}>
