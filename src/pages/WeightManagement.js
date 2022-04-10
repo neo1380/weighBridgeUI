@@ -82,7 +82,16 @@ export const WeighManagement = () => {
 
   const FirstWeight = (props) => {
     return (
-      <Form.Item label="First Weight" name="firstWeight">
+      <Form.Item
+        label="First Weight"
+        name="firstWeight"
+        rules={[
+          {
+            required: true,
+            message: "Please enter First Weight",
+          },
+        ]}
+      >
         {/* <Input
           placeholder="Enter weight before unload"
           disabled={transactionCreation === "IN_PROGRESS"}
@@ -98,7 +107,16 @@ export const WeighManagement = () => {
   const SecondWeight = (props) => {
     if (selectedCustType !== 3 && transactionCreation === "IN_PROGRESS") {
       return (
-        <Form.Item label="Second Weight" name="secondWeight">
+        <Form.Item
+          label="Second Weight"
+          name="secondWeight"
+          rules={[
+            {
+              required: true,
+              message: "Please enter Second Weight",
+            },
+          ]}
+        >
           <InputNumber placeholder="Weight after unload" addonAfter="Tonnes" />
         </Form.Item>
       );
@@ -137,7 +155,16 @@ export const WeighManagement = () => {
   const VehicleNumber = ({ disabled }) => {
     if (selectedCustType !== 2) {
       return (
-        <Form.Item label="Vehicle Number" name="vehicleNumber">
+        <Form.Item
+          label="Vehicle Number"
+          name="vehicleNumber"
+          rules={[
+            {
+              required: true,
+              message: "Please enter Vehicle Number",
+            },
+          ]}
+        >
           <Input
             placeholder="Enter Vehicle Number"
             disabled={disabled === "IN_PROGRESS"}
@@ -152,7 +179,16 @@ export const WeighManagement = () => {
   const CustomerID = ({ disabled }) => {
     if (selectedCustType !== 2) {
       return (
-        <Form.Item label="Customer ID" name="customerID">
+        <Form.Item
+          label="Customer ID"
+          name="customerID"
+          rules={[
+            {
+              required: false,
+              message: "Please enter Customer's ID",
+            },
+          ]}
+        >
           <Input
             placeholder="Enter Customer ID"
             disabled={disabled === "IN_PROGRESS"}
@@ -167,7 +203,16 @@ export const WeighManagement = () => {
   const DriverCount = ({ disabled }) => {
     if (selectedCustType !== 2) {
       return (
-        <Form.Item label="Driver Count" name="driverCount">
+        <Form.Item
+          label="Driver Count"
+          name="driverCount"
+          rules={[
+            {
+              required: true,
+              message: "Please enter Driver Count",
+            },
+          ]}
+        >
           <Input
             placeholder="Enter Driver Count"
             disabled={disabled === "IN_PROGRESS"}
@@ -204,7 +249,16 @@ export const WeighManagement = () => {
 
   const CustomerName = ({ disabled }) => {
     return (
-      <Form.Item label="Customer Name" name="customerName">
+      <Form.Item
+        label="Customer Name"
+        name="customerName"
+        rules={[
+          {
+            required: true,
+            message: "Please enter Customer's name",
+          },
+        ]}
+      >
         <Input
           placeholder="Enter Customer Name"
           disabled={disabled === "IN_PROGRESS"}
@@ -215,7 +269,16 @@ export const WeighManagement = () => {
 
   const PhoneNumber = ({ disabled }) => {
     return (
-      <Form.Item label="Phone Number" name="customerPhoneNo">
+      <Form.Item
+        label="Phone Number"
+        name="customerPhoneNo"
+        rules={[
+          {
+            required: true,
+            message: "Please enter Customer's Phone Number",
+          },
+        ]}
+      >
         <InputNumber
           addonBefore="+966"
           style={{ width: "100%" }}
@@ -280,9 +343,13 @@ export const WeighManagement = () => {
       return (
         <Form.Item>
           <Button type="primary" htmlType="submit" className="mr-3">
-            Create transaction
+            Add Another Transaction
+          </Button>
+          <Button type="primary" htmlType="submit" className="mr-3">
+            Close Current Transaction
           </Button>
           <Button
+            danger
             type="secondary"
             htmlType="submit"
             onClick={() => cancelTransaction()}
