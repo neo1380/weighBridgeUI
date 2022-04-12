@@ -40,8 +40,16 @@ export const WeighManagement = () => {
 
   const cancelReasons = [
     {
-      label: "Incorrect customer information",
+      label: "Incorrect information from Customer",
       value: "incorrect_customer_info",
+    },
+    {
+      label: "Cancellation requested by Customer",
+      value: "cancel_request_customer",
+    },
+    {
+      label: "Error in Data entry",
+      value: "error_data_entry",
     },
     {
       label: "Others",
