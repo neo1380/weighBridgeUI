@@ -30,8 +30,8 @@ export const WeighManagement = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [canReason, setCanReason] = useState("");
   const transactionTypes = [
-    { label: "Outgoing", value: "outgoing" },
     { label: "Incoming", value: "incoming" },
+    { label: "Outgoing", value: "outgoing" },
   ];
   const formInitValues = {
     size: componentSize,
@@ -108,7 +108,7 @@ export const WeighManagement = () => {
         <InputNumber
           placeholder="Weight before unload"
           disabled={transactionCreation === "IN_PROGRESS"}
-          addonAfter="Tonnes"
+          addonAfter="Kgs"
         />
       </Form.Item>
     );
@@ -126,7 +126,7 @@ export const WeighManagement = () => {
             },
           ]}
         >
-          <InputNumber placeholder="Weight after unload" addonAfter="Tonnes" />
+          <InputNumber placeholder="Weight after unload" addonAfter="Kgs" />
         </Form.Item>
       );
     } else {
