@@ -13,6 +13,7 @@ import {
 } from "antd";
 import { Statistic, Row, Col } from "antd";
 import "antd-css-utilities/utility.min.css";
+import { API_ENDPOINTS, BASE_URL } from "../constants/api.constants";
 
 const { Title } = Typography;
 const { TextArea } = Input;
@@ -145,8 +146,8 @@ export const WeighManagement = () => {
           >
             {materials.map((opt) => (
               <Select.Option
-                key={opt.value}
-                value={opt.value}
+                key={opt.materialId}
+                value={opt.materialName}
                 disabled={disabled === "IN_PROGRESS"}
               >
                 {opt.label}
@@ -456,13 +457,12 @@ export const WeighManagement = () => {
     //   });
 
     // GET request using fetch to load material types
-
-    fetch("https://api.npms.io/v2/search?q=react")
+    const materialList = BASE_URL + API_ENDPOINTS.GET_MATERIAL;
+    fetch(materialList)
       .then((response) => response.json())
-      .then((data) => {
-        console.log(data);
-
-        const materials = [
+      .then((materials) => {
+        console.log(materials);
+        /* const materials = [
           {
             label: "Paper",
             value: "Paper",
@@ -487,7 +487,7 @@ export const WeighManagement = () => {
             label: "Magazine",
             value: "Magazine",
           },
-        ];
+        ]; */
         setMaterials(materials);
       });
 
@@ -500,7 +500,10 @@ export const WeighManagement = () => {
     setSelectedCustType(event.target.value);
   };
 
-  const onChangeMaterialType = (type) => {};
+  const onChangeMaterialType = (type) => {
+    console.log("selec type", type);
+    //add code to fetch price based on materials
+  };
 
   const onFinish = (values) => {
     if (typeof values.customerID === "undefined") {
