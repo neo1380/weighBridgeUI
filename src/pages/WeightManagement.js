@@ -19,7 +19,7 @@ const { Title } = Typography;
 const { TextArea } = Input;
 
 export const WeighManagement = () => {
-  const [transactionType, setTransactionType] = useState("outgoing");
+  const [transactionType, setTransactionType] = useState("incoming");
   const [componentSize, setComponentSize] = useState("default");
   const [selectedCustType, setSelectedCustType] = useState(null);
   const [customerTypeOptions, setCustomerTypeOptions] = useState([]);
@@ -35,7 +35,7 @@ export const WeighManagement = () => {
   ];
   const formInitValues = {
     size: componentSize,
-    transactionType: "outgoing",
+    transactionType: "incoming",
     customerType: transactionType === "outgoing" ? 1 : 3,
   };
 
@@ -79,12 +79,6 @@ export const WeighManagement = () => {
             </Radio.Button>
           ))}
         </Radio.Group>
-        {/* <Radio.Group
-          buttonStyle="solid"
-          options={transactionTypes}
-          onChange={onChangeTransactionType}
-          value={transactionType}
-        /> */}
       </Form.Item>
     );
   };
@@ -135,30 +129,30 @@ export const WeighManagement = () => {
   };
 
   const Materials = ({ disabled }) => {
-    if (selectedCustType !== 3) {
-      return (
-        <Form.Item label="Select Material" name="material">
-          <Select
-            placeholder="Select Material"
-            onChange={onChangeMaterialType}
-            loading={!materials.length}
-            disabled={disabled === "IN_PROGRESS"}
-          >
-            {materials.map((opt) => (
-              <Select.Option
-                key={opt.materialId}
-                value={opt.materialName}
-                disabled={disabled === "IN_PROGRESS"}
-              >
-                {opt.label}
-              </Select.Option>
-            ))}
-          </Select>
-        </Form.Item>
-      );
-    } else {
-      return null;
-    }
+    // if (selectedCustType !== 3) {
+    return (
+      <Form.Item label="Select Material" name="material">
+        <Select
+          placeholder="Select Material"
+          onChange={onChangeMaterialType}
+          loading={!materials.length}
+          disabled={disabled === "IN_PROGRESS"}
+        >
+          {materials.map((opt) => (
+            <Select.Option
+              key={opt.materialId}
+              value={opt.materialName}
+              disabled={disabled === "IN_PROGRESS"}
+            >
+              {opt.label}
+            </Select.Option>
+          ))}
+        </Select>
+      </Form.Item>
+    );
+    // } else {
+    //   return null;
+    // }
   };
 
   const VehicleNumber = ({ disabled }) => {
@@ -414,20 +408,20 @@ export const WeighManagement = () => {
   const handleCustomerTypes = useCallback(
     (type) => {
       if (type === "incoming") {
-        setSelectedCustType(1);
+        setSelectedCustType(3);
         const types = [
-          {
-            value: 1,
-            label: "Layman",
-          },
           {
             value: 3,
             label: "Vehicle",
           },
+          {
+            value: 1,
+            label: "Layman",
+          },
         ];
         setCustomerTypeOptions(types);
         form.setFieldsValue({
-          customerType: 1,
+          customerType: 3,
         });
       } else {
         const types = [
@@ -447,53 +441,15 @@ export const WeighManagement = () => {
   );
 
   useEffect(() => {
-    // GET request using fetch to load customer types
-    handleCustomerTypes("outgoing");
-    // fetch("https://api.npms.io/v2/search?q=react")
-    //   .then((response) => response.json())
-    //   .then((data) => {
-    //     //console.log(data);
-    //     // handleCustomerTypes("outgoing");
-    //   });
-
-    // GET request using fetch to load material types
+    handleCustomerTypes("incoming");
     const materialList = BASE_URL + API_ENDPOINTS.GET_MATERIAL;
     fetch(materialList)
       .then((response) => response.json())
       .then((materials) => {
         console.log(materials);
-        /* const materials = [
-          {
-            label: "Paper",
-            value: "Paper",
-          },
-          {
-            label: "Carton",
-            value: "Carton",
-          },
-          {
-            label: "Duplex",
-            value: "Duplex",
-          },
-          {
-            label: "Mix",
-            value: "Mix",
-          },
-          {
-            label: "Plastic",
-            value: "Plastic",
-          },
-          {
-            label: "Magazine",
-            value: "Magazine",
-          },
-        ]; */
         setMaterials(materials);
       });
-
-    setTransactionType("outgoing");
-
-    // empty dependency array means this effect will only run once (like componentDidMount in classes)
+    setTransactionType("incoming");
   }, [handleCustomerTypes]);
 
   const onChangeUserType = (event) => {
