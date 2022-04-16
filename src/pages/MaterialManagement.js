@@ -39,6 +39,19 @@ export const MaterialManagement = () => {
       .then((data) => console.log("post", data));
   };
 
+  const addMaterial = () => {
+    const count = materials.length;
+    const newMaterial = {
+      key: count,
+      materialId: count + 1,
+      materialName: "",
+      materialPrice: ``,
+    };
+    const newMaterials = [...materials, newMaterial];
+    setMaterials(newMaterials);
+    setEditingKey(count);
+  };
+
   const save = async (record) => {
     try {
       const row = await form.validateFields();
@@ -164,20 +177,31 @@ export const MaterialManagement = () => {
 
   const MaterialGrid = () => {
     return (
-      <Form form={form} component={false}>
-        <Table
-          bordered
-          components={{
-            body: {
-              cell: EditableCell,
-            },
+      <>
+        <Button
+          onClick={addMaterial}
+          type="primary"
+          style={{
+            marginBottom: 16,
           }}
-          dataSource={materials}
-          columns={mergedColumns}
-          pagination={{ position: ["none"] }}
-          rowClassName="editable-row"
-        />
-      </Form>
+        >
+          Add New Material
+        </Button>
+        <Form form={form} component={false}>
+          <Table
+            bordered
+            components={{
+              body: {
+                cell: EditableCell,
+              },
+            }}
+            dataSource={materials}
+            columns={mergedColumns}
+            pagination={{ position: ["none"] }}
+            rowClassName="editable-row"
+          />
+        </Form>
+      </>
     );
   };
 
