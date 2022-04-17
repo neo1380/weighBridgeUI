@@ -5,72 +5,121 @@ import {
   Table,
   Input,
   InputNumber,
-  Popconfirm,
   Form,
   Typography,
+  notification,
   Button,
+  Modal,
 } from "antd";
+import axios from "axios";
 
 import { API_ENDPOINTS, BASE_URL } from "../constants/api.constants";
 
 export const MaterialManagement = () => {
   const [form] = Form.useForm();
+  const [modalForm] = Form.useForm();
   const [materials, setMaterials] = useState([]);
-  const [editingKey, setEditingKey] = useState("");
+  const [visible, setVisible] = useState(false);
+  const [materialInEdit, setMaterialInEdit] = useState({});
+  const [fetchMaterials, setFetchMaterials] = useState(false);
 
-  const isEditing = (record) => record.key === editingKey;
-  const edit = (record) => {
-    form.setFieldsValue({
-      materialPrice: "",
-      ...record,
+  const openNotificationWithIcon = ({ type, message, description }) => {
+    notification[type]({
+      message,
+      description,
+      duration: 5,
     });
-    setEditingKey(record.key);
   };
 
+  const onCreate = (material) => {
+    setVisible(false);
+    saveMaterial(material);
+  };
+  const onCancel = () => {
+    setMaterialInEdit({});
+    setVisible(false);
+  };
+  const UpdateMaterial = () => {
+    return (
+      <Modal
+        visible={visible}
+        title={
+          Object.keys(materialInEdit).length ? "EDIT MATERIAL" : "ADD MATERIAL"
+        }
+        okText={Object.keys(materialInEdit).length ? "Edit" : "Add"}
+        cancelText="Cancel"
+        onCancel={onCancel}
+        onOk={() => {
+          modalForm
+            .validateFields()
+            .then((values) => {
+              onCreate(values);
+              modalForm.resetFields();
+            })
+            .catch((info) => {
+              console.log("Validate Failed:", info);
+            });
+        }}
+      >
+        <Form form={modalForm} layout="vertical" name="updateMaterialModal">
+          <Form.Item
+            name="materialName"
+            label="Material Name"
+            rules={[
+              {
+                required: true,
+                message: "Please enter material name",
+              },
+            ]}
+          >
+            <Input style={{ width: "50%" }} />
+          </Form.Item>
+          <Form.Item
+            name="materialPrice"
+            label="Price per Kg"
+            rules={[
+              {
+                required: true,
+                message: "Please enter material price per kg",
+              },
+            ]}
+          >
+            <InputNumber
+              min={0}
+              addonAfter="Price per kgs"
+              style={{ width: "50%" }}
+            />
+          </Form.Item>
+        </Form>
+      </Modal>
+    );
+  };
   const saveMaterial = (material) => {
-    const { key, ...updatedMaterial } = material;
-    const requestOptions = {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(updatedMaterial),
+    const updatedMaterial = { ...materialInEdit, ...material };
+    const url = BASE_URL + API_ENDPOINTS.SAVE_MATERIAL;
+    const successObj = {
+      type: "info",
+      message: "Material Management",
+      description: "Materials Updated Successfully",
     };
-    fetch(BASE_URL + API_ENDPOINTS.GET_MATERIAL, requestOptions)
-      .then((response) => response.json())
-      .then((data) => console.log("post", data));
+    axios.post(url, updatedMaterial).then((response) => {
+      setFetchMaterials(true);
+      openNotificationWithIcon(successObj);
+    });
   };
 
   const addMaterial = () => {
-    const count = materials.length;
-    const newMaterial = {
-      key: count,
-      materialId: count + 1,
-      materialName: "",
-      materialPrice: ``,
-    };
-    const newMaterials = [...materials, newMaterial];
-    setMaterials(newMaterials);
-    setEditingKey(count);
+    setMaterialInEdit({});
+    setVisible(true);
   };
 
-  const save = async (record) => {
-    try {
-      const row = await form.validateFields();
-      const index = materials.findIndex((item) => record.key === item.key);
+  const editMaterial = (material) => {
+    const { key, ...materialNew } = material;
+    setVisible(true);
+    setMaterialInEdit(materialNew);
+    modalForm.setFieldsValue(materialNew);
+  };
 
-      if (index > -1) {
-        const updatedRecord = { ...materials[index], ...row };
-        materials.splice(index, 1, { ...updatedRecord });
-        setMaterials(materials);
-        saveMaterial(updatedRecord);
-        setEditingKey("");
-      }
-    } catch (errInfo) {
-      console.log("Validate Failed:", errInfo);
-    }
-  };
-  const cancel = () => {
-    setEditingKey("");
-  };
   const columns = [
     {
       title: "Material ID",
@@ -88,91 +137,37 @@ export const MaterialManagement = () => {
       title: "Price",
       dataIndex: "materialPrice",
       width: "10%",
-      editable: true,
+      editable: false,
     },
     {
       title: "action",
       dataIndex: "action",
       render: (_, record) => {
-        const editable = isEditing(record);
-        return editable ? (
-          <span>
-            <Typography.Link
-              onClick={() => save(record)}
-              style={{
-                marginRight: 8,
-              }}
-            >
-              Save
-            </Typography.Link>
-            <Popconfirm title="Sure to cancel?" onConfirm={cancel}>
-              <Button type="link" size={"small"}>
-                Cancel
-              </Button>
-            </Popconfirm>
-          </span>
-        ) : (
-          <Typography.Link
-            disabled={editingKey !== ""}
-            onClick={() => edit(record)}
-          >
+        return (
+          <Typography.Link onClick={() => editMaterial(record)}>
             Edit
           </Typography.Link>
         );
       },
     },
   ];
-  const EditableCell = ({
-    editing,
-    dataIndex,
-    title,
-    inputType,
-    record,
-    index,
-    children,
-    ...restProps
-  }) => {
-    const inputNode =
-      inputType === "number" ? <InputNumber min={0} /> : <Input />;
-    return (
-      <td {...restProps}>
-        {editing ? (
-          <Form.Item
-            name={dataIndex}
-            style={{
-              margin: 0,
-            }}
-            rules={[
-              {
-                required: true,
-                message: `Please Input ${title}!`,
-              },
-            ]}
-          >
-            {inputNode}
-          </Form.Item>
-        ) : (
-          children
-        )}
-      </td>
-    );
-  };
 
   const mergedColumns = columns.map((col) => {
     if (!col.editable) {
       return col;
     }
 
-    return {
+    return col;
+
+    /*  return {
       ...col,
       onCell: (record) => ({
         record,
         dataIndex: col.dataIndex,
         inputType: col.dataIndex === "materialPrice" ? "number" : "text",
         title: col.title,
-        editing: isEditing(record),
       }),
-    };
+    }; */
   });
 
   const MaterialGrid = () => {
@@ -185,19 +180,14 @@ export const MaterialManagement = () => {
             marginBottom: 16,
           }}
         >
-          Add New Material
+          Update Material
         </Button>
+        <UpdateMaterial />
         <Form form={form} component={false}>
           <Table
             bordered
-            components={{
-              body: {
-                cell: EditableCell,
-              },
-            }}
             dataSource={materials}
             columns={mergedColumns}
-            pagination={{ position: ["none"] }}
             rowClassName="editable-row"
           />
         </Form>
@@ -211,12 +201,12 @@ export const MaterialManagement = () => {
       .then((response) => response.json())
       .then((materials) => {
         if (materials && materials.length) {
+          materials.sort((a, b) => a.materialId - b.materialId);
           materials.map((material, index) => (material.key = index.toString()));
-          console.log(materials);
           setMaterials(materials);
         }
       });
-  }, []);
+  }, [fetchMaterials]);
 
   return <MaterialGrid />;
 };
