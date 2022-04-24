@@ -95,13 +95,13 @@ export const WeighManagement = () => {
   };
 
   const FirstWeight = (field, key) => {
+    console.log(field);
     return (
       <Form.Item
         label="First Weight"
         name={[field.name, "firstWeight"]}
         fieldKey={[field.fieldKey, key]}
         initialValue={field.weight}
-        disabled={field.disabled}
         rules={[
           {
             required: true,
@@ -111,7 +111,7 @@ export const WeighManagement = () => {
       >
         <InputNumber
           placeholder="Weight before unload"
-          defaultValue
+          disabled={field.disabled}
           addonAfter="Kgs"
         />
       </Form.Item>
