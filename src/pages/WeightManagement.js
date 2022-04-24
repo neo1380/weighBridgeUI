@@ -12,6 +12,7 @@ import {
   Radio,
 } from "antd";
 import { Statistic, Row, Col } from "antd";
+import { MinusCircleOutlined, PlusOutlined } from "@ant-design/icons";
 import "antd-css-utilities/utility.min.css";
 import { API_ENDPOINTS, BASE_URL } from "../constants/api.constants";
 
@@ -58,6 +59,16 @@ export const WeighManagement = () => {
     },
   ];
 
+  const weightInputs = {
+    transactions: [
+      {
+        materialId: null,
+        firstWeight: null,
+        secondWeight: null,
+      },
+    ],
+  };
+
   /** Component composition */
 
   const TransactionType = ({ disabled }) => {
@@ -83,11 +94,14 @@ export const WeighManagement = () => {
     );
   };
 
-  const FirstWeight = (props) => {
+  const FirstWeight = (field, key) => {
     return (
       <Form.Item
         label="First Weight"
-        name="firstWeight"
+        name={[field.name, "firstWeight"]}
+        fieldKey={[field.fieldKey, key]}
+        initialValue={field.weight}
+        disabled={field.disabled}
         rules={[
           {
             required: true,
@@ -95,24 +109,21 @@ export const WeighManagement = () => {
           },
         ]}
       >
-        {/* <Input
-          placeholder="Enter weight before unload"
-          disabled={transactionCreation === "IN_PROGRESS"}
-        /> */}
         <InputNumber
           placeholder="Weight before unload"
-          disabled={transactionCreation === "IN_PROGRESS"}
+          defaultValue
           addonAfter="Kgs"
         />
       </Form.Item>
     );
   };
-  const SecondWeight = (props) => {
+  const SecondWeight = (field, key) => {
     if (selectedCustType !== 3 && transactionCreation === "IN_PROGRESS") {
       return (
         <Form.Item
           label="Second Weight"
-          name="secondWeight"
+          name={[field.name, "secondWeight"]}
+          fieldKey={[field.fieldKey, key]}
           rules={[
             {
               required: true,
@@ -128,21 +139,25 @@ export const WeighManagement = () => {
     }
   };
 
-  const Materials = ({ disabled }) => {
+  const Materials = ({ disabled, field }) => {
     // if (selectedCustType !== 3) {
     return (
-      <Form.Item label="Select Material" name="material">
+      <Form.Item
+        label="Select Material"
+        name={[field.name, "materialName"]}
+        fieldKey={[field.fieldKey, "materialName"]}
+      >
         <Select
           placeholder="Select Material"
           onChange={onChangeMaterialType}
           loading={!materials.length}
-          disabled={disabled === "IN_PROGRESS"}
+          //   disabled={disabled === "IN_PROGRESS"}
         >
-          {materials.map((opt) => (
+          {materials.map((opt, index) => (
             <Select.Option
-              key={opt.materialId}
+              key={opt.label}
               value={opt.materialName}
-              disabled={disabled === "IN_PROGRESS"}
+              //   disabled={disabled === "IN_PROGRESS"}
             >
               {opt.label}
             </Select.Option>
@@ -346,9 +361,6 @@ export const WeighManagement = () => {
       return (
         <Form.Item>
           <Button type="primary" htmlType="submit" className="mr-3">
-            Add Another Transaction
-          </Button>
-          <Button type="primary" htmlType="submit" className="mr-3">
             Close Current Transaction
           </Button>
           <Button
@@ -485,10 +497,19 @@ export const WeighManagement = () => {
       customerID: "AA",
       vehicleNumber: "3589",
       driverCount: "2",
-      firstWeight: "900",
+      firstWeight: "91100",
       material: "Plastic",
       customerPhoneNo: "9884978723",
+      transactions: [
+        {
+          materialName: "Iron",
+          materialId: "2",
+          firstWeight: "11900",
+          secondWeight: null,
+        },
+      ],
     };
+    weightInputs.transactions = { ...mockData.transactions };
     form.setFieldsValue(mockData);
     setSelectedCustType(mockData.customerType);
   };
@@ -539,11 +560,51 @@ export const WeighManagement = () => {
             <CustomerName disabled={transactionCreation} />
             <PhoneNumber disabled={transactionCreation} />
             <CustomerID disabled={transactionCreation} />
-            <Materials disabled={transactionCreation} />
             <VehicleNumber disabled={transactionCreation} />
             <DriverCount disabled={transactionCreation} />
-            <FirstWeight />
-            <SecondWeight />
+
+            <Form.List
+              name="transactions"
+              initialValue={weightInputs?.transactions}
+            >
+              {(fields, { add, remove }) => (
+                <>
+                  {fields.map((field, index) => (
+                    <>
+                      <Materials disabled={transactionCreation} field={field} />
+                      <FirstWeight
+                        {...field}
+                        key={`firstWeight_${index}`}
+                        weight={
+                          index > 0
+                            ? form.getFieldValue("transactions")[index - 1]
+                                .secondWeight
+                            : null
+                        }
+                        disabled={
+                          transactionCreation === "IN_PROGRESS" && index > 0
+                        }
+                      />
+                      <SecondWeight {...field} key={`secondWeight_${index}`} />
+                      {/* <MinusCircleOutlined onClick={() => remove(field.name)} /> */}
+                    </>
+                  ))}
+                  <Form.Item>
+                    <Button
+                      type="dashed"
+                      onClick={() => {
+                        add();
+                      }}
+                      block
+                      icon={<PlusOutlined />}
+                    >
+                      Add Another Transaction
+                    </Button>
+                  </Form.Item>
+                </>
+              )}
+            </Form.List>
+
             <ActionButtons state={transactionCreation} />
           </Form>
         </Col>
