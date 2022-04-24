@@ -12,7 +12,7 @@ import {
   Radio,
 } from "antd";
 import { Statistic, Row, Col } from "antd";
-import { MinusCircleOutlined, PlusOutlined } from "@ant-design/icons";
+import { PlusOutlined } from "@ant-design/icons";
 import "antd-css-utilities/utility.min.css";
 import { API_ENDPOINTS, BASE_URL } from "../constants/api.constants";
 
