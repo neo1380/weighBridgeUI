@@ -16,7 +16,7 @@ import { PlusOutlined } from "@ant-design/icons";
 import "antd-css-utilities/utility.min.css";
 import { API_ENDPOINTS, BASE_URL } from "../constants/api.constants";
 
-const { Title } = Typography;
+const { Title, Text } = Typography;
 const { TextArea } = Input;
 
 export const WeighManagement = () => {
@@ -571,6 +571,15 @@ export const WeighManagement = () => {
                 <>
                   {fields.map((field, index) => (
                     <>
+                      {/* <p className="ant-col ant-col-16 ant-col-offset-2 ant-form-item-label">
+                        Transaction: <b>{index + 1}</b>
+                      </p> */}
+                      <Col span={12} offset={2} className="mb-5">
+                        <Typography.Title level={4} style={{ margin: 0 }}>
+                          Transaction: {index + 1}
+                        </Typography.Title>
+                      </Col>
+
                       <Materials disabled={transactionCreation} field={field} />
                       <FirstWeight
                         {...field}
