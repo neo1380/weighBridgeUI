@@ -16,7 +16,7 @@ import { PlusOutlined } from "@ant-design/icons";
 import "antd-css-utilities/utility.min.css";
 import { API_ENDPOINTS, BASE_URL } from "../constants/api.constants";
 
-const { Title, Text } = Typography;
+const { Title } = Typography;
 const { TextArea } = Input;
 
 export const WeighManagement = () => {

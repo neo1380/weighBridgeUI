@@ -1,6 +1,6 @@
 import React from "react";
 import "antd/dist/antd.css";
-import { Typography, Alert, Button, Tag } from "antd";
+import { Typography, Alert, Button } from "antd";
 import { Row, Col } from "antd";
 const { Paragraph } = Typography;
 
