@@ -75,12 +75,60 @@ export const MaterialManagement = () => {
             <Input style={{ width: "50%" }} />
           </Form.Item>
           <Form.Item
-            name="materialPrice"
-            label="Price per Kg"
+            name="materialIncBalePrice"
+            label="Incoming Bale Price per Kg"
             rules={[
               {
                 required: true,
-                message: "Please enter material price per kg",
+                message: "Please enter incoming material bale price per kg",
+              },
+            ]}
+          >
+            <InputNumber
+              min={0}
+              addonAfter="Price per kgs"
+              style={{ width: "50%" }}
+            />
+          </Form.Item>
+          <Form.Item
+            name="materialIncLoosePrice"
+            label="Incoming Loose Price per Kg"
+            rules={[
+              {
+                required: true,
+                message: "Please enter incoming material loose price per kg",
+              },
+            ]}
+          >
+            <InputNumber
+              min={0}
+              addonAfter="Price per kgs"
+              style={{ width: "50%" }}
+            />
+          </Form.Item>
+          <Form.Item
+            name="materialOutBalePrice"
+            label="Outgoing Bale Price per Kg"
+            rules={[
+              {
+                required: true,
+                message: "Please enter outgoing material bale price per kg",
+              },
+            ]}
+          >
+            <InputNumber
+              min={0}
+              addonAfter="Price per kgs"
+              style={{ width: "50%" }}
+            />
+          </Form.Item>
+          <Form.Item
+            name="materialOutLoosePrice"
+            label="Outgoing Loose Price per Kg"
+            rules={[
+              {
+                required: true,
+                message: "Please enter outgoing material loose price per kg",
               },
             ]}
           >
@@ -124,23 +172,41 @@ export const MaterialManagement = () => {
     {
       title: "Material ID",
       dataIndex: "materialId",
-      width: "20%",
+      width: "10%",
       editable: false,
     },
     {
       title: "Material",
       dataIndex: "materialName",
-      width: "70%",
+      width: "20%",
       editable: false,
     },
     {
-      title: "Price",
-      dataIndex: "materialPrice",
+      title: "Incoming Bale Price",
+      dataIndex: "materialIncBalePrice",
+      width: "20%",
+      editable: false,
+    },
+    {
+      title: "Incoming Loose Price",
+      dataIndex: "materialIncLoosePrice",
+      width: "20%",
+      editable: false,
+    },
+    {
+      title: "Outgoing Bale Price",
+      dataIndex: "materialOutBalePrice",
+      width: "20%",
+      editable: false,
+    },
+    {
+      title: "Outgoing Loose Price",
+      dataIndex: "materialOutLoosePrice",
       width: "10%",
       editable: false,
     },
     {
-      title: "action",
+      title: "Action",
       dataIndex: "action",
       render: (_, record) => {
         return (
