@@ -22,6 +22,7 @@ const { TextArea } = Input;
 export const WeighManagement = () => {
   const [transactionType, setTransactionType] = useState("incoming");
   const [componentSize, setComponentSize] = useState("default");
+  const [priceType, setPriceType] = useState("bale");
   const [selectedCustType, setSelectedCustType] = useState(null);
   const [customerTypeOptions, setCustomerTypeOptions] = useState([]);
   const [materials, setMaterials] = useState([]);
@@ -33,6 +34,10 @@ export const WeighManagement = () => {
   const transactionTypes = [
     { label: "Incoming", value: "incoming" },
     { label: "Outgoing", value: "outgoing" },
+  ];
+  const priceTypes = [
+    { label: "Bale", value: "bale" },
+    { label: "Loose", value: "loose" },
   ];
   const formInitValues = {
     size: componentSize,
@@ -85,6 +90,29 @@ export const WeighManagement = () => {
               value={value}
               key={value}
               onChange={onChangeTransactionType}
+            >
+              {label}
+            </Radio.Button>
+          ))}
+        </Radio.Group>
+      </Form.Item>
+    );
+  };
+
+  const PriceType = ({ disabled }) => {
+    return (
+      <Form.Item label="Price type" name="priceType">
+        <Radio.Group
+          buttonStyle="solid"
+          onChange={onChangePriceType}
+          value={priceType}
+          disabled={disabled === "IN_PROGRESS"}
+        >
+          {priceTypes.map(({ label, value }) => (
+            <Radio.Button
+              value={value}
+              key={value}
+              onChange={onChangePriceType}
             >
               {label}
             </Radio.Button>
@@ -397,6 +425,9 @@ export const WeighManagement = () => {
     setTransactionType(event.target.value);
     handleCustomerTypes(event.target.value);
   };
+  const onChangePriceType = (event) => {
+    setPriceType(event.target.value);
+  };
 
   const CancelModal = () => {
     const otherReason = (e) => {};
@@ -415,6 +446,17 @@ export const WeighManagement = () => {
       </Modal>
     );
   };
+
+  // Keep the function reference
+  const handlePriceTypes = useCallback(
+    (type) => {
+      setPriceType("bale");
+      form.setFieldsValue({
+        priceType: "bale",
+      });
+    },
+    [form]
+  );
 
   // Keep the function reference
   const handleCustomerTypes = useCallback(
@@ -462,7 +504,9 @@ export const WeighManagement = () => {
         setMaterials(materials);
       });
     setTransactionType("incoming");
-  }, [handleCustomerTypes]);
+    setPriceType("bale");
+    handlePriceTypes();
+  }, [handleCustomerTypes, handlePriceTypes]);
 
   const onChangeUserType = (event) => {
     setSelectedCustType(event.target.value);
@@ -556,6 +600,7 @@ export const WeighManagement = () => {
             onFinish={onFinish}
           >
             <TransactionType disabled={transactionCreation} />
+            <PriceType disabled={transactionCreation} />
             <CustomerType disabled={transactionCreation} />
             <CustomerName disabled={transactionCreation} />
             <PhoneNumber disabled={transactionCreation} />
