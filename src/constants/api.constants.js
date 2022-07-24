@@ -5,4 +5,7 @@ export const API_ENDPOINTS = {
   //   GET_MATERIAL: "material/materialList?sortby=asc",
   GET_MATERIAL: "material/materialList/materialName/1",
   SAVE_MATERIAL: "material/savematerial",
+  CREATE_TRANSACTION: "transaction/saveTransactions",
+  TEMP_TRANSACTION: "transaction/temporaryTransactionList",
+  TEMP_CURRENT_DAY_TRANSACTION: "transaction/currentDayTransactionList",
 };

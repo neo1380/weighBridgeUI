@@ -12,6 +12,7 @@ import {
   Radio,
 } from "antd";
 import { Statistic, Row, Col } from "antd";
+import axios from "axios";
 import { PlusOutlined } from "@ant-design/icons";
 import "antd-css-utilities/utility.min.css";
 import { API_ENDPOINTS, BASE_URL } from "../constants/api.constants";
@@ -31,13 +32,14 @@ export const WeighManagement = () => {
   const [cancelForm] = Form.useForm();
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [canReason, setCanReason] = useState("");
+  const [tempTransactions, setTempTransactions] = useState([]);
   const transactionTypes = [
     { label: "Incoming", value: "incoming" },
     { label: "Outgoing", value: "outgoing" },
   ];
   const priceTypes = [
-    { label: "Bale", value: "bale" },
-    { label: "Loose", value: "loose" },
+    { label: "Bale", value: "B" },
+    { label: "Loose", value: "L" },
   ];
   const formInitValues = {
     size: componentSize,
@@ -65,11 +67,12 @@ export const WeighManagement = () => {
   ];
 
   const weightInputs = {
-    transactions: [
+    childTransactionDtoList: [
       {
         materialId: null,
         firstWeight: null,
         secondWeight: null,
+        baleOrLoose: "B",
       },
     ],
   };
@@ -99,9 +102,13 @@ export const WeighManagement = () => {
     );
   };
 
-  const PriceType = ({ disabled }) => {
+  const PriceType = ({ disabled, field }) => {
     return (
-      <Form.Item label="Price type" name="priceType">
+      <Form.Item
+        label="Price type"
+        name={[field.name, "baleOrLoose"]}
+        fieldKey={[field.fieldKey, "baleOrLoose"]}
+      >
         <Radio.Group
           buttonStyle="solid"
           onChange={onChangePriceType}
@@ -146,7 +153,7 @@ export const WeighManagement = () => {
     );
   };
   const SecondWeight = (field, key) => {
-    if (selectedCustType !== 3 && transactionCreation === "IN_PROGRESS") {
+    if (selectedCustType === 3 && transactionCreation === "IN_PROGRESS") {
       return (
         <Form.Item
           label="Second Weight"
@@ -177,17 +184,19 @@ export const WeighManagement = () => {
       >
         <Select
           placeholder="Select Material"
+          labelInValue
           onChange={onChangeMaterialType}
           loading={!materials.length}
-          //   disabled={disabled === "IN_PROGRESS"}
+          disabled={disabled === "IN_PROGRESS"}
         >
           {materials.map((opt, index) => (
             <Select.Option
-              key={opt.label}
-              value={opt.materialName}
+              key={opt.materialId}
+              label={opt.label}
+              value={opt.materialId}
               //   disabled={disabled === "IN_PROGRESS"}
             >
-              {opt.label}
+              {opt.materialName}
             </Select.Option>
           ))}
         </Select>
@@ -227,7 +236,7 @@ export const WeighManagement = () => {
       return (
         <Form.Item
           label="Customer ID"
-          name="customerID"
+          name="customerId"
           rules={[
             {
               required: false,
@@ -425,6 +434,7 @@ export const WeighManagement = () => {
     setTransactionType(event.target.value);
     handleCustomerTypes(event.target.value);
   };
+
   const onChangePriceType = (event) => {
     setPriceType(event.target.value);
   };
@@ -494,8 +504,17 @@ export const WeighManagement = () => {
     [form]
   );
 
+  const getTemporaryTransactions = () => {
+    axios
+      .get(BASE_URL + API_ENDPOINTS.TEMP_CURRENT_DAY_TRANSACTION)
+      .then((tempTransactions) => {
+        setTempTransactions(tempTransactions.data || []);
+      });
+  };
+
   useEffect(() => {
     handleCustomerTypes("incoming");
+    getTemporaryTransactions();
     const materialList = BASE_URL + API_ENDPOINTS.GET_MATERIAL;
     fetch(materialList)
       .then((response) => response.json())
@@ -521,7 +540,7 @@ export const WeighManagement = () => {
     if (typeof values.customerID === "undefined") {
       let newCustomerID = null;
       const { customerName, customerPhoneNo } = values;
-      newCustomerID = { customerID: `${customerName}_${customerPhoneNo}` };
+      newCustomerID = { customerId: `${customerName}_${customerPhoneNo}` };
       values = { ...values, ...newCustomerID };
     }
     console.log("Received values of form: ", values);
@@ -529,33 +548,63 @@ export const WeighManagement = () => {
       initiated: "Transaction creation is in progress.",
       completed: "Transaction successfully completed",
     };
-    openMessage(message);
+    const createTransaction = BASE_URL + API_ENDPOINTS.CREATE_TRANSACTION;
+    const childTransactions = values.childTransactionDtoList || [];
+    if (childTransactions.length) {
+      childTransactions.map((child) => {
+        child.materialType = child.materialName.value;
+        child.vat = materials.find(
+          (mat) => mat.materialId === child.materialType
+        ).vat;
+        if (!child.secondWeight) {
+          delete child.secondWeight;
+        }
+        delete child.materialName;
+        delete child.materialId;
+        return child;
+      });
+    }
+    const data = {
+      customerName: values.customerName,
+      customerId: values.customerId,
+      vehicleNumber: values.vehicleNumber,
+      customerType: values.customerType,
+      customerPhoneNo: values.customerPhoneNo,
+      driverCount: values.driverCount,
+      transferType: values.transactionType === "incoming" ? "INC" : "OUT",
+      childTransactionDtoList: [...childTransactions],
+      cancelReason: cancelForm.cancelReason || "",
+      isTransactionCompleted: transactionCreation === null ? 0 : 1,
+    };
+    axios.post(createTransaction, data).then((response) => {
+      console.log(response);
+      openMessage(message);
+      getTemporaryTransactions();
+    });
   };
 
-  const loadTempTransaction = (id) => {
+  const loadTempTransaction = (transaction) => {
     //Make API call to load temp transaction
-    setTransactionCreation("IN_PROGRESS");
-    const mockData = {
-      customerName: "Gowtham Asokan",
-      customerType: 1,
-      customerID: "AA",
-      vehicleNumber: "3589",
-      driverCount: "2",
-      firstWeight: "91100",
-      material: "Plastic",
-      customerPhoneNo: "9884978723",
-      transactions: [
-        {
-          materialName: "Iron",
-          materialId: "2",
-          firstWeight: "11900",
-          secondWeight: null,
-        },
-      ],
+    transaction.childTransactionDtoList.forEach((child) => {
+      const { materialName, materialId } = materials.find(
+        (material) =>
+          material.materialId ===
+          (child.materialType || child.materialName.value)
+      );
+      child.materialName = {
+        label: materialName,
+        value: materialId,
+        key: materialId,
+      };
+      child.secondWeight = null;
+      delete child.materialType;
+    });
+    weightInputs.childTransactionDtoList = {
+      ...transaction.childTransactionDtoList,
     };
-    weightInputs.transactions = { ...mockData.transactions };
-    form.setFieldsValue(mockData);
-    setSelectedCustType(mockData.customerType);
+    form.setFieldsValue(transaction);
+    setSelectedCustType(transaction.customerType);
+    setTransactionCreation("IN_PROGRESS");
   };
 
   const cancelTransaction = (id) => {
@@ -600,7 +649,6 @@ export const WeighManagement = () => {
             onFinish={onFinish}
           >
             <TransactionType disabled={transactionCreation} />
-            <PriceType disabled={transactionCreation} />
             <CustomerType disabled={transactionCreation} />
             <CustomerName disabled={transactionCreation} />
             <PhoneNumber disabled={transactionCreation} />
@@ -609,8 +657,8 @@ export const WeighManagement = () => {
             <DriverCount disabled={transactionCreation} />
 
             <Form.List
-              name="transactions"
-              initialValue={weightInputs?.transactions}
+              name="childTransactionDtoList"
+              initialValue={weightInputs?.childTransactionDtoList}
             >
               {(fields, { add, remove }) => (
                 <>
@@ -626,6 +674,7 @@ export const WeighManagement = () => {
                       </Col>
 
                       <Materials disabled={transactionCreation} field={field} />
+                      <PriceType disabled={transactionCreation} field={field} />
                       <FirstWeight
                         {...field}
                         key={`firstWeight_${index}`}
@@ -635,9 +684,7 @@ export const WeighManagement = () => {
                                 .secondWeight
                             : null
                         }
-                        disabled={
-                          transactionCreation === "IN_PROGRESS" && index > 0
-                        }
+                        disabled={transactionCreation === "IN_PROGRESS"}
                       />
                       <SecondWeight {...field} key={`secondWeight_${index}`} />
                       {/* <MinusCircleOutlined onClick={() => remove(field.name)} /> */}
@@ -669,7 +716,7 @@ export const WeighManagement = () => {
             }}
           >
             <Title type="primary" level={5}>
-              Transaction History
+              Transaction History {tempTransactions.length}
             </Title>
             <Row gutter={16}>
               <Col span={12}>
@@ -679,25 +726,30 @@ export const WeighManagement = () => {
                 <Statistic title="Completed" value={20} />
               </Col>
             </Row>
-            <Row gutter={24}>
-              <Col span={24}>
-                <Space direction="vertical">
-                  <Title type="primary" level={5} className="mt-2">
-                    List of Active transactions
-                  </Title>
-                  <Button
-                    type="link"
-                    className="pl-0"
-                    onClick={() => loadTempTransaction("7")}
-                  >
-                    TN18R7498
-                  </Button>
-                  <Button type="link" className="pl-0">
-                    TN18AL3501
-                  </Button>
-                </Space>
-              </Col>
-            </Row>
+
+            {tempTransactions.length > 0 ? (
+              <Row gutter={24}>
+                <Col span={24}>
+                  <Space direction="vertical">
+                    <Title type="primary" level={5} className="mt-2">
+                      List of Active transactions {tempTransactions.length}
+                    </Title>
+
+                    {tempTransactions.map((transaction) => {
+                      return (
+                        <Button
+                          type="link"
+                          className="pl-0"
+                          onClick={() => loadTempTransaction(transaction)}
+                        >
+                          {transaction.vehicleNumber}
+                        </Button>
+                      );
+                    })}
+                  </Space>
+                </Col>
+              </Row>
+            ) : null}
           </div>
         </Col>
       </Row>
