@@ -7,5 +7,5 @@ export const API_ENDPOINTS = {
   SAVE_MATERIAL: "material/savematerial",
   CREATE_TRANSACTION: "transaction/saveTransactions",
   TEMP_TRANSACTION: "transaction/temporaryTransactionList",
-  TEMP_CURRENT_DAY_TRANSACTION: "transaction/currentDayTransactionList",
+  CURRENT_DAY_TRANSACTION: "transaction/currentDayTransactionList",
 };

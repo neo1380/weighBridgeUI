@@ -33,6 +33,7 @@ export const WeighManagement = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [canReason, setCanReason] = useState("");
   const [tempTransactions, setTempTransactions] = useState([]);
+  const [currentTransactionId, setCurrentTransactionId] = useState(null);
   const transactionTypes = [
     { label: "Incoming", value: "incoming" },
     { label: "Outgoing", value: "outgoing" },
@@ -506,7 +507,7 @@ export const WeighManagement = () => {
 
   const getTemporaryTransactions = () => {
     axios
-      .get(BASE_URL + API_ENDPOINTS.TEMP_CURRENT_DAY_TRANSACTION)
+      .get(BASE_URL + API_ENDPOINTS.TEMP_TRANSACTION)
       .then((tempTransactions) => {
         setTempTransactions(tempTransactions.data || []);
       });
@@ -576,15 +577,22 @@ export const WeighManagement = () => {
       cancelReason: cancelForm.cancelReason || "",
       isTransactionCompleted: transactionCreation === null ? 0 : 1,
     };
+    if (currentTransactionId) {
+      data.id = currentTransactionId;
+    }
     axios.post(createTransaction, data).then((response) => {
       console.log(response);
       openMessage(message);
       getTemporaryTransactions();
+      setCurrentTransactionId(null);
     });
   };
 
   const loadTempTransaction = (transaction) => {
     //Make API call to load temp transaction
+    if (transaction.id) {
+      setCurrentTransactionId(transaction.id);
+    }
     transaction.childTransactionDtoList.forEach((child) => {
       const { materialName, materialId } = materials.find(
         (material) =>
