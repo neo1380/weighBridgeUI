@@ -607,8 +607,6 @@ export const WeighManagement = () => {
     setTransactionCreation("IN_PROGRESS");
   };
 
-  const completeTransaction = () => {};
-
   const cancelTransaction = (id) => {
     if (transactionCreation === "IN_PROGRESS") {
       showModal();
