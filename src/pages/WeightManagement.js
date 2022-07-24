@@ -326,7 +326,7 @@ export const WeighManagement = () => {
     return (
       <Form.Item
         label="Phone Number"
-        name="customerPhoneNo"
+        name="phoneNumber"
         rules={[
           {
             required: true,
@@ -539,8 +539,8 @@ export const WeighManagement = () => {
   const onFinish = (values) => {
     if (typeof values.customerID === "undefined") {
       let newCustomerID = null;
-      const { customerName, customerPhoneNo } = values;
-      newCustomerID = { customerId: `${customerName}_${customerPhoneNo}` };
+      const { customerName, phoneNumber } = values;
+      newCustomerID = { customerId: `${customerName}_${phoneNumber}` };
       values = { ...values, ...newCustomerID };
     }
     console.log("Received values of form: ", values);
@@ -569,7 +569,7 @@ export const WeighManagement = () => {
       customerId: values.customerId,
       vehicleNumber: values.vehicleNumber,
       customerType: values.customerType,
-      customerPhoneNo: values.customerPhoneNo,
+      phoneNumber: values.phoneNumber,
       driverCount: values.driverCount,
       transferType: values.transactionType === "incoming" ? "INC" : "OUT",
       childTransactionDtoList: [...childTransactions],
@@ -606,6 +606,8 @@ export const WeighManagement = () => {
     setSelectedCustType(transaction.customerType);
     setTransactionCreation("IN_PROGRESS");
   };
+
+  const completeTransaction = () => {};
 
   const cancelTransaction = (id) => {
     if (transactionCreation === "IN_PROGRESS") {
