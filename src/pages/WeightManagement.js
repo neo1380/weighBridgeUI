@@ -715,7 +715,7 @@ export const WeighManagement = () => {
               marginLeft: "auto",
             }}
           >
-            <Title type="primary" level={5}>
+            {/*  <Title type="primary" level={5}>
               Transaction History {tempTransactions.length}
             </Title>
             <Row gutter={16}>
@@ -725,14 +725,14 @@ export const WeighManagement = () => {
               <Col span={12}>
                 <Statistic title="Completed" value={20} />
               </Col>
-            </Row>
+            </Row> */}
 
             {tempTransactions.length > 0 ? (
               <Row gutter={24}>
                 <Col span={24}>
                   <Space direction="vertical">
                     <Title type="primary" level={5} className="mt-2">
-                      List of Active transactions {tempTransactions.length}
+                      List of Active transactions
                     </Title>
 
                     {tempTransactions.map((transaction) => {
