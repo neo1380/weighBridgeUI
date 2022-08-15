@@ -351,7 +351,10 @@ export const WeighManagement = () => {
   };
 
   const SecondWeight = (field, key) => {
-    const allowedWeight = field.firstWeightDetail.firstWeight - 1;
+    const allowedWeight =
+      field.firstWeightDetail && field.firstWeightDetail.firstWeight
+        ? field.firstWeightDetail.firstWeight - 1
+        : Number.MAX_SAFE_INTEGER;
     if (transactionType === "weightonly") {
       return null;
     }
