@@ -351,6 +351,7 @@ export const WeighManagement = () => {
   };
 
   const SecondWeight = (field, key) => {
+    const allowedWeight = field.firstWeightDetail.firstWeight - 1;
     if (transactionType === "weightonly") {
       return null;
     }
@@ -360,6 +361,7 @@ export const WeighManagement = () => {
           label="Second Weight"
           name={[field.name, "secondWeight"]}
           fieldKey={[field.fieldKey, key]}
+          validateTrigger="onBlur"
           rules={[
             {
               required: true,
@@ -367,7 +369,11 @@ export const WeighManagement = () => {
             },
           ]}
         >
-          <InputNumber placeholder="Weight after unload" addonAfter="Kgs" />
+          <InputNumber
+            max={allowedWeight}
+            placeholder="Weight after unload"
+            addonAfter="Kgs"
+          />
         </Form.Item>
       );
     } else {
@@ -751,7 +757,13 @@ export const WeighManagement = () => {
                         }
                         disabled={transactionCreation === "IN_PROGRESS"}
                       />
-                      <SecondWeight {...field} key={`secondWeight_${index}`} />
+                      <SecondWeight
+                        {...field}
+                        key={`secondWeight_${index}`}
+                        firstWeightDetail={
+                          form.getFieldValue("childTransactionDtoList")[index]
+                        }
+                      />
                       <TotalWeight {...field} key={`totalWeight_${index}`} />
 
                       {/* <MinusCircleOutlined onClick={() => remove(field.name)} /> */}
