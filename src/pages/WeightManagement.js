@@ -122,7 +122,7 @@ export const WeighManagement = () => {
               onChange={onChangeUserType}
               disabled={transactionCreation === "IN_PROGRESS"}
             >
-              {label}
+              {label} {value}
             </Radio.Button>
           ))}
         </Radio.Group>
@@ -767,7 +767,6 @@ export const WeighManagement = () => {
                       }}
                       block
                       icon={<PlusOutlined />}
-                      disabled={transactionCreation !== "IN_PROGRESS"}
                     >
                       Add Another Transaction
                     </Button>
