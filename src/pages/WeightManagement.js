@@ -34,6 +34,10 @@ export const WeighManagement = () => {
   const [canReason, setCanReason] = useState("");
   const [tempTransactions, setTempTransactions] = useState([]);
   const [currentTransactionId, setCurrentTransactionId] = useState(null);
+  const [enablePhoneNumber, setEnablePhoneNumber] = useState(false);
+  const [enableCustName, setEnableCustName] = useState(false);
+  const [enableCustId, setEnableCustId] = useState(false);
+
   const transactionTypes = [
     { label: "Incoming", value: "incoming" },
     { label: "Outgoing", value: "outgoing" },
@@ -147,7 +151,7 @@ export const WeighManagement = () => {
       >
         <Input
           placeholder="Enter Customer Name"
-          disabled={disabled === "IN_PROGRESS"}
+          disabled={disabled === "IN_PROGRESS" && !enableCustName}
         />
       </Form.Item>
     );
@@ -173,7 +177,7 @@ export const WeighManagement = () => {
           addonBefore="+966"
           style={{ width: "100%" }}
           placeholder="Enter Phone Number"
-          disabled={disabled === "IN_PROGRESS"}
+          disabled={disabled === "IN_PROGRESS" && !enablePhoneNumber}
         />
       </Form.Item>
     );
@@ -603,7 +607,11 @@ export const WeighManagement = () => {
   };
 
   const onFinish = (values) => {
-    if (typeof values.customerID === "undefined") {
+    if (
+      typeof values.customerID === "undefined" &&
+      values.customerName &&
+      values.phoneNumber
+    ) {
       let newCustomerID = null;
       const { customerName, phoneNumber } = values;
       newCustomerID = { customerId: `${customerName}_${phoneNumber}` };
@@ -678,6 +686,9 @@ export const WeighManagement = () => {
     form.setFieldsValue(transaction);
     setSelectedCustType(transaction.customerType);
     setTransactionCreation("IN_PROGRESS");
+    if (!transaction.phoneNumber) setEnablePhoneNumber(true);
+    if (!transaction.customerId) setEnableCustId(true);
+    if (!transaction.customerName) setEnableCustName(true);
   };
 
   const cancelTransaction = (id) => {
