@@ -23,7 +23,7 @@ const { TextArea } = Input;
 export const WeighManagement = () => {
   const [transactionType, setTransactionType] = useState("incoming");
   const [componentSize, setComponentSize] = useState("default");
-  const [priceType, setPriceType] = useState("bale");
+  const [priceType, setPriceType] = useState("L");
   const [selectedCustType, setSelectedCustType] = useState(null);
   const [customerTypeOptions, setCustomerTypeOptions] = useState([]);
   const [materials, setMaterials] = useState([]);
@@ -37,10 +37,11 @@ export const WeighManagement = () => {
   const transactionTypes = [
     { label: "Incoming", value: "incoming" },
     { label: "Outgoing", value: "outgoing" },
+    { label: "Weight Only", value: "weightonly" },
   ];
   const priceTypes = [
-    { label: "Bale", value: "B" },
     { label: "Loose", value: "L" },
+    { label: "Bale", value: "B" },
   ];
   const formInitValues = {
     size: componentSize,
@@ -73,7 +74,7 @@ export const WeighManagement = () => {
         materialId: null,
         firstWeight: null,
         secondWeight: null,
-        baleOrLoose: "B",
+        baleOrLoose: "L",
       },
     ],
   };
@@ -103,24 +104,23 @@ export const WeighManagement = () => {
     );
   };
 
-  const PriceType = ({ disabled, field }) => {
+  const CustomerType = ({ disabled }) => {
+    if (transactionType === "weightonly") {
+      return null;
+    }
     return (
       <Form.Item
-        label="Price type"
-        name={[field.name, "baleOrLoose"]}
-        fieldKey={[field.fieldKey, "baleOrLoose"]}
+        label="Customer Type"
+        name="customerType"
+        value={selectedCustType}
       >
-        <Radio.Group
-          buttonStyle="solid"
-          onChange={onChangePriceType}
-          value={priceType}
-          disabled={disabled === "IN_PROGRESS"}
-        >
-          {priceTypes.map(({ label, value }) => (
+        <Radio.Group buttonStyle="solid">
+          {customerTypeOptions.map(({ label, value }) => (
             <Radio.Button
               value={value}
               key={value}
-              onChange={onChangePriceType}
+              onChange={onChangeUserType}
+              disabled={transactionCreation === "IN_PROGRESS"}
             >
               {label}
             </Radio.Button>
@@ -130,44 +130,130 @@ export const WeighManagement = () => {
     );
   };
 
-  const FirstWeight = (field, key) => {
-    console.log(field);
+  const CustomerName = ({ disabled }) => {
+    if (transactionType === "weightonly") {
+      return null;
+    }
     return (
       <Form.Item
-        label="First Weight"
-        name={[field.name, "firstWeight"]}
-        fieldKey={[field.fieldKey, key]}
-        initialValue={field.weight}
+        label="Customer Name"
+        name="customerName"
         rules={[
           {
-            required: true,
-            message: "Please enter First Weight",
+            required: transactionCreation === "IN_PROGRESS" ? true : false,
+            message: "Please enter Customer's name",
           },
         ]}
       >
-        <InputNumber
-          placeholder="Weight before unload"
-          disabled={field.disabled}
-          addonAfter="Kgs"
+        <Input
+          placeholder="Enter Customer Name"
+          disabled={disabled === "IN_PROGRESS"}
         />
       </Form.Item>
     );
   };
-  const SecondWeight = (field, key) => {
-    if (selectedCustType === 3 && transactionCreation === "IN_PROGRESS") {
+
+  const PhoneNumber = ({ disabled }) => {
+    if (transactionType === "weightonly") {
+      return null;
+    }
+
+    return (
+      <Form.Item
+        label="Phone Number"
+        name="phoneNumber"
+        rules={[
+          {
+            required: transactionCreation === "IN_PROGRESS" ? true : false,
+            message: "Please enter Customer's Phone Number",
+          },
+        ]}
+      >
+        <InputNumber
+          addonBefore="+966"
+          style={{ width: "100%" }}
+          placeholder="Enter Phone Number"
+          disabled={disabled === "IN_PROGRESS"}
+        />
+      </Form.Item>
+    );
+  };
+
+  const CustomerID = ({ disabled }) => {
+    if (transactionType === "weightonly") {
+      return null;
+    }
+    if (selectedCustType !== 2) {
       return (
         <Form.Item
-          label="Second Weight"
-          name={[field.name, "secondWeight"]}
-          fieldKey={[field.fieldKey, key]}
+          label="Customer ID"
+          name="customerId"
           rules={[
             {
-              required: true,
-              message: "Please enter Second Weight",
+              required: false,
+              message: "Please enter Customer's ID",
             },
           ]}
         >
-          <InputNumber placeholder="Weight after unload" addonAfter="Kgs" />
+          <Input
+            placeholder="Enter Customer ID"
+            disabled={disabled === "IN_PROGRESS"}
+          />
+        </Form.Item>
+      );
+    } else {
+      return null;
+    }
+  };
+
+  const VehicleNumber = ({ disabled }) => {
+    if (transactionType === "weightonly") {
+      return null;
+    }
+    if (selectedCustType !== 1) {
+      //customer type 1 is Layman
+      return (
+        <Form.Item
+          label="Vehicle Number"
+          name="vehicleNumber"
+          rules={[
+            {
+              required: true,
+              message: "Please enter Vehicle Number",
+            },
+          ]}
+        >
+          <Input
+            placeholder="Enter Vehicle Number"
+            disabled={disabled === "IN_PROGRESS"}
+          />
+        </Form.Item>
+      );
+    } else {
+      return null;
+    }
+  };
+
+  const DriverCount = ({ disabled }) => {
+    if (transactionType === "weightonly") {
+      return null;
+    }
+    if (selectedCustType !== 1) {
+      return (
+        <Form.Item
+          label="Driver Count"
+          name="driverCount"
+          rules={[
+            {
+              required: true,
+              message: "Please enter Driver Count",
+            },
+          ]}
+        >
+          <Input
+            placeholder="Enter Driver Count"
+            disabled={disabled === "IN_PROGRESS"}
+          />
         </Form.Item>
       );
     } else {
@@ -208,94 +294,30 @@ export const WeighManagement = () => {
     // }
   };
 
-  const VehicleNumber = ({ disabled }) => {
-    if (selectedCustType !== 2) {
-      return (
-        <Form.Item
-          label="Vehicle Number"
-          name="vehicleNumber"
-          rules={[
-            {
-              required: true,
-              message: "Please enter Vehicle Number",
-            },
-          ]}
-        >
-          <Input
-            placeholder="Enter Vehicle Number"
-            disabled={disabled === "IN_PROGRESS"}
-          />
-        </Form.Item>
-      );
-    } else {
+  const PriceType = ({ disabled, field }) => {
+    if (transactionType === "weightonly") {
       return null;
     }
-  };
-
-  const CustomerID = ({ disabled }) => {
-    if (selectedCustType !== 2) {
-      return (
-        <Form.Item
-          label="Customer ID"
-          name="customerId"
-          rules={[
-            {
-              required: false,
-              message: "Please enter Customer's ID",
-            },
-          ]}
-        >
-          <Input
-            placeholder="Enter Customer ID"
-            disabled={disabled === "IN_PROGRESS"}
-          />
-        </Form.Item>
-      );
-    } else {
-      return null;
-    }
-  };
-
-  const DriverCount = ({ disabled }) => {
-    if (selectedCustType !== 2) {
-      return (
-        <Form.Item
-          label="Driver Count"
-          name="driverCount"
-          rules={[
-            {
-              required: true,
-              message: "Please enter Driver Count",
-            },
-          ]}
-        >
-          <Input
-            placeholder="Enter Driver Count"
-            disabled={disabled === "IN_PROGRESS"}
-          />
-        </Form.Item>
-      );
-    } else {
-      return null;
-    }
-  };
-
-  const CustomerType = ({ disabled }) => {
     return (
       <Form.Item
-        label="Customer Type"
-        name="customerType"
-        value={selectedCustType}
+        label="Price type"
+        name={[field.name, "baleOrLoose"]}
+        fieldKey={[field.fieldKey, "baleOrLoose"]}
       >
-        <Radio.Group buttonStyle="solid">
-          {customerTypeOptions.map(({ label, value }) => (
+        <Radio.Group
+          buttonStyle="solid"
+          onChange={onChangePriceType}
+          value={priceType}
+          disabled={disabled === "IN_PROGRESS"}
+        >
+          {priceTypes.map(({ label, value }) => (
             <Radio.Button
               value={value}
               key={value}
-              onChange={onChangeUserType}
-              disabled={transactionCreation === "IN_PROGRESS"}
+              onChange={onChangePriceType}
             >
               {label}
+              {value}
             </Radio.Button>
           ))}
         </Radio.Group>
@@ -303,43 +325,78 @@ export const WeighManagement = () => {
     );
   };
 
-  const CustomerName = ({ disabled }) => {
+  const FirstWeight = (field, key) => {
+    if (transactionType === "weightonly") {
+      return null;
+    }
     return (
       <Form.Item
-        label="Customer Name"
-        name="customerName"
+        label="First Weight"
+        name={[field.name, "firstWeight"]}
+        fieldKey={[field.fieldKey, key]}
+        initialValue={field.weight}
         rules={[
           {
             required: true,
-            message: "Please enter Customer's name",
+            message: "Please enter First Weight",
           },
         ]}
       >
-        <Input
-          placeholder="Enter Customer Name"
-          disabled={disabled === "IN_PROGRESS"}
+        <InputNumber
+          placeholder="Weight before unload"
+          disabled={field.disabled}
+          addonAfter="Kgs"
         />
       </Form.Item>
     );
   };
 
-  const PhoneNumber = ({ disabled }) => {
+  const SecondWeight = (field, key) => {
+    if (transactionType === "weightonly") {
+      return null;
+    }
+    if (selectedCustType === 3 && transactionCreation === "IN_PROGRESS") {
+      return (
+        <Form.Item
+          label="Second Weight"
+          name={[field.name, "secondWeight"]}
+          fieldKey={[field.fieldKey, key]}
+          rules={[
+            {
+              required: true,
+              message: "Please enter Second Weight",
+            },
+          ]}
+        >
+          <InputNumber placeholder="Weight after unload" addonAfter="Kgs" />
+        </Form.Item>
+      );
+    } else {
+      return null;
+    }
+  };
+
+  const TotalWeight = (field, key) => {
+    if (transactionType !== "weightonly") {
+      return null;
+    }
     return (
       <Form.Item
-        label="Phone Number"
-        name="phoneNumber"
+        label="Total Weight"
+        name={[field.name, "totalWeight"]}
+        fieldKey={[field.fieldKey, key]}
+        initialValue={field.weight}
         rules={[
           {
             required: true,
-            message: "Please enter Customer's Phone Number",
+            message: "Please enter Total Weight",
           },
         ]}
       >
         <InputNumber
-          addonBefore="+966"
-          style={{ width: "100%" }}
-          placeholder="Enter Phone Number"
-          disabled={disabled === "IN_PROGRESS"}
+          placeholder="Capture Weight"
+          disabled={field.disabled}
+          addonAfter="Kgs"
         />
       </Form.Item>
     );
@@ -461,9 +518,9 @@ export const WeighManagement = () => {
   // Keep the function reference
   const handlePriceTypes = useCallback(
     (type) => {
-      setPriceType("bale");
+      setPriceType("L");
       form.setFieldsValue({
-        priceType: "bale",
+        priceType: "L",
       });
     },
     [form]
@@ -524,7 +581,7 @@ export const WeighManagement = () => {
         setMaterials(materials);
       });
     setTransactionType("incoming");
-    setPriceType("bale");
+    setPriceType("L");
     handlePriceTypes();
   }, [handleCustomerTypes, handlePriceTypes]);
 
@@ -688,16 +745,20 @@ export const WeighManagement = () => {
                         key={`firstWeight_${index}`}
                         weight={
                           index > 0
-                            ? form.getFieldValue("transactions")[index - 1]
-                                .secondWeight
+                            ? form.getFieldValue("childTransactionDtoList")[
+                                index - 1
+                              ].secondWeight
                             : null
                         }
                         disabled={transactionCreation === "IN_PROGRESS"}
                       />
                       <SecondWeight {...field} key={`secondWeight_${index}`} />
+                      <TotalWeight {...field} key={`totalWeight_${index}`} />
+
                       {/* <MinusCircleOutlined onClick={() => remove(field.name)} /> */}
                     </>
                   ))}
+
                   <Form.Item>
                     <Button
                       type="dashed"
@@ -706,6 +767,7 @@ export const WeighManagement = () => {
                       }}
                       block
                       icon={<PlusOutlined />}
+                      disabled={transactionCreation !== "IN_PROGRESS"}
                     >
                       Add Another Transaction
                     </Button>

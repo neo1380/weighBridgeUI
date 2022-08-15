@@ -1,7 +1,9 @@
-import React from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { Table } from "antd";
+import axios from "axios";
+import { API_ENDPOINTS, BASE_URL } from "../constants/api.constants";
 
-export function TransactionHistory() {
+export const TransactionHistory = () => {
   //   const columns = [
   //     {
   //       title: "Name",
@@ -51,6 +53,7 @@ export function TransactionHistory() {
   //     },
   //   ];
 
+  const [transactionData, settransactionData] = useState([]);
   const columns = [
     {
       title: "Transaction ID",
@@ -150,6 +153,19 @@ export function TransactionHistory() {
   //     },
   //   ];
 
+  const getTransactions = () => {
+    axios
+      .get(BASE_URL + API_ENDPOINTS.CURRENT_DAY_TRANSACTION)
+      .then((tempTransactions) => {
+        console.log(tempTransactions.data);
+        settransactionData(tempTransactions.data || []);
+      });
+  };
+
+  useEffect(() => {
+    getTransactions();
+  }, []);
+
   const data = [
     {
       transactionId: 11,
@@ -199,6 +215,6 @@ export function TransactionHistory() {
   ];
 
   return <Table size="small" columns={columns} dataSource={data} />;
-}
+};
 
 export default TransactionHistory;
