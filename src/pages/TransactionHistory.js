@@ -1,11 +1,11 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect } from "react";
 import { Table } from "antd";
 import axios from "axios";
 import { API_ENDPOINTS, BASE_URL } from "../constants/api.constants";
 
 export const TransactionHistory = () => {
   const [transactionData, settransactionData] = useState([]);
-  const [materials, setMaterials] = useState([]);
+  //   const [materials, setMaterials] = useState([]);
 
   const columns = [
     {

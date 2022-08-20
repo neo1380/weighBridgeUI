@@ -11,7 +11,7 @@ import {
   message,
   Radio,
 } from "antd";
-import { Statistic, Row, Col } from "antd";
+import { Row, Col } from "antd";
 import axios from "axios";
 import { PlusOutlined } from "@ant-design/icons";
 import "antd-css-utilities/utility.min.css";
@@ -36,7 +36,7 @@ export const WeighManagement = () => {
   const [currentTransactionId, setCurrentTransactionId] = useState(null);
   const [enablePhoneNumber, setEnablePhoneNumber] = useState(false);
   const [enableCustName, setEnableCustName] = useState(false);
-  const [enableCustId, setEnableCustId] = useState(false);
+  //   const [enableCustId, setEnableCustId] = useState(false);
 
   const transactionTypes = [
     { label: "Incoming", value: "incoming" },
@@ -687,7 +687,7 @@ export const WeighManagement = () => {
     setSelectedCustType(transaction.customerType);
     setTransactionCreation("IN_PROGRESS");
     if (!transaction.phoneNumber) setEnablePhoneNumber(true);
-    if (!transaction.customerId) setEnableCustId(true);
+    // if (!transaction.customerId) setEnableCustId(true);
     if (!transaction.customerName) setEnableCustName(true);
   };
 
