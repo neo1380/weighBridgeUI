@@ -36,6 +36,9 @@ export const WeighManagement = () => {
   const [currentTransactionId, setCurrentTransactionId] = useState(null);
   const [enablePhoneNumber, setEnablePhoneNumber] = useState(false);
   const [enableCustName, setEnableCustName] = useState(false);
+  const [disableAnotherTransaction, setDisableAnotherTransaction] =
+    useState(true);
+
   //   const [enableCustId, setEnableCustId] = useState(false);
 
   const transactionTypes = [
@@ -278,7 +281,7 @@ export const WeighManagement = () => {
           labelInValue
           onChange={onChangeMaterialType}
           loading={!materials.length}
-          disabled={disabled === "IN_PROGRESS"}
+          disabled={disableFields(field)}
         >
           {materials.map((opt, index) => (
             <Select.Option
@@ -302,6 +305,7 @@ export const WeighManagement = () => {
     if (transactionType === "weightonly") {
       return null;
     }
+
     return (
       <Form.Item
         label="Price type"
@@ -311,8 +315,8 @@ export const WeighManagement = () => {
         <Radio.Group
           buttonStyle="solid"
           onChange={onChangePriceType}
-          value={priceType}
-          disabled={disabled === "IN_PROGRESS"}
+          value={() => priceType}
+          disabled={disableFields(field)}
         >
           {priceTypes.map(({ label, value }) => (
             <Radio.Button
@@ -332,12 +336,29 @@ export const WeighManagement = () => {
     if (transactionType === "weightonly") {
       return null;
     }
+
+    const { index } = field;
+
+    const calcFirstWeight = (index) => {
+      if (index > 0) {
+        const prevField = form.getFieldValue("childTransactionDtoList")[
+          index - 1
+        ];
+        if (!prevField) return;
+        const currentFirstWeight =
+          prevField.firstWeight - prevField.secondWeight;
+        return currentFirstWeight;
+      } else {
+        return null;
+      }
+    };
+
     return (
       <Form.Item
         label="First Weight"
         name={[field.name, "firstWeight"]}
         fieldKey={[field.fieldKey, key]}
-        initialValue={field.weight}
+        initialValue={calcFirstWeight(index)}
         rules={[
           {
             required: true,
@@ -357,7 +378,7 @@ export const WeighManagement = () => {
   const SecondWeight = (field, key) => {
     const allowedWeight =
       field.firstWeightDetail && field.firstWeightDetail.firstWeight
-        ? field.firstWeightDetail.firstWeight - 1
+        ? field.firstWeightDetail.firstWeight
         : Number.MAX_SAFE_INTEGER;
     if (transactionType === "weightonly") {
       return null;
@@ -378,8 +399,10 @@ export const WeighManagement = () => {
         >
           <InputNumber
             max={allowedWeight}
+            min={1}
             placeholder="Weight after unload"
             addonAfter="Kgs"
+            onChange={(value) => onChangeSecondWeight(value)}
           />
         </Form.Item>
       );
@@ -589,7 +612,6 @@ export const WeighManagement = () => {
     fetch(materialList)
       .then((response) => response.json())
       .then((materials) => {
-        console.log(materials);
         setMaterials(materials);
       });
     setTransactionType("incoming");
@@ -602,8 +624,24 @@ export const WeighManagement = () => {
   };
 
   const onChangeMaterialType = (type) => {
-    console.log("selec type", type);
     //add code to fetch price based on materials
+  };
+
+  const disableFields = (field) => {
+    if (
+      transactionCreation === "IN_PROGRESS" &&
+      form.getFieldValue("childTransactionDtoList")[field.key] &&
+      form.getFieldValue("childTransactionDtoList")[field.key].firstWeight
+    ) {
+      return true;
+    } else {
+      return false;
+    }
+  };
+
+  const onReset = () => {
+    form.resetFields();
+    form.getFieldValue("childTransactionDtoList").length = 1;
   };
 
   const onFinish = (values) => {
@@ -658,6 +696,8 @@ export const WeighManagement = () => {
       openMessage(message);
       getTemporaryTransactions();
       setCurrentTransactionId(null);
+      setTransactionCreation(null);
+      onReset();
     });
   };
 
@@ -708,6 +748,52 @@ export const WeighManagement = () => {
         form.resetFields();
       });
     }, 1000);
+  };
+
+  const allowAnotherTransaction = (add) => {
+    let enableAnotherTransaction = false;
+    if (
+      calculateEnteredWeight() <= calcInitialWeight() &&
+      calculateRemainingWeight() > 0
+    ) {
+      enableAnotherTransaction = true;
+      add();
+    } else {
+      Modal.warning({
+        title: "Add Another Transaction",
+        content:
+          "Cannot add Another transaction; Please check second weight of prev transaction or total weight entered !",
+      });
+    }
+    return enableAnotherTransaction;
+  };
+
+  const onChangeSecondWeight = (value) => {
+    if (value === null) {
+      setDisableAnotherTransaction(true);
+      return;
+    }
+    setDisableAnotherTransaction(false);
+  };
+
+  const calcInitialWeight = () => {
+    const childTransactions = form.getFieldValue("childTransactionDtoList");
+    return childTransactions[0].firstWeight;
+  };
+
+  const calculateRemainingWeight = () => {
+    let remainingWeight = 0;
+    remainingWeight = calcInitialWeight() - calculateEnteredWeight();
+    return remainingWeight;
+  };
+
+  const calculateEnteredWeight = () => {
+    let enteredWeight = 0;
+    const childTransactions = form.getFieldValue("childTransactionDtoList");
+    childTransactions.forEach((element) => {
+      enteredWeight = enteredWeight + element.secondWeight;
+    });
+    return enteredWeight;
   };
 
   return (
@@ -762,13 +848,14 @@ export const WeighManagement = () => {
                       <FirstWeight
                         {...field}
                         key={`firstWeight_${index}`}
-                        weight={
+                        weightInputs={
                           index > 0
                             ? form.getFieldValue("childTransactionDtoList")[
                                 index - 1
-                              ].secondWeight
+                              ]
                             : null
                         }
+                        index={index}
                         disabled={transactionCreation === "IN_PROGRESS"}
                       />
                       <SecondWeight
@@ -784,18 +871,21 @@ export const WeighManagement = () => {
                     </>
                   ))}
 
-                  <Form.Item>
-                    <Button
-                      type="dashed"
-                      onClick={() => {
-                        add();
-                      }}
-                      block
-                      icon={<PlusOutlined />}
-                    >
-                      Add Another Transaction
-                    </Button>
-                  </Form.Item>
+                  {transactionCreation === "IN_PROGRESS" ? (
+                    <Form.Item>
+                      <Button
+                        type="dashed"
+                        onClick={() => {
+                          allowAnotherTransaction(add);
+                        }}
+                        block
+                        icon={<PlusOutlined />}
+                        disabled={disableAnotherTransaction}
+                      >
+                        Add Another Transaction
+                      </Button>
+                    </Form.Item>
+                  ) : null}
                 </>
               )}
             </Form.List>
