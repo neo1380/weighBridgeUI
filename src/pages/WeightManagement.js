@@ -42,8 +42,8 @@ export const WeighManagement = () => {
   //   const [enableCustId, setEnableCustId] = useState(false);
 
   const transactionTypes = [
-    { label: "Incoming", value: "incoming" },
-    { label: "Outgoing", value: "outgoing" },
+    { label: "Incoming", value: "INC" },
+    { label: "Outgoing", value: "OUT" },
     { label: "Weight Only", value: "weightonly" },
   ];
   const priceTypes = [
@@ -52,8 +52,17 @@ export const WeighManagement = () => {
   ];
   const formInitValues = {
     size: componentSize,
-    transactionType: "incoming",
-    customerType: transactionType === "outgoing" ? 1 : 3,
+    transferType: "INC",
+    customerType: transactionType === "OUT" ? 1 : 3,
+    childTransactionDtoList: [
+      {
+        materialId: null,
+        firstWeight: null,
+        secondWeight: null,
+        baleOrLoose: "L",
+        transactionId: null,
+      },
+    ],
   };
 
   const cancelReasons = [
@@ -82,6 +91,7 @@ export const WeighManagement = () => {
         firstWeight: null,
         secondWeight: null,
         baleOrLoose: "L",
+        transactionId: null,
       },
     ],
   };
@@ -90,7 +100,7 @@ export const WeighManagement = () => {
 
   const TransactionType = ({ disabled }) => {
     return (
-      <Form.Item label="Transaction type" name="transactionType">
+      <Form.Item label="Transaction type" name="transferType">
         <Radio.Group
           buttonStyle="solid"
           onChange={onChangeTransactionType}
@@ -268,10 +278,11 @@ export const WeighManagement = () => {
     }
   };
 
-  const Materials = ({ disabled, field }) => {
+  const Materials = ({ field, transaction }) => {
     // if (selectedCustType !== 3) {
     return (
       <Form.Item
+        shouldUpdate
         label="Select Material"
         name={[field.name, "materialName"]}
         fieldKey={[field.fieldKey, "materialName"]}
@@ -281,7 +292,7 @@ export const WeighManagement = () => {
           labelInValue
           onChange={onChangeMaterialType}
           loading={!materials.length}
-          disabled={disableFields(field)}
+          disabled={transaction?.transactionId}
         >
           {materials.map((opt, index) => (
             <Select.Option
@@ -301,7 +312,7 @@ export const WeighManagement = () => {
     // }
   };
 
-  const PriceType = ({ disabled, field }) => {
+  const PriceType = ({ field, transaction }) => {
     if (transactionType === "weightonly") {
       return null;
     }
@@ -311,12 +322,13 @@ export const WeighManagement = () => {
         label="Price type"
         name={[field.name, "baleOrLoose"]}
         fieldKey={[field.fieldKey, "baleOrLoose"]}
+        initialValue={field.value || priceType}
       >
         <Radio.Group
           buttonStyle="solid"
           onChange={onChangePriceType}
-          value={() => priceType}
-          disabled={disableFields(field)}
+          value={priceType}
+          disabled={transaction?.transactionId}
         >
           {priceTypes.map(({ label, value }) => (
             <Radio.Button
@@ -479,7 +491,8 @@ export const WeighManagement = () => {
   };
 
   const ActionButtons = ({ state }) => {
-    if (state !== "IN_PROGRESS") {
+    console.log("areTransactionsInProgress()", areTransactionsInProgress());
+    if (areTransactionsInProgress() === 0) {
       return (
         <Form.Item>
           <Button type="primary" htmlType="submit" className="mr-3">
@@ -627,8 +640,14 @@ export const WeighManagement = () => {
     //add code to fetch price based on materials
   };
 
-  const disableFields = (field) => {
-    if (
+  const disableFields = (id) => {
+    if (id) {
+      return true;
+    } else {
+      return false;
+    }
+
+    /*  if (
       transactionCreation === "IN_PROGRESS" &&
       form.getFieldValue("childTransactionDtoList")[field.key] &&
       form.getFieldValue("childTransactionDtoList")[field.key].firstWeight
@@ -636,7 +655,7 @@ export const WeighManagement = () => {
       return true;
     } else {
       return false;
-    }
+    } */
   };
 
   const onReset = () => {
@@ -702,7 +721,6 @@ export const WeighManagement = () => {
   };
 
   const loadTempTransaction = (transaction) => {
-    //Make API call to load temp transaction
     if (transaction.id) {
       setCurrentTransactionId(transaction.id);
     }
@@ -718,16 +736,17 @@ export const WeighManagement = () => {
         key: materialId,
       };
       child.secondWeight = null;
+      child.transactionId = transaction.id;
       delete child.materialType;
     });
-    weightInputs.childTransactionDtoList = {
+    /* weightInputs.childTransactionDtoList = {
       ...transaction.childTransactionDtoList,
-    };
-    form.setFieldsValue(transaction);
+    }; */
     setSelectedCustType(transaction.customerType);
     setTransactionCreation("IN_PROGRESS");
+    form.setFieldsValue(transaction);
+
     if (!transaction.phoneNumber) setEnablePhoneNumber(true);
-    // if (!transaction.customerId) setEnableCustId(true);
     if (!transaction.customerName) setEnableCustName(true);
   };
 
@@ -796,6 +815,28 @@ export const WeighManagement = () => {
     return enteredWeight;
   };
 
+  /*  const isTransactionCreated = (transaction) => {
+    if (transaction && transaction.transactionId) {
+      console.log(transaction);
+      return true;
+    } else {
+      return false;
+    }
+  }; */
+
+  const areTransactionsInProgress = () => {
+    const childTransactions = form.getFieldValue("childTransactionDtoList");
+    const newTransactions = childTransactions.filter(
+      (item) => item.transactionId
+    );
+    return newTransactions.length;
+  };
+
+  const anyTransactionInProgress = () => {
+    const childTransactions = form.getFieldValue("childTransactionDtoList");
+    return childTransactions.some((item) => item.transactionId);
+  };
+
   return (
     <>
       <Row>
@@ -825,26 +866,31 @@ export const WeighManagement = () => {
             <CustomerID disabled={transactionCreation} />
             <VehicleNumber disabled={transactionCreation} />
             <DriverCount disabled={transactionCreation} />
-
-            <Form.List
-              name="childTransactionDtoList"
-              initialValue={weightInputs?.childTransactionDtoList}
-            >
+            <Form.List shouldUpdate name="childTransactionDtoList">
               {(fields, { add, remove }) => (
                 <>
                   {fields.map((field, index) => (
                     <>
                       {/* <p className="ant-col ant-col-16 ant-col-offset-2 ant-form-item-label">
-                        Transaction: <b>{index + 1}</b>
-                      </p> */}
+                          Transaction: <b>{index + 1}</b>
+                        </p> */}
                       <Col span={12} offset={2} className="mb-5">
                         <Typography.Title level={4} style={{ margin: 0 }}>
                           Transaction: {index + 1}
                         </Typography.Title>
                       </Col>
-
-                      <Materials disabled={transactionCreation} field={field} />
-                      <PriceType disabled={transactionCreation} field={field} />
+                      <Materials
+                        field={field}
+                        transaction={
+                          form.getFieldValue("childTransactionDtoList")[index]
+                        }
+                      />
+                      <PriceType
+                        field={field}
+                        transaction={
+                          form.getFieldValue("childTransactionDtoList")[index]
+                        }
+                      />
                       <FirstWeight
                         {...field}
                         key={`firstWeight_${index}`}
