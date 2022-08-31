@@ -134,6 +134,7 @@ export const TransactionHistory = () => {
             settransactionData(filterData);
           });
       });
+    return () => settransactionData([]);
   }, []);
 
   const showSummary = ({ id }) => {

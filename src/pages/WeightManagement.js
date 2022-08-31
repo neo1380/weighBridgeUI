@@ -846,7 +846,6 @@ export const WeighManagement = () => {
             layout="vertical"
             autoComplete="off"
             initialValues={formInitValues}
-            onValuesChange={onFormLayoutChange}
             size={componentSize}
             onFinish={onFinish}
           >
