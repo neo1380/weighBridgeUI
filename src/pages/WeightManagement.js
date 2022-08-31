@@ -21,7 +21,7 @@ const { Title } = Typography;
 const { TextArea } = Input;
 
 export const WeighManagement = () => {
-  const [transactionType, setTransactionType] = useState("incoming");
+  const [transactionType, setTransactionType] = useState("INC");
   const [componentSize, setComponentSize] = useState("default");
   const [priceType, setPriceType] = useState("L");
   const [selectedCustType, setSelectedCustType] = useState(null);
@@ -702,7 +702,7 @@ export const WeighManagement = () => {
       customerType: values.customerType,
       phoneNumber: values.phoneNumber,
       driverCount: values.driverCount,
-      transferType: values.transactionType === "incoming" ? "INC" : "OUT",
+      transferType: values.transferType,
       childTransactionDtoList: [...childTransactions],
       cancelReason: cancelForm.cancelReason || "",
       isTransactionCompleted: transactionCreation === null ? 0 : 1,
@@ -719,6 +719,19 @@ export const WeighManagement = () => {
       onReset();
     });
   };
+
+  /* const closeTransaction = ($event) => {
+    console.log(calculateRemainingWeight());
+    const remainingWeight = calculateRemainingWeight();
+    if (remainingWeight) {
+      Modal.warning({
+        title: "Close Transaction",
+        content:
+          "Cannot Close transaction; Please check If all materials are unloaded !",
+      });
+    }
+    $event.preventDefault();
+  }; */
 
   const loadTempTransaction = (transaction) => {
     if (transaction.id) {
