@@ -533,10 +533,6 @@ export const WeighManagement = () => {
     setIsModalVisible(false);
   };
 
-  const onFormLayoutChange = ({ size }) => {
-    setComponentSize(size);
-  };
-
   const onChangeTransactionType = (event) => {
     setTransactionType(event.target.value);
     handleCustomerTypes(event.target.value);
