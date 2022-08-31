@@ -86,7 +86,7 @@ export const WeighManagement = () => {
     },
   ];
 
-  const weightInputs = {
+  /*   const weightInputs = {
     childTransactionDtoList: [
       {
         materialId: null,
@@ -96,7 +96,7 @@ export const WeighManagement = () => {
         transactionId: null,
       },
     ],
-  };
+  }; */
 
   /** Component composition */
 
@@ -642,24 +642,6 @@ export const WeighManagement = () => {
     //add code to fetch price based on materials
   };
 
-  const disableFields = (id) => {
-    if (id) {
-      return true;
-    } else {
-      return false;
-    }
-
-    /*  if (
-      transactionCreation === "IN_PROGRESS" &&
-      form.getFieldValue("childTransactionDtoList")[field.key] &&
-      form.getFieldValue("childTransactionDtoList")[field.key].firstWeight
-    ) {
-      return true;
-    } else {
-      return false;
-    } */
-  };
-
   const onReset = () => {
     form.resetFields();
     form.getFieldValue("childTransactionDtoList").length = 1;
@@ -848,11 +830,6 @@ export const WeighManagement = () => {
       (item) => item.transactionId
     );
     return newTransactions.length;
-  };
-
-  const anyTransactionInProgress = () => {
-    const childTransactions = form.getFieldValue("childTransactionDtoList");
-    return childTransactions.some((item) => item.transactionId);
   };
 
   return (

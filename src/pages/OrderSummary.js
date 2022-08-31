@@ -29,9 +29,8 @@ export const OrderSummary = () => {
       .then((response) => response.json())
       .then((data) => {
         setTransaction(data);
-        console.log(transaction);
       });
-  }, []);
+  }, [id]);
 
   useEffect(() => {
     const materialList = BASE_URL + API_ENDPOINTS.GET_MATERIAL;
