@@ -24,7 +24,6 @@ const { TextArea } = Input;
 export const WeighManagement = () => {
   const navigate = useNavigate();
   const [transactionType, setTransactionType] = useState("INC");
-  const [componentSize, setComponentSize] = useState("default");
   const [priceType, setPriceType] = useState("L");
   const [selectedCustType, setSelectedCustType] = useState(null);
   const [customerTypeOptions, setCustomerTypeOptions] = useState([]);
@@ -53,7 +52,7 @@ export const WeighManagement = () => {
     { label: "Bale", value: "B" },
   ];
   const formInitValues = {
-    size: componentSize,
+    size: "default",
     transferType: "INC",
     customerType: transactionType === "OUT" ? 1 : 3,
     childTransactionDtoList: [
@@ -842,7 +841,6 @@ export const WeighManagement = () => {
             layout="vertical"
             autoComplete="off"
             initialValues={formInitValues}
-            size={componentSize}
             onFinish={onFinish}
           >
             <TransactionType disabled={transactionCreation} />
