@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { Table } from "antd";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { API_ENDPOINTS, BASE_URL } from "../constants/api.constants";
 
 export const TransactionHistory = () => {
+  const navigate = useNavigate();
   const [transactionData, settransactionData] = useState([]);
   //   const [materials, setMaterials] = useState([]);
 
@@ -134,7 +136,24 @@ export const TransactionHistory = () => {
       });
   }, []);
 
-  return <Table size="small" columns={columns} dataSource={transactionData} />;
+  const showSummary = ({ id }) => {
+    navigate(`/summary/${id}`);
+  };
+  return (
+    <Table
+      onRow={(record, rowIndex) => {
+        return {
+          onClick: (event) => {
+            console.log(record);
+            showSummary(record);
+          },
+        };
+      }}
+      size="small"
+      columns={columns}
+      dataSource={transactionData}
+    />
+  );
 };
 
 export default TransactionHistory;

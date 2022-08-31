@@ -272,6 +272,7 @@ export const MaterialManagement = () => {
           setMaterials(materials);
         }
       });
+    return () => setMaterials([]);
   }, [fetchMaterials]);
 
   return <MaterialGrid />;

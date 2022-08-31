@@ -11,6 +11,7 @@ import {
   message,
   Radio,
 } from "antd";
+import { useNavigate } from "react-router-dom";
 import { Row, Col } from "antd";
 import axios from "axios";
 import { PlusOutlined } from "@ant-design/icons";
@@ -21,6 +22,7 @@ const { Title } = Typography;
 const { TextArea } = Input;
 
 export const WeighManagement = () => {
+  const navigate = useNavigate();
   const [transactionType, setTransactionType] = useState("INC");
   const [componentSize, setComponentSize] = useState("default");
   const [priceType, setPriceType] = useState("L");
@@ -710,12 +712,15 @@ export const WeighManagement = () => {
     if (currentTransactionId) {
       data.id = currentTransactionId;
     }
-    axios.post(createTransaction, data).then((response) => {
-      console.log(response);
+    axios.post(createTransaction, data).then(({ data }) => {
+      console.log(data);
       openMessage(message);
       getTemporaryTransactions();
       setCurrentTransactionId(null);
       setTransactionCreation(null);
+      if (data.isTransactionCompleted) {
+        navigate(`/summary/${currentTransactionId}`);
+      }
       onReset();
     });
   };

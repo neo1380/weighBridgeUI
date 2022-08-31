@@ -8,4 +8,5 @@ export const API_ENDPOINTS = {
   CREATE_TRANSACTION: "transaction/saveTransactions",
   TEMP_TRANSACTION: "transaction/temporaryTransactionList",
   CURRENT_DAY_TRANSACTION: "transaction/currentDayTransactionList",
+  GET_TRANSACTION_BY_ID: "transaction/transactionById/",
 };

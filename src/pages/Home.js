@@ -15,7 +15,7 @@ import { NotFound } from "./NotFound";
 import { Login } from "./Login";
 import { EmployeeManagement } from "./EmployeeManagement";
 import { MaterialManagement } from "./MaterialManagement";
-import OrderSummary from "./OrderSummary";
+import { OrderSummary } from "./OrderSummary";
 
 const { Sider, Content } = Layout;
 
@@ -73,9 +73,9 @@ export class Home extends Component {
                   <Menu.Item key="5" icon={<GlobalOutlined />}>
                     <Link to="/material"> Material Management</Link>
                   </Menu.Item>
-                  <Menu.Item key="6" icon={<GlobalOutlined />}>
+                  {/*    <Menu.Item key="6" icon={<GlobalOutlined />}>
                     <Link to="/summary"> Order Summary</Link>
-                  </Menu.Item>
+                  </Menu.Item> */}
                 </Menu>
               </Sider>
 
@@ -109,7 +109,11 @@ export class Home extends Component {
                       path="/material"
                       element={<MaterialManagement />}
                     />
-                    <Route exact path="/summary" element={<OrderSummary />} />
+                    <Route
+                      exact
+                      path="/summary/:id"
+                      element={<OrderSummary />}
+                    />
                     <Route path="*" element={<NotFound />} />
                   </Routes>
                 </Content>
