@@ -359,8 +359,7 @@ export const WeighManagement = () => {
           index - 1
         ];
         if (!prevField) return;
-        const currentFirstWeight =
-          prevField.firstWeight - prevField.secondWeight;
+        const currentFirstWeight = prevField.secondWeight;
         return currentFirstWeight;
       } else {
         return null;
@@ -739,15 +738,12 @@ export const WeighManagement = () => {
       child.transactionId = transaction.id;
       delete child.materialType;
     });
-    /* weightInputs.childTransactionDtoList = {
-      ...transaction.childTransactionDtoList,
-    }; */
+
     setSelectedCustType(transaction.customerType);
     setTransactionCreation("IN_PROGRESS");
-    form.setFieldsValue(transaction);
-
     if (!transaction.phoneNumber) setEnablePhoneNumber(true);
     if (!transaction.customerName) setEnableCustName(true);
+    form.setFieldsValue(transaction);
   };
 
   const cancelTransaction = (id) => {
