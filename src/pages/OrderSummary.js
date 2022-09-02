@@ -139,7 +139,7 @@ export const OrderSummary = () => {
               >
                 <div className="ant-card-head-wrapper">
                   <div className="ant-card-head-title">
-                    Total price: {transaction.finalAmount} SAD
+                    Total price: {transaction.finalAmount} SAR
                   </div>
                 </div>
               </div>
