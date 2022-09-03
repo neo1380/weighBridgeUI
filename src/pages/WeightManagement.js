@@ -17,6 +17,7 @@ import axios from "axios";
 import { PlusOutlined } from "@ant-design/icons";
 import "antd-css-utilities/utility.min.css";
 import { API_ENDPOINTS, BASE_URL } from "../constants/api.constants";
+import { element } from "prop-types";
 
 const { Title } = Typography;
 const { TextArea } = Input;
@@ -416,7 +417,6 @@ export const WeighManagement = () => {
             },
             (obj) => ({
               validator(_, value) {
-                console.log(obj);
                 const fieldName = _.field;
                 let fieldNameArr = fieldName.split(".");
                 let firstWeight = form.getFieldValue("childTransactionDtoList")[
@@ -800,6 +800,23 @@ export const WeighManagement = () => {
   };
 
   const allowAnotherTransaction = (add) => {
+    const childTransactions = form.getFieldValue("childTransactionDtoList");
+    let secondWeighEntered = 0;
+    childTransactions.forEach((element) => {
+      if (element.secondWeight) {
+        secondWeighEntered++;
+      }
+    });
+
+    if (secondWeighEntered < childTransactions.length) {
+      Modal.warning({
+        title: "Add Another Transaction",
+        content:
+          "Cannot add Another transaction; Please check second weight of previous transaction or total weight entered !",
+      });
+      return;
+    }
+
     if (
       form.getFieldsError().filter(({ errors }) => errors.length).length > 0
     ) {
@@ -816,10 +833,10 @@ export const WeighManagement = () => {
 
   const onChangeSecondWeight = (value) => {
     if (value === null) {
-      setDisableAnotherTransaction(true);
+      //   setDisableAnotherTransaction(true);
       return;
     }
-    setDisableAnotherTransaction(false);
+    // setDisableAnotherTransaction(false);
   };
 
   /*  const calcInitialWeight = () => {
@@ -946,7 +963,7 @@ export const WeighManagement = () => {
                         }}
                         block
                         icon={<PlusOutlined />}
-                        disabled={disableAnotherTransaction}
+                        // disabled={disableAnotherTransaction}
                       >
                         Add Another Transaction
                       </Button>
@@ -989,6 +1006,7 @@ export const WeighManagement = () => {
                       return (
                         <Button
                           type="link"
+                          key={transaction.id}
                           className="pl-0"
                           onClick={() => loadTempTransaction(transaction)}
                         >
