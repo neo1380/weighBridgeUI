@@ -51,6 +51,18 @@ export const OrderSummary = () => {
     return isMaterial ? isMaterial.materialName : "Material Not found";
   };
 
+  const getMaterialNetWeight = ({
+    transferType,
+    firstWeight,
+    secondWeight,
+  }) => {
+    if (transferType === "INC") {
+      return secondWeight - firstWeight;
+    } else {
+      return firstWeight - secondWeight;
+    }
+  };
+
   const getTransferType = ({ transferType }) => {
     return transferTypeMap[transferType];
   };
@@ -118,6 +130,10 @@ export const OrderSummary = () => {
                         Material : {getMaterialDesc(transaction)}
                       </Paragraph>
                       <Paragraph>
+                        Material Net Weight :{" "}
+                        {getMaterialNetWeight(transaction)}
+                      </Paragraph>
+                      {/*  <Paragraph>
                         First Weight : {transaction.firstWeight} Kgs
                       </Paragraph>
                       <Paragraph>
@@ -125,7 +141,7 @@ export const OrderSummary = () => {
                       </Paragraph>
                       <Paragraph>
                         Price : {transaction.materialPricewithVat}
-                      </Paragraph>
+                      </Paragraph> */}
                     </div>
                   </div>
                 </div>
