@@ -432,7 +432,7 @@ export const WeighManagement = () => {
                   }
                 }
 
-                if (transactionType === "outgoing") {
+                if (transactionType === "OUT") {
                   if (value > firstWeight) {
                     return Promise.resolve();
                   } else {
