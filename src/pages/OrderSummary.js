@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import "antd/dist/antd.css";
+import "antd/dist/antd.min.css";
 import { Typography, Button } from "antd";
 import { Row, Col } from "antd";
 import { Spin } from "antd";

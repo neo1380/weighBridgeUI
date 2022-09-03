@@ -408,10 +408,6 @@ export const WeighManagement = () => {
           fieldKey={[field.fieldKey, key]}
           validateTrigger="onBlur"
           rules={[
-            {
-              required: true,
-              message: "Please enter Second Weight",
-            },
             (obj) => ({
               validator(_, value) {
                 const fieldName = _.field;
@@ -419,6 +415,10 @@ export const WeighManagement = () => {
                 let firstWeight = form.getFieldValue("childTransactionDtoList")[
                   fieldNameArr[1]
                 ].firstWeight;
+
+                if (!value || value.length === 0) {
+                  return Promise.reject("Please enter Second Weight");
+                }
                 if (transactionType === "INC") {
                   if (value < firstWeight) {
                     return Promise.resolve();
@@ -799,20 +799,15 @@ export const WeighManagement = () => {
   const allowAnotherTransaction = (add) => {
     const childTransactions = form.getFieldValue("childTransactionDtoList");
     let secondWeighEntered = 0;
+    let materialSelected = 0;
     childTransactions.forEach((element) => {
       if (element.secondWeight) {
         secondWeighEntered++;
       }
+      if (typeof element.materialName !== "undefined") {
+        materialSelected++;
+      }
     });
-
-    if (secondWeighEntered < childTransactions.length) {
-      Modal.warning({
-        title: "Add Another Transaction",
-        content:
-          "Cannot add Another transaction; Please check second weight of previous transaction or total weight entered !",
-      });
-      return;
-    }
 
     if (
       form.getFieldsError().filter(({ errors }) => errors.length).length > 0
@@ -820,10 +815,31 @@ export const WeighManagement = () => {
       Modal.warning({
         title: "Add Another Transaction",
         content:
-          "Cannot add Another transaction; Please check second weight of previous transaction or total weight entered !",
+          "Please check second weight of previous transaction or total weight entered !",
       });
       return;
     }
+
+    if (
+      materialSelected < childTransactions.length &&
+      secondWeighEntered === childTransactions.length
+    ) {
+      Modal.warning({
+        title: "Add Another Transaction",
+        content: "Please check if material is selected !",
+      });
+      return;
+    }
+
+    if (secondWeighEntered < childTransactions.length) {
+      Modal.warning({
+        title: "Add Another Transaction",
+        content:
+          "Please check second weight of previous transaction or total weight entered !",
+      });
+      return;
+    }
+
     add();
     return true;
   };
