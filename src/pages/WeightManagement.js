@@ -1023,7 +1023,9 @@ export const WeighManagement = () => {
                           className="pl-0"
                           onClick={() => loadTempTransaction(transaction)}
                         >
-                          {transaction.vehicleNumber}
+                          {transaction?.vehicleNumber
+                            ? transaction.vehicleNumber
+                            : transaction.customerName}
                         </Button>
                       );
                     })}

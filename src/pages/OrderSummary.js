@@ -51,12 +51,9 @@ export const OrderSummary = () => {
     return isMaterial ? isMaterial.materialName : "Material Not found";
   };
 
-  const getMaterialNetWeight = ({
-    transferType,
-    firstWeight,
-    secondWeight,
-  }) => {
-    if (transferType === "INC") {
+  const getMaterialNetWeight = ({ firstWeight, secondWeight }) => {
+    const { transferType } = transaction;
+    if (transferType === "OUT") {
       return secondWeight - firstWeight;
     } else {
       return firstWeight - secondWeight;
@@ -111,7 +108,7 @@ export const OrderSummary = () => {
                 <Paragraph>Driver Count: {transaction.driverCount}</Paragraph>
               </div>
             </div>
-            {transaction.childTransactionDtoList.map((transaction, index) => {
+            {transaction.childTransactionDtoList.map((child, index) => {
               return (
                 <div>
                   <div className="ant-card ant-card-bordered mb-5">
@@ -126,12 +123,10 @@ export const OrderSummary = () => {
                       </div>
                     </div>
                     <div className="ant-card-body">
+                      <Paragraph>Material : {getMaterialDesc(child)}</Paragraph>
                       <Paragraph>
-                        Material : {getMaterialDesc(transaction)}
-                      </Paragraph>
-                      <Paragraph>
-                        Material Net Weight :{" "}
-                        {getMaterialNetWeight(transaction)}
+                        Material Net Weight : {getMaterialNetWeight(child)}{" "}
+                        {"kgs"}
                       </Paragraph>
                       {/*  <Paragraph>
                         First Weight : {transaction.firstWeight} Kgs
@@ -148,18 +143,21 @@ export const OrderSummary = () => {
               );
             })}
 
-            <div className="ant-card ant-card-bordered mt-5">
-              <div
-                className="ant-card-head"
-                style={{ backgroundColor: "#fafafa" }}
-              >
-                <div className="ant-card-head-wrapper">
-                  <div className="ant-card-head-title">
-                    Total price: {transaction.finalAmount} SAR
+            {transaction?.transferType !== "OUT" ? (
+              <div className="ant-card ant-card-bordered mt-5">
+                <div
+                  className="ant-card-head"
+                  style={{ backgroundColor: "#fafafa" }}
+                >
+                  <div className="ant-card-head-wrapper">
+                    <div className="ant-card-head-title">
+                      Total price: {transaction.finalAmount} SAR
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
+            ) : null}
+
             <p>
               <Button type="primary" htmlType="submit" className="mr-3 mt-5">
                 Print Transaction
