@@ -17,7 +17,6 @@ import axios from "axios";
 import { PlusOutlined } from "@ant-design/icons";
 import "antd-css-utilities/utility.min.css";
 import { API_ENDPOINTS, BASE_URL } from "../constants/api.constants";
-import { element } from "prop-types";
 
 const { Title } = Typography;
 const { TextArea } = Input;
@@ -38,8 +37,6 @@ export const WeighManagement = () => {
   const [currentTransactionId, setCurrentTransactionId] = useState(null);
   const [enablePhoneNumber, setEnablePhoneNumber] = useState(false);
   const [enableCustName, setEnableCustName] = useState(false);
-  const [disableAnotherTransaction, setDisableAnotherTransaction] =
-    useState(true);
 
   //   const [enableCustId, setEnableCustId] = useState(false);
 
