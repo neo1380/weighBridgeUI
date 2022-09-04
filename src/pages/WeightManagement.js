@@ -11,6 +11,7 @@ import {
   message,
   Radio,
   Checkbox,
+  Spin,
 } from "antd";
 import { useNavigate } from "react-router-dom";
 import { Row, Col } from "antd";
@@ -24,6 +25,7 @@ const { TextArea } = Input;
 
 export const WeighManagement = () => {
   const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(true);
   const [transactionType, setTransactionType] = useState(null);
   const [priceType, setPriceType] = useState("L");
   const [selectedCustType, setSelectedCustType] = useState(null);
@@ -571,6 +573,8 @@ export const WeighManagement = () => {
     }
   };
 
+  const Spinner = () => <Spin className="spinner" tip="Loading Data ...." />;
+
   /** Event handlers */
   const showModal = () => {
     setIsModalVisible(true);
@@ -659,9 +663,11 @@ export const WeighManagement = () => {
   );
 
   const getTemporaryTransactions = () => {
+    setIsLoading(true);
     axios
       .get(BASE_URL + API_ENDPOINTS.TEMP_TRANSACTION)
       .then((tempTransactions) => {
+        setIsLoading(false);
         setTempTransactions(tempTransactions.data || []);
       });
   };
@@ -674,6 +680,7 @@ export const WeighManagement = () => {
       .then((response) => response.json())
       .then((materials) => {
         setMaterials(materials);
+        setIsLoading(false);
       });
     setTransactionType("INC");
     setPriceType("L");
@@ -700,6 +707,7 @@ export const WeighManagement = () => {
       values.customerName &&
       values.phoneNumber
     ) {
+      setIsLoading(true);
       let newCustomerID = null;
       const { customerName, phoneNumber } = values;
       newCustomerID = { customerId: `${customerName}_${phoneNumber}` };
@@ -743,15 +751,16 @@ export const WeighManagement = () => {
       data.includeVat = transactionType === "OUT" ? true : enableVat;
     }
     axios.post(createTransaction, data).then(({ data }) => {
-      console.log(data);
       openMessage(message);
       getTemporaryTransactions();
       setCurrentTransactionId(null);
       setTransactionCreation(null);
       if (data.isTransactionCompleted) {
         navigate(`/summary/${currentTransactionId}`);
+      } else {
+        setIsLoading(false);
+        onReset();
       }
-      onReset();
     });
   };
 
@@ -912,8 +921,8 @@ export const WeighManagement = () => {
     return newTransactions.length;
   };
 
-  return (
-    <>
+  const WeightForm = () => {
+    return (
       <Row>
         <Col span={12}>
           <CancelModal />
@@ -946,8 +955,8 @@ export const WeighManagement = () => {
                   {fields.map((field, index) => (
                     <>
                       {/* <p className="ant-col ant-col-16 ant-col-offset-2 ant-form-item-label">
-                          Transaction: <b>{index + 1}</b>
-                        </p> */}
+                  Transaction: <b>{index + 1}</b>
+                </p> */}
                       <Col span={12} offset={2} className="mb-5">
                         <Typography.Title level={4} style={{ margin: 0 }}>
                           Transaction: {index + 1}
@@ -1024,16 +1033,16 @@ export const WeighManagement = () => {
             }}
           >
             {/*  <Title type="primary" level={5}>
-              Transaction History {tempTransactions.length}
-            </Title>
-            <Row gutter={16}>
-              <Col span={12}>
-                <Statistic title="Active" value={5} />
-              </Col>
-              <Col span={12}>
-                <Statistic title="Completed" value={20} />
-              </Col>
-            </Row> */}
+      Transaction History {tempTransactions.length}
+    </Title>
+    <Row gutter={16}>
+      <Col span={12}>
+        <Statistic title="Active" value={5} />
+      </Col>
+      <Col span={12}>
+        <Statistic title="Completed" value={20} />
+      </Col>
+    </Row> */}
 
             {tempTransactions.length > 0 ? (
               <Row gutter={24}>
@@ -1064,8 +1073,10 @@ export const WeighManagement = () => {
           </div>
         </Col>
       </Row>
-    </>
-  );
+    );
+  };
+
+  return <>{isLoading ? <Spinner /> : <WeightForm />}</>;
 };
 
 export default WeighManagement;
