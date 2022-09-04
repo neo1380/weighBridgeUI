@@ -8,6 +8,7 @@ import {
   notification,
   Button,
   Modal,
+  Spin,
 } from "antd";
 import axios from "axios";
 import { Row, Col } from "antd";
@@ -304,6 +305,10 @@ export const MaterialManagement = () => {
     );
   };
 
+  const Spinner = () => (
+    <Spin className="spinner" tip="Loading Material Data..." />
+  );
+
   useEffect(() => {
     const materialList = BASE_URL + API_ENDPOINTS.GET_MATERIAL;
     fetch(materialList)
@@ -318,7 +323,7 @@ export const MaterialManagement = () => {
     return () => setMaterials([]);
   }, [fetchMaterials]);
 
-  return <MaterialGrid />;
+  return <>{materials && materials.length ? <MaterialGrid /> : <Spinner />}</>;
 };
 
 export default MaterialManagement;

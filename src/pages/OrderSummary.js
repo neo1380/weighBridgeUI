@@ -69,21 +69,17 @@ export const OrderSummary = () => {
   };
   return (
     <Row>
-      <Col span={24}>
-        <Typography.Title level={4} style={{ margin: 0, marginBottom: "20px" }}>
-          Order Summary
-        </Typography.Title>
-
-        {/*   <Alert
-          message="Transaction Completed Successfully !"
-          type="success"
-          showIcon
-          style={{ marginBottom: "20px" }}
-        /> */}
-      </Col>
-      <Col span={24}>
-        {transaction ? (
-          <>
+      {transaction ? (
+        <>
+          <Col span={24}>
+            <Typography.Title
+              level={4}
+              style={{ margin: 0, marginBottom: "20px" }}
+            >
+              Order Summary
+            </Typography.Title>
+          </Col>
+          <Col span={24}>
             <div className="ant-card ant-card-bordered">
               <div
                 className="ant-card-head"
@@ -163,11 +159,11 @@ export const OrderSummary = () => {
                 Print Transaction
               </Button>
             </p>
-          </>
-        ) : (
-          <Spin tip="Loading..."></Spin>
-        )}
-      </Col>
+          </Col>
+        </>
+      ) : (
+        <Spin className="spinner" tip="Loading..."></Spin>
+      )}
     </Row>
   );
 };

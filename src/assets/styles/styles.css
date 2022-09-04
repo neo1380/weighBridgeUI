@@ -19,5 +19,16 @@
 }
 
 .card-header {
-  background: "#fafafa";
+  background: #fafafa;
+}
+
+.spinner {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+}
+
+.ant-spin.ant-spin-show-text .ant-spin-text {
+  padding: 10px;
 }

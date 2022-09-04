@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Table } from "antd";
+import { Table, Spin } from "antd";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { API_ENDPOINTS, BASE_URL } from "../constants/api.constants";
@@ -142,7 +142,11 @@ export const TransactionHistory = () => {
   const showSummary = ({ id }) => {
     navigate(`/summary/${id}`);
   };
-  return (
+
+  const Spinner = () => (
+    <Spin className="spinner" tip="Loading transactions..." />
+  );
+  const TransactionTable = () => (
     <Table
       onRow={(record, rowIndex) => {
         return {
@@ -156,6 +160,15 @@ export const TransactionHistory = () => {
       columns={columns}
       dataSource={transactionData}
     />
+  );
+  return (
+    <>
+      {transactionData && transactionData.length ? (
+        <TransactionTable />
+      ) : (
+        <Spinner />
+      )}
+    </>
   );
 };
 
