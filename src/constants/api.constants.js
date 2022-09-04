@@ -9,4 +9,5 @@ export const API_ENDPOINTS = {
   TEMP_TRANSACTION: "transaction/temporaryTransactionList",
   CURRENT_DAY_TRANSACTION: "transaction/currentDayTransactionList",
   GET_TRANSACTION_BY_ID: "transaction/transactionById/",
+  GET_ALL_TRANSACTIONS: "transaction/transactionList/{sortParam}/{order}",
 };

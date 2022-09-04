@@ -117,22 +117,24 @@ export const TransactionHistory = () => {
     fetch(materialList)
       .then((response) => response.json())
       .then((materials) => {
-        axios
-          .get(BASE_URL + API_ENDPOINTS.CURRENT_DAY_TRANSACTION)
-          .then((tempTransactions) => {
-            console.log(tempTransactions.data);
-            const filterData = [];
-            tempTransactions.data.forEach((item) => {
-              item.childTransactionDtoList.forEach((child) => {
-                item.priceType = child.priceType === "B" ? "Bale" : "Loose";
-                item.materialName = materials.find(
-                  (mat) => mat.materialId === child.materialType
-                ).materialName;
-                filterData.push(item);
-              });
+        const ALL_TRANSACTIONS = API_ENDPOINTS.GET_ALL_TRANSACTIONS.replace(
+          "{sortParam}",
+          "transactionId"
+        ).replace("{order}", 2);
+        axios.get(BASE_URL + ALL_TRANSACTIONS).then((tempTransactions) => {
+          console.log(tempTransactions.data);
+          const filterData = [];
+          tempTransactions.data.forEach((item) => {
+            item.childTransactionDtoList.forEach((child) => {
+              item.priceType = child.priceType === "B" ? "Bale" : "Loose";
+              item.materialName = materials.find(
+                (mat) => mat.materialId === child.materialType
+              ).materialName;
+              filterData.push(item);
             });
-            settransactionData(filterData);
           });
+          settransactionData(filterData);
+        });
       });
     return () => settransactionData([]);
   }, []);

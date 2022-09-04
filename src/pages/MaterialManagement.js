@@ -1,6 +1,4 @@
 import React, { useState, useEffect } from "react";
-// import { Table, Input, InputNumber, Popconfirm, , Typography } from "antd";
-// import { Table, Form } from "antd";
 import {
   Table,
   Input,
@@ -10,14 +8,17 @@ import {
   notification,
   Button,
   Modal,
+  Checkbox,
 } from "antd";
 import axios from "axios";
+import { Row, Col } from "antd";
 
 import { API_ENDPOINTS, BASE_URL } from "../constants/api.constants";
 
 export const MaterialManagement = () => {
   const [form] = Form.useForm();
   const [modalForm] = Form.useForm();
+  const [vatChecked, setVatChecked] = useState(false);
   const [materials, setMaterials] = useState([]);
   const [visible, setVisible] = useState(false);
   const [materialInEdit, setMaterialInEdit] = useState({});
@@ -138,6 +139,27 @@ export const MaterialManagement = () => {
               style={{ width: "50%" }}
             />
           </Form.Item>
+          <Form.Item
+            name="vat"
+            label="VAT"
+            rules={[
+              {
+                required: true,
+                message: "Please enter VAT",
+              },
+            ]}
+          >
+            <InputNumber
+              min={0}
+              addonAfter="Price per kgs"
+              style={{ width: "50%" }}
+            />
+          </Form.Item>
+          {/*       <Form.Item>
+            <Checkbox  name="enableVat" checked={vatChecked} onChange={onChangeVat}>
+                Include VAT in all transactions
+            </Checkbox>
+         </Form.Item> */}
         </Form>
       </Modal>
     );
@@ -172,7 +194,7 @@ export const MaterialManagement = () => {
     {
       title: "Material ID",
       dataIndex: "materialId",
-      width: "10%",
+      width: "5%",
       editable: false,
     },
     {
@@ -206,6 +228,12 @@ export const MaterialManagement = () => {
       editable: false,
     },
     {
+      title: "VAT",
+      dataIndex: "vat",
+      width: "5%",
+      editable: false,
+    },
+    {
       title: "Action",
       dataIndex: "action",
       render: (_, record) => {
@@ -236,27 +264,43 @@ export const MaterialManagement = () => {
     }; */
   });
 
+  const onChangeVat = (event) => {
+    setVatChecked(event.target.checked);
+    //CALL API TO INCLUDE VAT
+  };
+
   const MaterialGrid = () => {
     return (
       <>
-        <Button
-          onClick={addMaterial}
-          type="primary"
-          style={{
-            marginBottom: 16,
-          }}
-        >
-          Update Material
-        </Button>
+        <Row>
+          <Col span={24}>
+            <Button
+              onClick={addMaterial}
+              type="primary"
+              style={{
+                marginBottom: 16,
+              }}
+            >
+              Update Material
+            </Button>
+          </Col>
+          {/*      <Col span={24}>
+            <Checkbox checked={vatChecked} onChange={onChangeVat}>
+              Include VAT in all transactions
+            </Checkbox>
+          </Col> */}
+        </Row>
         <UpdateMaterial />
-        <Form form={form} component={false}>
-          <Table
-            bordered
-            dataSource={materials}
-            columns={mergedColumns}
-            rowClassName="editable-row"
-          />
-        </Form>
+        <Col span={24} style={{ marginTop: "20px" }}>
+          <Form form={form} component={false}>
+            <Table
+              bordered
+              dataSource={materials}
+              columns={mergedColumns}
+              rowClassName="editable-row"
+            />
+          </Form>
+        </Col>
       </>
     );
   };
