@@ -403,7 +403,7 @@ export const WeighManagement = () => {
       return null;
     }
 
-    if (selectedCustType === 3 && transactionCreation === "IN_PROGRESS") {
+    if (transactionCreation === "IN_PROGRESS") {
       return (
         <Form.Item
           label="Second Weight"
