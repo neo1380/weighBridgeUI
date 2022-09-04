@@ -280,7 +280,7 @@ export const MaterialManagement = () => {
                 marginBottom: 16,
               }}
             >
-              Update Material
+              Add a New Material
             </Button>
           </Col>
           {/*      <Col span={24}>

@@ -10,6 +10,7 @@ import {
   InputNumber,
   message,
   Radio,
+  Checkbox,
 } from "antd";
 import { useNavigate } from "react-router-dom";
 import { Row, Col } from "antd";
@@ -29,6 +30,8 @@ export const WeighManagement = () => {
   const [customerTypeOptions, setCustomerTypeOptions] = useState([]);
   const [materials, setMaterials] = useState([]);
   const [transactionCreation, setTransactionCreation] = useState(null);
+  const [multipleTransactionEnabled, setMultipleTransactionEnabled] =
+    useState(true);
   const [form] = Form.useForm();
   const [cancelForm] = Form.useForm();
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -37,7 +40,7 @@ export const WeighManagement = () => {
   const [currentTransactionId, setCurrentTransactionId] = useState(null);
   const [enablePhoneNumber, setEnablePhoneNumber] = useState(false);
   const [enableCustName, setEnableCustName] = useState(false);
-
+  const [enableVat, setEnableVat] = useState(false);
   //   const [enableCustId, setEnableCustId] = useState(false);
 
   const transactionTypes = [
@@ -480,6 +483,24 @@ export const WeighManagement = () => {
     );
   };
 
+  const Vat = ({ disabled }) => {
+    const onChangeVat = (event) => {
+      setEnableVat(event.target.checked);
+    };
+
+    return (
+      <Form.Item label="" name="includeVat">
+        <Checkbox
+          checked={enableVat}
+          disabled={transactionCreation === "IN_PROGRESS"}
+          onChange={onChangeVat}
+        >
+          Include VAT for this transaction
+        </Checkbox>
+      </Form.Item>
+    );
+  };
+
   const CancellationReasons = () => {
     const onSelectCanReason = (reason) => {
       console.log(reason);
@@ -523,7 +544,7 @@ export const WeighManagement = () => {
 
   const ActionButtons = ({ state }) => {
     console.log("areTransactionsInProgress()", areTransactionsInProgress());
-    if (areTransactionsInProgress() === 0) {
+    if (areTransactionsInProgress() === 0 || multipleTransactionEnabled) {
       return (
         <Form.Item>
           <Button type="primary" htmlType="submit" className="mr-3">
@@ -715,10 +736,11 @@ export const WeighManagement = () => {
       transferType: values.transferType,
       childTransactionDtoList: [...childTransactions],
       cancelReason: cancelForm.cancelReason || "",
-      isTransactionCompleted: transactionCreation === null ? 0 : 1,
+      isTransactionCompleted: multipleTransactionEnabled ? 0 : 1,
     };
     if (currentTransactionId) {
       data.id = currentTransactionId;
+      data.includeVat = transactionType === "OUT" ? true : enableVat;
     }
     axios.post(createTransaction, data).then(({ data }) => {
       console.log(data);
@@ -749,6 +771,7 @@ export const WeighManagement = () => {
   const loadTempTransaction = (transaction) => {
     if (transaction.id) {
       setCurrentTransactionId(transaction.id);
+      setMultipleTransactionEnabled(false);
     }
     transaction.childTransactionDtoList.forEach((child) => {
       const { materialName, materialId } = materials.find(
@@ -841,6 +864,7 @@ export const WeighManagement = () => {
     }
 
     add();
+    setMultipleTransactionEnabled(true);
     return true;
   };
 
@@ -915,6 +939,7 @@ export const WeighManagement = () => {
             <CustomerID disabled={transactionCreation} />
             <VehicleNumber disabled={transactionCreation} />
             <DriverCount disabled={transactionCreation} />
+
             <Form.List shouldUpdate name="childTransactionDtoList">
               {(fields, { add, remove }) => (
                 <>
@@ -986,6 +1011,9 @@ export const WeighManagement = () => {
               )}
             </Form.List>
 
+            {transactionType !== "OUT" ? (
+              <Vat disabled={transactionCreation} />
+            ) : null}
             <ActionButtons state={transactionCreation} />
           </Form>
         </Col>
