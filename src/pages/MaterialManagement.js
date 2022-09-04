@@ -8,7 +8,6 @@ import {
   notification,
   Button,
   Modal,
-  Checkbox,
 } from "antd";
 import axios from "axios";
 import { Row, Col } from "antd";
@@ -18,7 +17,7 @@ import { API_ENDPOINTS, BASE_URL } from "../constants/api.constants";
 export const MaterialManagement = () => {
   const [form] = Form.useForm();
   const [modalForm] = Form.useForm();
-  const [vatChecked, setVatChecked] = useState(false);
+  //   const [vatChecked, setVatChecked] = useState(false);
   const [materials, setMaterials] = useState([]);
   const [visible, setVisible] = useState(false);
   const [materialInEdit, setMaterialInEdit] = useState({});
@@ -264,10 +263,10 @@ export const MaterialManagement = () => {
     }; */
   });
 
-  const onChangeVat = (event) => {
+  /*   const onChangeVat = (event) => {
     setVatChecked(event.target.checked);
     //CALL API TO INCLUDE VAT
-  };
+  }; */
 
   const MaterialGrid = () => {
     return (
