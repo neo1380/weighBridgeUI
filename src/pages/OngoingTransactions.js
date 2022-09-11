@@ -22,6 +22,7 @@ export const OnGoingTransactions = () => {
       axios.get(BASE_URL + API_ENDPOINTS.TEMP_TRANSACTION).then((response) => {
         setIsLoading(false);
         setTransactions(response.data || []);
+        console.log(materials);
       });
     };
 
