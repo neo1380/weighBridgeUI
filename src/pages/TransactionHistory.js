@@ -125,13 +125,15 @@ export const TransactionHistory = () => {
           console.log(tempTransactions.data);
           const filterData = [];
           tempTransactions.data.forEach((item) => {
-            item.childTransactionDtoList.forEach((child) => {
-              item.priceType = child.priceType === "B" ? "Bale" : "Loose";
-              item.materialName = materials.find(
-                (mat) => mat.materialId === child.materialType
-              ).materialName;
-              filterData.push(item);
-            });
+            if (item.childTransactionDtoList) {
+              item.childTransactionDtoList.forEach((child) => {
+                item.priceType = child.baleOrLoose === "B" ? "Bale" : "Loose";
+                item.materialName = materials.find(
+                  (mat) => mat.materialId === child.materialType
+                ).materialName;
+                filterData.push(item);
+              });
+            }
           });
           settransactionData(filterData);
         });
