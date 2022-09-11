@@ -384,9 +384,9 @@ export const WeighManagement = () => {
   };
 
   const FirstWeight = (field, key) => {
-    if (transactionType === "weightonly") {
+    /*    if (transactionType === "weightonly") {
       return null;
-    }
+    } */
 
     const { index } = field;
 
@@ -436,9 +436,9 @@ export const WeighManagement = () => {
     console.log("transactionType", transactionType);
     console.log("allowedMaxWeight", allowedMaxWeight);
     console.log("allowedMinWeight,", allowedMinWeight);
-    if (transactionType === "weightonly") {
+    /*  if (transactionType === "weightonly") {
       return null;
-    }
+    } */
 
     if (transactionCreation === "IN_PROGRESS") {
       return (
@@ -494,7 +494,7 @@ export const WeighManagement = () => {
     }
   };
 
-  const TotalWeight = (field, key) => {
+  /*  const TotalWeight = (field, key) => {
     if (transactionType !== "weightonly") {
       return null;
     }
@@ -518,7 +518,7 @@ export const WeighManagement = () => {
         />
       </Form.Item>
     );
-  };
+  }; */
 
   const Vat = ({ disabled }) => {
     const onChangeVat = (event) => {
@@ -1059,8 +1059,8 @@ export const WeighManagement = () => {
                           form.getFieldValue("childTransactionDtoList")[index]
                         }
                       />
-
-                      <TotalWeight {...field} key={`totalWeight_${index}`} />
+                      {/* 
+                      <TotalWeight {...field} key={`totalWeight_${index}`} /> */}
 
                       {/* <MinusCircleOutlined onClick={() => remove(field.name)} /> */}
                     </>
