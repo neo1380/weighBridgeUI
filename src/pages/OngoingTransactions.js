@@ -8,7 +8,7 @@ const { Title } = Typography;
 
 export const OnGoingTransactions = () => {
   const [transactions, setTransactions] = useState([]);
-  const [materials, setMaterials] = useState([]);
+  //   const [materials, setMaterials] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const Spinner = () => (
     <Spin className="spinner" tip="Loading Ongoing Transactions ...." />
@@ -22,7 +22,7 @@ export const OnGoingTransactions = () => {
       axios.get(BASE_URL + API_ENDPOINTS.TEMP_TRANSACTION).then((response) => {
         setIsLoading(false);
         setTransactions(response.data || []);
-        console.log(materials);
+        // console.log(materials);
       });
     };
 
@@ -31,7 +31,7 @@ export const OnGoingTransactions = () => {
       fetch(materialList)
         .then((response) => response.json())
         .then((materials) => {
-          setMaterials(materials);
+          //   setMaterials(materials);
           setIsLoading(false);
           getTemporaryTransactions();
         });
@@ -40,9 +40,9 @@ export const OnGoingTransactions = () => {
 
     return () => {
       setTransactions([]);
-      setMaterials([]);
+      //   setMaterials([]);
     };
-  }, [materials]);
+  }, []);
 
   const TransactionList = () => {
     return transactions.length > 0 ? (
