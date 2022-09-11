@@ -235,9 +235,9 @@ export const WeighManagement = () => {
   };
 
   const VehicleNumber = ({ disabled }) => {
-    if (transactionType === "weightonly") {
+    /*  if (transactionType === "weightonly") {
       return null;
-    }
+    } */
 
     if (selectedCustType !== 1) {
       //customer type 1 is Layman
