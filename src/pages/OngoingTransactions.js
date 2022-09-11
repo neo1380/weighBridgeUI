@@ -42,7 +42,7 @@ export const OnGoingTransactions = () => {
       setTransactions([]);
       setMaterials([]);
     };
-  }, []);
+  }, [materials]);
 
   const TransactionList = () => {
     return transactions.length > 0 ? (
