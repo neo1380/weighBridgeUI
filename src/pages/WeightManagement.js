@@ -141,7 +141,7 @@ export const WeighManagement = () => {
               value={value}
               key={value}
               onChange={onChangeUserType}
-              disabled={transactionCreation === "IN_PROGRESS"}
+              //   disabled={transactionCreation === "IN_PROGRESS"}
             >
               {label}
             </Radio.Button>
@@ -296,7 +296,7 @@ export const WeighManagement = () => {
           labelInValue
           onChange={onChangeMaterialType}
           loading={!materials.length}
-          disabled={transaction?.transactionId}
+          //   disabled={transaction?.transactionId}
         >
           {materials.map((opt, index) => (
             <Select.Option
@@ -332,7 +332,7 @@ export const WeighManagement = () => {
           buttonStyle="solid"
           onChange={onChangePriceType}
           value={priceType}
-          disabled={transaction?.transactionId}
+          //   disabled={transaction?.transactionId}
         >
           {priceTypes.map(({ label, value }) => (
             <Radio.Button
@@ -494,7 +494,7 @@ export const WeighManagement = () => {
       <Form.Item label="" name="includeVat">
         <Checkbox
           checked={enableVat}
-          disabled={transactionCreation === "IN_PROGRESS"}
+          //   disabled={transactionCreation === "IN_PROGRESS"}
           onChange={onChangeVat}
         >
           Include VAT for this transaction
@@ -941,11 +941,11 @@ export const WeighManagement = () => {
             initialValues={formInitValues}
             onFinish={onFinish}
           >
-            <TransactionType disabled={transactionCreation} />
-            <CustomerType disabled={transactionCreation} />
-            <CustomerName disabled={transactionCreation} />
-            <PhoneNumber disabled={transactionCreation} />
-            <CustomerID disabled={transactionCreation} />
+            <TransactionType />
+            <CustomerType />
+            <CustomerName />
+            <PhoneNumber />
+            <CustomerID />
             <VehicleNumber disabled={transactionCreation} />
             <DriverCount disabled={transactionCreation} />
 
