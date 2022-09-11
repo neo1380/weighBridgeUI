@@ -16,6 +16,7 @@ import { Login } from "./Login";
 import { EmployeeManagement } from "./EmployeeManagement";
 import { MaterialManagement } from "./MaterialManagement";
 import { OrderSummary } from "./OrderSummary";
+import { OnGoingTransactions } from "./OngoingTransactions";
 
 const { Sider, Content } = Layout;
 
@@ -73,6 +74,9 @@ export class Home extends Component {
                   <Menu.Item key="5" icon={<GlobalOutlined />}>
                     <Link to="/material"> Material Management</Link>
                   </Menu.Item>
+                  <Menu.Item key="6" icon={<GlobalOutlined />}>
+                    <Link to="/ongoing"> Ongoing Transactions</Link>
+                  </Menu.Item>
                   {/*    <Menu.Item key="6" icon={<GlobalOutlined />}>
                     <Link to="/summary"> Order Summary</Link>
                   </Menu.Item> */}
@@ -113,6 +117,11 @@ export class Home extends Component {
                       exact
                       path="/summary/:id"
                       element={<OrderSummary />}
+                    />
+                    <Route
+                      exact
+                      path="/ongoing"
+                      element={<OnGoingTransactions />}
                     />
                     <Route path="*" element={<NotFound />} />
                   </Routes>

@@ -27,7 +27,7 @@ export const WeighManagement = () => {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(true);
   const [transactionType, setTransactionType] = useState(null);
-  const [vehicleType, setVehicleType] = useState(null);
+  //   const [vehicleType, setVehicleType] = useState(null);
   const [priceType, setPriceType] = useState("L");
   const [selectedCustType, setSelectedCustType] = useState(null);
   const [customerTypeOptions, setCustomerTypeOptions] = useState([]);
@@ -52,10 +52,10 @@ export const WeighManagement = () => {
     { label: "Weight Only", value: "weightonly" },
   ];
 
-  const vehicleTypes = [
+  /*  const vehicleTypes = [
     { label: "Light", value: "LT" },
     { label: "Heavy", value: "HV" },
-  ];
+  ]; */
   const priceTypes = [
     { label: "Loose", value: "L" },
     { label: "Bale", value: "B" },
@@ -63,7 +63,7 @@ export const WeighManagement = () => {
   const formInitValues = {
     size: "default",
     transferType: "INC",
-    vehicleType: "LT",
+    // vehicleType: "LT",
     customerType: transactionType === "OUT" ? 1 : 3,
     childTransactionDtoList: [
       {
@@ -264,7 +264,7 @@ export const WeighManagement = () => {
     }
   };
 
-  const VehicleType = () => {
+  /*  const VehicleType = () => {
     if (transactionType === "weightonly") {
       return null;
     }
@@ -288,7 +288,7 @@ export const WeighManagement = () => {
         </Radio.Group>
       </Form.Item>
     );
-  };
+  }; */
 
   const DriverCount = ({ disabled }) => {
     if (transactionType === "weightonly") {
@@ -719,7 +719,7 @@ export const WeighManagement = () => {
       });
     setTransactionType("INC");
     setPriceType("L");
-    setVehicleType("LT");
+    // setVehicleType("LT");
     handlePriceTypes();
     return () => setMaterials([]);
   }, [handleCustomerTypes, handlePriceTypes]);
@@ -795,7 +795,7 @@ export const WeighManagement = () => {
       customerName: values.customerName,
       customerId: values.customerId,
       vehicleNumber: values.vehicleNumber,
-      vehicleType: values.vehicleType,
+      //   vehicleType: values.vehicleType,
       customerType: values.customerType,
       phoneNumber: values.phoneNumber,
       driverCount: values.driverCount,
@@ -1010,7 +1010,7 @@ export const WeighManagement = () => {
             <CustomerName />
             <PhoneNumber />
             <CustomerID />
-            <VehicleType />
+            {/* <VehicleType /> */}
             <VehicleNumber disabled={transactionCreation} />
             <DriverCount disabled={transactionCreation} />
 
@@ -1114,7 +1114,7 @@ export const WeighManagement = () => {
                 <Col span={24}>
                   <Space direction="vertical">
                     <Title type="primary" level={5} className="mt-2">
-                      List of Active transactions
+                      Ongoing transactions
                     </Title>
 
                     {tempTransactions.map((transaction) => {
