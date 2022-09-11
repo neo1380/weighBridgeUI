@@ -27,6 +27,7 @@ export const WeighManagement = () => {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(true);
   const [transactionType, setTransactionType] = useState(null);
+  const [vehicleType, setVehicleType] = useState(null);
   const [priceType, setPriceType] = useState("L");
   const [selectedCustType, setSelectedCustType] = useState(null);
   const [customerTypeOptions, setCustomerTypeOptions] = useState([]);
@@ -50,6 +51,11 @@ export const WeighManagement = () => {
     { label: "Outgoing", value: "OUT" },
     { label: "Weight Only", value: "weightonly" },
   ];
+
+  const vehicleTypes = [
+    { label: "Light", value: "LT" },
+    { label: "Heavy", value: "HV" },
+  ];
   const priceTypes = [
     { label: "Loose", value: "L" },
     { label: "Bale", value: "B" },
@@ -57,6 +63,7 @@ export const WeighManagement = () => {
   const formInitValues = {
     size: "default",
     transferType: "INC",
+    vehicleType: "LT",
     customerType: transactionType === "OUT" ? 1 : 3,
     childTransactionDtoList: [
       {
@@ -253,6 +260,29 @@ export const WeighManagement = () => {
     } else {
       return null;
     }
+  };
+
+  const VehicleType = () => {
+    return (
+      <Form.Item
+        label="Vehicle type"
+        name="vehicleType"
+        rules={[
+          {
+            required: true,
+            message: "Please choose a vehicle type",
+          },
+        ]}
+      >
+        <Radio.Group buttonStyle="solid" value={vehicleType}>
+          {vehicleTypes.map(({ label, value }) => (
+            <Radio.Button value={value} key={value}>
+              {label}
+            </Radio.Button>
+          ))}
+        </Radio.Group>
+      </Form.Item>
+    );
   };
 
   const DriverCount = ({ disabled }) => {
@@ -684,6 +714,7 @@ export const WeighManagement = () => {
       });
     setTransactionType("INC");
     setPriceType("L");
+    setVehicleType("LT");
     handlePriceTypes();
     return () => setMaterials([]);
   }, [handleCustomerTypes, handlePriceTypes]);
@@ -738,6 +769,7 @@ export const WeighManagement = () => {
       customerName: values.customerName,
       customerId: values.customerId,
       vehicleNumber: values.vehicleNumber,
+      vehicleType: values.vehicleType,
       customerType: values.customerType,
       phoneNumber: values.phoneNumber,
       driverCount: values.driverCount,
@@ -946,6 +978,7 @@ export const WeighManagement = () => {
             <CustomerName />
             <PhoneNumber />
             <CustomerID />
+            <VehicleType />
             <VehicleNumber disabled={transactionCreation} />
             <DriverCount disabled={transactionCreation} />
 
