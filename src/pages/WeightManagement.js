@@ -238,6 +238,7 @@ export const WeighManagement = () => {
     if (transactionType === "weightonly") {
       return null;
     }
+
     if (selectedCustType !== 1) {
       //customer type 1 is Layman
       return (
@@ -253,6 +254,7 @@ export const WeighManagement = () => {
         >
           <Input
             placeholder="Enter Vehicle Number"
+            onBlur={validateVehicleNumber}
             disabled={disabled === "IN_PROGRESS"}
           />
         </Form.Item>
@@ -263,6 +265,9 @@ export const WeighManagement = () => {
   };
 
   const VehicleType = () => {
+    if (transactionType === "weightonly") {
+      return null;
+    }
     return (
       <Form.Item
         label="Vehicle type"
@@ -732,7 +737,28 @@ export const WeighManagement = () => {
     form.getFieldValue("childTransactionDtoList").length = 1;
   };
 
+  const duplicateTransaction = (value) => {
+    const filteredTransactions = tempTransactions.filter(
+      (transaction) => transaction.vehicleNumber === value
+    );
+    if (filteredTransactions.length) {
+      Modal.warning({
+        title: "Ongoing Transaction",
+        content: `There is an ongoing transaction with vehicle Number - ${value}. Please close the ongoing transaction or create this transaction with a new Vehicle Number !`,
+      });
+    }
+    return filteredTransactions;
+  };
+
   const onFinish = (values) => {
+    const { vehicleNumber } = values;
+    if (!currentTransactionId) {
+      const duplicateTransactions = duplicateTransaction(vehicleNumber);
+      if (duplicateTransactions.length) {
+        return;
+      }
+    }
+
     if (
       typeof values.customerID === "undefined" &&
       values.customerName &&
@@ -951,6 +977,12 @@ export const WeighManagement = () => {
       (item) => item.transactionId
     );
     return newTransactions.length;
+  };
+
+  const validateVehicleNumber = ($event) => {
+    const value = $event.target.value;
+    const count = duplicateTransaction(value);
+    return count;
   };
 
   const WeightForm = () => {
