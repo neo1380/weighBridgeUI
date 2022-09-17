@@ -1,72 +1,98 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { Button, Typography, Space, Spin } from "antd";
+import { Typography, Spin, Table } from "antd";
+import { Alert } from "antd";
 
-import { Row, Col } from "antd";
 import { API_ENDPOINTS, BASE_URL } from "../constants/api.constants";
 const { Title } = Typography;
 
 export const OnGoingTransactions = () => {
   const [transactions, setTransactions] = useState([]);
-  //   const [materials, setMaterials] = useState([]);
+  const [materials, setMaterials] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const Spinner = () => (
     <Spin className="spinner" tip="Loading Ongoing Transactions ...." />
   );
-
-  useCallback(() => {}, []);
+  const columns = [
+    {
+      title: "Vehicle Number",
+      dataIndex: "vehicleNumber",
+      key: "vehicleNumber",
+      render: (text) => <span>{text}</span>,
+    },
+    {
+      title: "Material",
+      dataIndex: "materialName",
+      key: "transactionId",
+      render: (text) => <span>{text}</span>,
+    },
+  ];
 
   useEffect(() => {
     const getTemporaryTransactions = () => {
       setIsLoading(true);
       axios.get(BASE_URL + API_ENDPOINTS.TEMP_TRANSACTION).then((response) => {
         setIsLoading(false);
+        response.data.forEach((element) => {
+          element.childTransactionDtoList.forEach((child) => {
+            if (element.secondWeight === null || !element.secondWeight) {
+              const material = materials.find(
+                (mat) => mat.materialId === child.materialType
+              );
+              element.materialName = material ? material.materialName : "NA";
+            } else {
+              element.materialName = "NA";
+            }
+          });
+        });
         setTransactions(response.data || []);
-        // console.log(materials);
       });
     };
 
+    getTemporaryTransactions();
+
+    return () => {
+      setTransactions([]);
+    };
+  }, [materials]);
+
+  useEffect(() => {
     const getMaterials = () => {
       const materialList = BASE_URL + API_ENDPOINTS.GET_MATERIAL;
       fetch(materialList)
         .then((response) => response.json())
         .then((materials) => {
-          //   setMaterials(materials);
-          setIsLoading(false);
-          getTemporaryTransactions();
+          setMaterials(materials, () => {
+            setIsLoading(false);
+          });
         });
     };
     getMaterials();
-
     return () => {
-      setTransactions([]);
-      //   setMaterials([]);
+      setMaterials([]);
     };
   }, []);
 
+  const OnGoingTransactionList = () => (
+    <>
+      <Title
+        wrapperCol={{
+          offset: 4,
+          span: 16,
+        }}
+        level={5}
+      >
+        Ongoing Transactions
+      </Title>
+      <Table size="small" columns={columns} dataSource={transactions} />
+    </>
+  );
+
   const TransactionList = () => {
     return transactions.length > 0 ? (
-      <Row gutter={24}>
-        <Col span={24}>
-          <Space direction="vertical">
-            <Title type="primary" level={5} className="mt-2">
-              Ongoing transactions
-            </Title>
-
-            {transactions.map((transaction) => {
-              return (
-                <Button type="link" key={transaction.id} className="pl-0">
-                  {transaction?.vehicleNumber
-                    ? transaction.vehicleNumber
-                    : transaction.customerName}
-                </Button>
-              );
-            })}
-          </Space>
-        </Col>
-      </Row>
+      <OnGoingTransactionList />
     ) : (
-      <p>"No Active Transactions"</p>
+      <Alert message="No Active transactions" type="info" showIcon />
     );
   };
 
