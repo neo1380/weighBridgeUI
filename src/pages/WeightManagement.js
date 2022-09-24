@@ -27,7 +27,7 @@ export const WeighManagement = () => {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(true);
   const [transactionType, setTransactionType] = useState(null);
-  //   const [vehicleType, setVehicleType] = useState(null);
+  const [vehicleType, setVehicleType] = useState(null);
   const [priceType, setPriceType] = useState("L");
   const [selectedCustType, setSelectedCustType] = useState(null);
   const [customerTypeOptions, setCustomerTypeOptions] = useState([]);
@@ -52,10 +52,10 @@ export const WeighManagement = () => {
     { label: "Weight Only", value: "weightonly" },
   ];
 
-  /*  const vehicleTypes = [
+  const vehicleTypes = [
     { label: "Light", value: "LT" },
     { label: "Heavy", value: "HV" },
-  ]; */
+  ];
   const priceTypes = [
     { label: "Loose", value: "L" },
     { label: "Bale", value: "B" },
@@ -63,7 +63,7 @@ export const WeighManagement = () => {
   const formInitValues = {
     size: "default",
     transferType: "INC",
-    // vehicleType: "LT",
+    vehicleType: "LT",
     customerType: transactionType === "OUT" ? 1 : 3,
     childTransactionDtoList: [
       {
@@ -264,7 +264,7 @@ export const WeighManagement = () => {
     }
   };
 
-  /*  const VehicleType = () => {
+  const VehicleType = () => {
     if (transactionType === "weightonly") {
       return null;
     }
@@ -288,7 +288,7 @@ export const WeighManagement = () => {
         </Radio.Group>
       </Form.Item>
     );
-  }; */
+  };
 
   const DriverCount = ({ disabled }) => {
     if (transactionType === "weightonly") {
@@ -426,6 +426,7 @@ export const WeighManagement = () => {
   };
 
   const SecondWeight = (field, key) => {
+    const { index } = field;
     const firstWeight =
       field.firstWeightDetail && field.firstWeightDetail.firstWeight
         ? field.firstWeightDetail.firstWeight
@@ -440,6 +441,30 @@ export const WeighManagement = () => {
       return null;
     } */
 
+    const calcSecondWeight = (index) => {
+      let secondWeight = null;
+      const currTransaction = form.getFieldValue("childTransactionDtoList")[
+        index
+      ];
+      if (currTransaction.secondWeight) {
+        secondWeight =
+          form.getFieldValue("childTransactionDtoList")[index].secondWeight ||
+          null;
+      }
+      return secondWeight;
+    };
+
+    const disableSecondWeight = (index) => {
+      let isDisabled = false;
+      const currTransaction = form.getFieldValue("childTransactionDtoList")[
+        index
+      ];
+      if (currTransaction.secondWeight && currTransaction.transactionId) {
+        isDisabled = true;
+      }
+      return isDisabled;
+    };
+
     if (transactionCreation === "IN_PROGRESS") {
       return (
         <Form.Item
@@ -447,6 +472,7 @@ export const WeighManagement = () => {
           name={[field.name, "secondWeight"]}
           fieldKey={[field.fieldKey, key]}
           validateTrigger="onBlur"
+          initialValue={calcSecondWeight(index)}
           rules={[
             (obj) => ({
               validator(_, value) {
@@ -456,7 +482,10 @@ export const WeighManagement = () => {
                   fieldNameArr[1]
                 ].firstWeight;
 
-                if (!value || value.length === 0) {
+                if (
+                  (!value || value.length === 0) &&
+                  !multipleTransactionEnabled
+                ) {
                   return Promise.reject("Please enter Second Weight");
                 }
                 if (transactionType === "INC") {
@@ -478,6 +507,7 @@ export const WeighManagement = () => {
                     );
                   }
                 }
+                return Promise.resolve();
               },
             }),
           ]}
@@ -485,6 +515,7 @@ export const WeighManagement = () => {
           <InputNumber
             placeholder="Weight after unload"
             addonAfter="Kgs"
+            disabled={disableSecondWeight(index)}
             onChange={(value) => onChangeSecondWeight(value)}
           />
         </Form.Item>
@@ -719,7 +750,7 @@ export const WeighManagement = () => {
       });
     setTransactionType("INC");
     setPriceType("L");
-    // setVehicleType("LT");
+    setVehicleType("LT");
     handlePriceTypes();
     return () => setMaterials([]);
   }, [handleCustomerTypes, handlePriceTypes]);
@@ -851,7 +882,7 @@ export const WeighManagement = () => {
         value: materialId,
         key: materialId,
       };
-      child.secondWeight = null;
+      //   child.secondWeight = null;
       child.transactionId = transaction.id;
       delete child.materialType;
     });
@@ -1010,7 +1041,7 @@ export const WeighManagement = () => {
             <CustomerName />
             <PhoneNumber />
             <CustomerID />
-            {/* <VehicleType /> */}
+            <VehicleType />
             <VehicleNumber disabled={transactionCreation} />
             <DriverCount disabled={transactionCreation} />
 
@@ -1058,6 +1089,10 @@ export const WeighManagement = () => {
                         firstWeightDetail={
                           form.getFieldValue("childTransactionDtoList")[index]
                         }
+                        transaction={
+                          form.getFieldValue("childTransactionDtoList")[index]
+                        }
+                        index={index}
                       />
                       {/* 
                       <TotalWeight {...field} key={`totalWeight_${index}`} /> */}
