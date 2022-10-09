@@ -52,7 +52,18 @@ export class Home extends Component {
           <Router>
             <HeaderComp />
             <Layout>
-              <Sider width={250} className="site-layout-background">
+              <Sider
+                width={250}
+                breakpoint="lg"
+                collapsedWidth="0"
+                onBreakpoint={(broken) => {
+                  console.log(broken);
+                }}
+                onCollapse={(collapsed, type) => {
+                  console.log(collapsed, type);
+                }}
+                className="site-layout-background"
+              >
                 <Menu
                   mode="inline"
                   defaultSelectedKeys={["4"]}

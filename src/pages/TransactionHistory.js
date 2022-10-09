@@ -15,30 +15,35 @@ export const TransactionHistory = () => {
       dataIndex: "id",
       key: "id",
       render: (text) => <span>{text}</span>,
+      responsive: ["md"],
     },
     {
       title: "Customer ID",
       dataIndex: "customerId",
       key: "customerId",
       render: (text) => <span>{text}</span>,
+      responsive: ["md"],
     },
     {
       title: "Customer Type",
       dataIndex: "customerType",
       key: "customerType",
       render: (text) => <span>{customerTypeMap[text]}</span>,
+      responsive: ["md"],
     },
     {
       title: "Transaction Type",
       dataIndex: "transferType",
       key: "transferType",
       render: (text) => <span>{transferTypeMap[text]}</span>,
+      responsive: ["md"],
     },
     {
       title: "Vehicle No",
       dataIndex: "vehicleNumber",
       key: "vehicleNumber",
       render: (text) => <span>{text}</span>,
+      responsive: ["md"],
     },
     /* {
       title: "Created At",
@@ -69,30 +74,35 @@ export const TransactionHistory = () => {
       dataIndex: "transactionStatus",
       key: "transactionStatus",
       render: (text) => <span>{text}</span>,
+      responsive: ["md"],
     },
     {
       title: "Material",
       dataIndex: "materialName",
       key: "materialName",
       render: (text) => <span>{text}</span>,
+      responsive: ["md"],
     },
     {
       title: "Total Weight",
       dataIndex: "totalWeight",
       key: "totalWeight",
       render: (text) => <span>{text ? text : "NA"}</span>,
+      responsive: ["md"],
     },
     {
       title: "Price Type",
       dataIndex: "priceType",
       key: "priceType",
       render: (text) => <span>{text}</span>,
+      responsive: ["md"],
     },
     {
       title: "Total Price",
       dataIndex: "finalAmount",
       key: "finalAmount",
       render: (text) => <span>{text}</span>,
+      responsive: ["md"],
     },
 
     {
@@ -100,6 +110,7 @@ export const TransactionHistory = () => {
       dataIndex: "comments",
       key: "comments",
       render: (text) => <span>{text}</span>,
+      responsive: ["md"],
     },
   ];
   const customerTypeMap = {
