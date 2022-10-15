@@ -8,7 +8,6 @@ import {
   Space,
   Modal,
   InputNumber,
-  message,
   Radio,
   Checkbox,
   Spin,
@@ -174,6 +173,7 @@ export const WeighManagement = () => {
         ]}
       >
         <Input
+          allowClear
           placeholder="Enter Customer Name"
           disabled={disabled === "IN_PROGRESS" && !enableCustName}
         />
@@ -224,6 +224,7 @@ export const WeighManagement = () => {
           ]}
         >
           <Input
+            allowClear
             placeholder="Enter Customer ID"
             disabled={disabled === "IN_PROGRESS"}
           />
@@ -253,6 +254,7 @@ export const WeighManagement = () => {
           ]}
         >
           <Input
+            allowClear
             placeholder="Enter Vehicle Number"
             onBlur={validateVehicleNumber}
             disabled={disabled === "IN_PROGRESS"}
@@ -307,6 +309,7 @@ export const WeighManagement = () => {
           ]}
         >
           <Input
+            allowClear
             placeholder="Enter Driver Count"
             disabled={disabled === "IN_PROGRESS"}
           />
