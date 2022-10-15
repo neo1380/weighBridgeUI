@@ -491,7 +491,7 @@ export const WeighManagement = () => {
                 ) {
                   return Promise.reject("Please enter Second Weight");
                 }
-                if (transactionType === "INC") {
+                if (transactionType === "OUT" && !multipleTransactionEnabled) {
                   if (value < firstWeight) {
                     return Promise.resolve();
                   } else {
@@ -501,7 +501,7 @@ export const WeighManagement = () => {
                   }
                 }
 
-                if (transactionType === "OUT") {
+                if (transactionType === "OUT" && !multipleTransactionEnabled) {
                   if (value > firstWeight) {
                     return Promise.resolve();
                   } else {
@@ -805,10 +805,7 @@ export const WeighManagement = () => {
       values = { ...values, ...newCustomerID };
     }
     console.log("Received values of form: ", values);
-    const message = {
-      initiated: "Transaction creation is in progress.",
-      completed: "Transaction successfully completed",
-    };
+
     const createTransaction = BASE_URL + API_ENDPOINTS.CREATE_TRANSACTION;
     const childTransactions = values.childTransactionDtoList || [];
     if (childTransactions.length) {
@@ -827,7 +824,7 @@ export const WeighManagement = () => {
         return child;
       });
     }
-    const data = {
+    const payload = {
       customerName: values.customerName,
       customerId: values.customerId,
       vehicleNumber: values.vehicleNumber,
@@ -841,17 +838,17 @@ export const WeighManagement = () => {
       isTransactionCompleted: multipleTransactionEnabled ? 0 : 1,
     };
     if (currentTransactionId) {
-      data.id = currentTransactionId;
-      data.includeVat = transactionType === "OUT" ? true : enableVat;
+      payload.id = currentTransactionId;
+      payload.includeVat = transactionType === "OUT" ? true : enableVat;
     }
-    axios.post(createTransaction, data).then(({ data }) => {
-      openMessage(message);
-      getTemporaryTransactions();
-      setCurrentTransactionId(null);
-      setTransactionCreation(null);
+    axios.post(createTransaction, payload).then(({ data }) => {
       if (data.isTransactionCompleted) {
         navigate(`/summary/${currentTransactionId}`);
       } else {
+        openMessage();
+        getTemporaryTransactions();
+        setCurrentTransactionId(null);
+        setTransactionCreation(null);
         setIsLoading(false);
         onReset();
       }
@@ -909,15 +906,17 @@ export const WeighManagement = () => {
     }
   };
 
-  const openMessage = ({ initiated, completed }) => {
-    console.log("message");
-    const key = "updatable";
-
-    message.loading({ content: initiated, key });
+  const openMessage = () => {
     setTimeout(() => {
-      message.success({ content: completed, key, duration: 2 }).then(() => {
+      /*   message.success({ content: completed, key, duration: 2 }).then(() => {
         setTransactionCreation(null);
         form.resetFields();
+      }); */
+      setTransactionCreation(null);
+      form.resetFields();
+      Modal.success({
+        title: "Creating Temporary Transaction",
+        content: `Temporary Transaction Created. Please check the vehicle number in list of Ongoing Transactions Section`,
       });
     }, 1000);
   };
