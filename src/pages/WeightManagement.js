@@ -318,6 +318,9 @@ export const WeighManagement = () => {
   };
 
   const Materials = ({ field, transaction }) => {
+    if (transactionType === "weightonly") {
+      return null;
+    }
     // if (selectedCustType !== 3) {
     return (
       <Form.Item
@@ -810,15 +813,17 @@ export const WeighManagement = () => {
     const childTransactions = values.childTransactionDtoList || [];
     if (childTransactions.length) {
       childTransactions.map((child) => {
-        child.materialType = child.materialName.value;
-        child.vat = materials.find(
-          (mat) => mat.materialId === child.materialType
-        ).vat;
+        if (transactionType !== "weightonly") {
+          child.materialType = child.materialName.value;
+          child.vat = materials.find(
+            (mat) => mat.materialId === child.materialType
+          ).vat;
+          delete child.materialName;
+          delete child.materialId;
+        }
         if (!child.secondWeight) {
           delete child.secondWeight;
         }
-        delete child.materialName;
-        delete child.materialId;
         return child;
       });
     }
@@ -1053,11 +1058,14 @@ export const WeighManagement = () => {
                       {/* <p className="ant-col ant-col-16 ant-col-offset-2 ant-form-item-label">
                   Transaction: <b>{index + 1}</b>
                 </p> */}
-                      <Col span={12} offset={2} className="mb-5">
-                        <Typography.Title level={4} style={{ margin: 0 }}>
-                          Transaction: {index + 1}
-                        </Typography.Title>
-                      </Col>
+                      {transactionType !== "weightonly" ? (
+                        <Col span={12} offset={2} className="mb-5">
+                          <Typography.Title level={4} style={{ margin: 0 }}>
+                            Transaction: {index + 1}
+                          </Typography.Title>
+                        </Col>
+                      ) : null}
+
                       <Materials
                         field={field}
                         transaction={
