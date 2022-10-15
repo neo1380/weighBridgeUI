@@ -59,16 +59,16 @@ export const EmployeeManagement = () => {
             </Select>
           </Form.Item>
           <Form.Item label="Enter First Name" name="firstName">
-            <Input placeholder="Enter First Name" />
+            <Input placeholder="Enter First Name" allowClear />
           </Form.Item>
           <Form.Item label="Enter Middle Name" name="middleName">
-            <Input placeholder="Enter Middle Name" />
+            <Input placeholder="Enter Middle Name" allowClear />
           </Form.Item>
           <Form.Item label="Enter Last Name" name="lastName">
-            <Input placeholder="Enter Last Name" />
+            <Input placeholder="Enter Last Name" allowClear />
           </Form.Item>
           <Form.Item label="Enter Email Address" name="email">
-            <Input placeholder="Enter Email Address" />
+            <Input placeholder="Enter Email Address" allowClear />
           </Form.Item>
           <ShowPhoneNumber />
           <Form.Item label="Employee Status" name="employeeStatus">
@@ -89,7 +89,7 @@ export const EmployeeManagement = () => {
             </Space>
           </Form.Item>
           <Form.Item label="Resident ID" name="residentID">
-            <Input placeholder="Add Resident ID" />
+            <Input placeholder="Add Resident ID" allowClear />
           </Form.Item>
           <Form.Item label="Resident valid From" name="residentIDValidFrom">
             <Space direction="vertical">
@@ -102,7 +102,7 @@ export const EmployeeManagement = () => {
             </Space>
           </Form.Item>
           <Form.Item label="Department ID" name="departmentID">
-            <Input placeholder="Enter Department" />
+            <Input placeholder="Enter Department" allowClear />
           </Form.Item>
 
           <Form.Item>
