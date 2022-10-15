@@ -62,7 +62,7 @@ export class Home extends Component {
                 onCollapse={(collapsed, type) => {
                   console.log(collapsed, type);
                 }}
-                className="site-layout-background"
+                className="site-layout-background hide-print"
               >
                 <Menu
                   mode="inline"

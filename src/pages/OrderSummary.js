@@ -67,6 +67,10 @@ export const OrderSummary = () => {
   const getCustomerType = ({ customerType }) => {
     return customerTypeMap[customerType];
   };
+
+  const printTransaction = (event) => {
+    window.print();
+  };
   return (
     <Row>
       {transaction ? (
@@ -76,7 +80,7 @@ export const OrderSummary = () => {
               level={4}
               style={{ margin: 0, marginBottom: "20px" }}
             >
-              Order Summary
+              Order Summary | Transaction ID: {id}
             </Typography.Title>
           </Col>
           <Col span={24}>
@@ -155,7 +159,12 @@ export const OrderSummary = () => {
             ) : null}
 
             <p>
-              <Button type="primary" htmlType="submit" className="mr-3 mt-5">
+              <Button
+                type="primary"
+                htmlType="submit"
+                onClick={printTransaction}
+                className="mr-3 mt-5 hide-print"
+              >
                 Print Transaction
               </Button>
             </p>

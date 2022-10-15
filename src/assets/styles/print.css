@@ -1,0 +1,6 @@
+@media print {
+  .hide-print,
+  header {
+    display: none;
+  }
+}
