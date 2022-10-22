@@ -432,6 +432,17 @@ export const WeighManagement = () => {
   };
 
   const SecondWeight = (field, key) => {
+    console.log("in second weight initi");
+    console.log(field);
+    console.log(field.transaction);
+    const currentTransaction = field.transaction;
+    if (
+      !currentTransaction ||
+      !currentTransaction.firstWeight ||
+      !currentTransaction.transactionId
+    )
+      return null;
+    // if (field.transaction && !field.transaction.transactionId) return;
     const { index } = field;
     const firstWeight =
       field.firstWeightDetail && field.firstWeightDetail.firstWeight
@@ -488,13 +499,10 @@ export const WeighManagement = () => {
                   fieldNameArr[1]
                 ].firstWeight;
 
-                if (
-                  (!value || value.length === 0) &&
-                  !multipleTransactionEnabled
-                ) {
+                if (!value || value.length === 0) {
                   return Promise.reject("Please enter Second Weight");
                 }
-                if (transactionType === "OUT" && !multipleTransactionEnabled) {
+                if (transactionType === "INC") {
                   if (value < firstWeight) {
                     return Promise.resolve();
                   } else {
@@ -504,7 +512,7 @@ export const WeighManagement = () => {
                   }
                 }
 
-                if (transactionType === "OUT" && !multipleTransactionEnabled) {
+                if (transactionType === "OUT") {
                   if (value > firstWeight) {
                     return Promise.resolve();
                   } else {
@@ -824,6 +832,8 @@ export const WeighManagement = () => {
         if (!child.secondWeight) {
           delete child.secondWeight;
         }
+        delete child.transactionId;
+        delete child.id;
         return child;
       });
     }
@@ -838,7 +848,7 @@ export const WeighManagement = () => {
       transferType: values.transferType,
       childTransactionDtoList: [...childTransactions],
       cancelReason: cancelForm.cancelReason || "",
-      isTransactionCompleted: multipleTransactionEnabled ? 0 : 1,
+      isTransactionCompleted: false,
     };
     if (currentTransactionId) {
       payload.id = currentTransactionId;
@@ -848,12 +858,12 @@ export const WeighManagement = () => {
       if (data.isTransactionCompleted) {
         navigate(`/summary/${currentTransactionId}`);
       } else {
-        openMessage();
+        onReset();
+        // openMessage();
         getTemporaryTransactions();
         setCurrentTransactionId(null);
         setTransactionCreation(null);
         setIsLoading(false);
-        onReset();
       }
     });
   };
@@ -909,21 +919,6 @@ export const WeighManagement = () => {
     }
   };
 
-  const openMessage = () => {
-    setTimeout(() => {
-      /*   message.success({ content: completed, key, duration: 2 }).then(() => {
-        setTransactionCreation(null);
-        form.resetFields();
-      }); */
-      setTransactionCreation(null);
-      form.resetFields();
-      Modal.success({
-        title: "Creating Temporary Transaction",
-        content: `Temporary Transaction Created. Please check the vehicle number in list of Ongoing Transactions Section`,
-      });
-    }, 1000);
-  };
-
   const allowAnotherTransaction = (add) => {
     const childTransactions = form.getFieldValue("childTransactionDtoList");
     let secondWeighEntered = 0;
@@ -942,8 +937,7 @@ export const WeighManagement = () => {
     ) {
       Modal.warning({
         title: "Add Another Transaction",
-        content:
-          "Please check second weight of previous transaction or total weight entered !",
+        content: "Please check second weight of previous transaction.",
       });
       return;
     }
@@ -962,8 +956,7 @@ export const WeighManagement = () => {
     if (secondWeighEntered < childTransactions.length) {
       Modal.warning({
         title: "Add Another Transaction",
-        content:
-          "Please check second weight of previous transaction or total weight entered !",
+        content: "Please check second weight of previous transaction.",
       });
       return;
     }
@@ -1111,7 +1104,7 @@ export const WeighManagement = () => {
                     </>
                   ))}
 
-                  {transactionCreation === "IN_PROGRESS" ? (
+                  {!multipleTransactionEnabled ? (
                     <Form.Item>
                       <Button
                         type="dashed"
