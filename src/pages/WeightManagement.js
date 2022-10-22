@@ -837,6 +837,12 @@ export const WeighManagement = () => {
         return child;
       });
     }
+
+    const allTransactionsCompleted = () => {
+      return (
+        childTransactions.filter((child) => !child.secondWeight).length === 0
+      );
+    };
     const payload = {
       customerName: values.customerName,
       customerId: values.customerId,
@@ -848,7 +854,7 @@ export const WeighManagement = () => {
       transferType: values.transferType,
       childTransactionDtoList: [...childTransactions],
       cancelReason: cancelForm.cancelReason || "",
-      isTransactionCompleted: false,
+      isTransactionCompleted: allTransactionsCompleted() ? true : false,
     };
     if (currentTransactionId) {
       payload.id = currentTransactionId;
