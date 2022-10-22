@@ -105,6 +105,9 @@ export const OrderSummary = () => {
                 <Paragraph>Customer Name: {transaction.customerName}</Paragraph>
                 <Paragraph>Customer ID : {transaction.customerId}</Paragraph>
                 <Paragraph>Phone Number: {transaction.phoneNumber}</Paragraph>
+                <Paragraph>
+                  Vehicle Number: {transaction.vehicleNumber}
+                </Paragraph>
                 <Paragraph>Driver Count: {transaction.driverCount}</Paragraph>
               </div>
             </div>
