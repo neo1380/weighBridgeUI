@@ -343,11 +343,27 @@ export const WeighManagement = () => {
       if (selectedMaterialIds.includes(+value)) {
         setfilteredMaterials([]);
       } */
-      const filteredMat = materials.filter((mat) => mat.materialId === +value);
+      const currentTransaction = tempTransactions.filter(
+        (item) => item.id === currentTransactionId
+      );
+      let filteredMaterials = [];
+      if (currentTransaction) {
+        const childTransactions = currentTransaction[0].childTransactionDtoList;
+        const childTransactionsIds = childTransactions.map(
+          (child) => child.materialName.value
+        );
+        filteredMaterials = materials.filter(
+          (mat) => !childTransactionsIds.includes(mat.materialId)
+        );
+      }
+      const filteredMat = filteredMaterials.filter(
+        (mat) => mat.materialId === +value
+      );
       console.log(filteredMat);
       setfilteredMaterials(filteredMat);
       return filteredMat;
     };
+
     // if (selectedCustType !== 3) {
     return (
       <Form.Item
@@ -364,6 +380,7 @@ export const WeighManagement = () => {
           showArrow={false}
           filterOption={false}
           onSearch={handleSearch}
+          notFoundContent={null}
           onChange={handleChange}
           loading={!materials.length}
           //   disabled={transaction?.transactionId}
