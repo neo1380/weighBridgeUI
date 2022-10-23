@@ -698,7 +698,24 @@ export const WeighManagement = () => {
   };
 
   const handleOk = () => {
-    setIsModalVisible(false);
+    console.log(form.getFieldValue());
+    const formData = form.getFieldValue();
+    formData.cancelReason = canReason;
+    formData.isTransactionCancelled = true;
+    formData.isTransactionCompleted = 1;
+    delete formData.size;
+
+    cleanChildTransactions(formData);
+    const createTransaction = BASE_URL + API_ENDPOINTS.CREATE_TRANSACTION;
+
+    axios.post(createTransaction, formData).then(({ data }) => {
+      onReset();
+      // openMessage();
+      getTemporaryTransactions();
+      setCurrentTransactionId(null);
+      setTransactionCreation(null);
+      setIsModalVisible(false);
+    });
   };
 
   const handleCancel = () => {
@@ -828,6 +845,32 @@ export const WeighManagement = () => {
     return filteredTransactions;
   };
 
+  const cleanChildTransactions = (values) => {
+    const childTransactions = values.childTransactionDtoList || [];
+    if (childTransactions.length) {
+      childTransactions.map((child) => {
+        if (transactionType !== "weightonly") {
+          child.materialType = child.materialName.value;
+          child.vat = materials.find(
+            (mat) => mat.materialId === child.materialType
+          ).vat;
+          delete child.materialName;
+          delete child.materialId;
+        }
+        if (!child.secondWeight) {
+          delete child.secondWeight;
+        }
+        delete child.transactionId;
+        delete child.id;
+        delete child.absoluteWeight;
+        delete child.materialPricewithVat;
+        delete child.materialPricewithoutVat;
+        delete child.vatCost;
+        return child;
+      });
+    }
+  };
+
   const onFinish = (values) => {
     const { vehicleNumber } = values;
     if (!currentTransactionId) {
@@ -891,7 +934,8 @@ export const WeighManagement = () => {
       transferType: values.transferType,
       childTransactionDtoList: [...childTransactions],
       cancelReason: cancelForm.cancelReason || "",
-      isTransactionCompleted: allTransactionsCompleted() ? 1 : 0,
+      //   isTransactionCompleted: allTransactionsCompleted() ? 1 : 0,
+      isTransactionCompleted: 0,
     };
     if (currentTransactionId) {
       payload.id = currentTransactionId;
