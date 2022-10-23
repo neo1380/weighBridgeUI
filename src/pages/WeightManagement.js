@@ -347,7 +347,8 @@ export const WeighManagement = () => {
         (item) => item.id === currentTransactionId
       );
       let filteredMaterials = [];
-      if (currentTransaction) {
+      let filteredMat = [];
+      if (currentTransaction.length) {
         const childTransactions = currentTransaction[0].childTransactionDtoList;
         const childTransactionsIds = childTransactions.map(
           (child) => child.materialName.value
@@ -355,12 +356,16 @@ export const WeighManagement = () => {
         filteredMaterials = materials.filter(
           (mat) => !childTransactionsIds.includes(mat.materialId)
         );
+        filteredMat = filteredMaterials.filter(
+          (mat) => mat.materialId === +value
+        );
+        console.log(filteredMat);
+        setfilteredMaterials(filteredMat);
+      } else {
+        filteredMat = materials.filter((mat) => mat.materialId === +value);
+        console.log(filteredMat);
+        setfilteredMaterials(filteredMat);
       }
-      const filteredMat = filteredMaterials.filter(
-        (mat) => mat.materialId === +value
-      );
-      console.log(filteredMat);
-      setfilteredMaterials(filteredMat);
       return filteredMat;
     };
 
@@ -375,6 +380,7 @@ export const WeighManagement = () => {
         <Select
           placeholder="Type Material ID"
           showSearch
+          allowClear
           value={value}
           labelInValue
           showArrow={false}
