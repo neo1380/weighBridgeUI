@@ -321,9 +321,31 @@ export const WeighManagement = () => {
   };
 
   const Materials = ({ field, transaction }) => {
+    const [value, setValue] = useState();
+    const [filteredMaterials, setfilteredMaterials] = useState([]);
     if (transactionType === "weightonly") {
       return null;
     }
+
+    const handleChange = (newValue) => {
+      setValue(newValue);
+    };
+
+    const handleSearch = (value) => {
+      console.log("handleSearch");
+      console.log(value);
+      console.log(materials);
+      const selectedMaterialIds = form
+        .getFieldValue("childTransactionDtoList")
+        .map((child) => child.materialType);
+      if (selectedMaterialIds.includes(+value)) {
+        setfilteredMaterials([]);
+      }
+      const filteredMat = materials.filter((mat) => mat.materialId === +value);
+      console.log(filteredMat);
+      setfilteredMaterials(filteredMat);
+      return filteredMat;
+    };
     // if (selectedCustType !== 3) {
     return (
       <Form.Item
@@ -333,13 +355,18 @@ export const WeighManagement = () => {
         fieldKey={[field.fieldKey, "materialName"]}
       >
         <Select
-          placeholder="Select Material"
+          placeholder="Type Material ID"
+          showSearch
+          value={value}
           labelInValue
-          onChange={onChangeMaterialType}
+          showArrow={false}
+          filterOption={false}
+          onSearch={handleSearch}
+          onChange={handleChange}
           loading={!materials.length}
           //   disabled={transaction?.transactionId}
         >
-          {materials.map((opt, index) => (
+          {filteredMaterials.map((opt, index) => (
             <Select.Option
               key={opt.materialId}
               label={opt.label}
