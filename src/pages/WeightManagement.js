@@ -787,10 +787,6 @@ export const WeighManagement = () => {
     setSelectedCustType(event.target.value);
   };
 
-  const onChangeMaterialType = (type) => {
-    //add code to fetch price based on materials
-  };
-
   const onReset = () => {
     form.resetFields();
     form.getFieldValue("childTransactionDtoList").length = 1;
