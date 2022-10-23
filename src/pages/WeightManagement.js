@@ -432,9 +432,6 @@ export const WeighManagement = () => {
   };
 
   const SecondWeight = (field, key) => {
-    console.log("in second weight initi");
-    console.log(field);
-    console.log(field.transaction);
     const currentTransaction = field.transaction;
     if (
       !currentTransaction ||
@@ -444,16 +441,6 @@ export const WeighManagement = () => {
       return null;
     // if (field.transaction && !field.transaction.transactionId) return;
     const { index } = field;
-    const firstWeight =
-      field.firstWeightDetail && field.firstWeightDetail.firstWeight
-        ? field.firstWeightDetail.firstWeight
-        : null;
-    let allowedMaxWeight =
-      transactionType === "INC" ? firstWeight : Number.MAX_SAFE_INTEGER;
-    let allowedMinWeight = transactionType === "INC" ? 1 : firstWeight;
-    console.log("transactionType", transactionType);
-    console.log("allowedMaxWeight", allowedMaxWeight);
-    console.log("allowedMinWeight,", allowedMinWeight);
     /*  if (transactionType === "weightonly") {
       return null;
     } */
@@ -585,7 +572,6 @@ export const WeighManagement = () => {
 
   const CancellationReasons = () => {
     const onSelectCanReason = (reason) => {
-      console.log(reason);
       setCanReason(reason);
     };
 
@@ -625,7 +611,6 @@ export const WeighManagement = () => {
   };
 
   const ActionButtons = ({ state }) => {
-    console.log("areTransactionsInProgress()", areTransactionsInProgress());
     if (areTransactionsInProgress() === 0 || multipleTransactionEnabled) {
       return (
         <Form.Item>
@@ -876,7 +861,6 @@ export const WeighManagement = () => {
   };
 
   /* const closeTransaction = ($event) => {
-    console.log(calculateRemainingWeight());
     const remainingWeight = calculateRemainingWeight();
     if (remainingWeight) {
       Modal.warning({
@@ -1002,7 +986,6 @@ export const WeighManagement = () => {
   }; */
   /*  const isTransactionCreated = (transaction) => {
     if (transaction && transaction.transactionId) {
-      console.log(transaction);
       return true;
     } else {
       return false;
