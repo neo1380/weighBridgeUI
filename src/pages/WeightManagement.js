@@ -872,7 +872,7 @@ export const WeighManagement = () => {
       transferType: values.transferType,
       childTransactionDtoList: [...childTransactions],
       cancelReason: cancelForm.cancelReason || "",
-      isTransactionCompleted: allTransactionsCompleted() ? true : false,
+      isTransactionCompleted: allTransactionsCompleted() ? 1 : 0,
     };
     if (currentTransactionId) {
       payload.id = currentTransactionId;
