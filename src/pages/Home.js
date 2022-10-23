@@ -1,5 +1,5 @@
 import { Component } from "react";
-import { BrowserRouter as Router, Route, Link, Routes } from "react-router-dom";
+import { HashRouter as Router, Route, Link, Routes } from "react-router-dom";
 import { Layout, Menu } from "antd";
 import {
   DeploymentUnitOutlined,

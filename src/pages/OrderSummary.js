@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from "react";
 import "antd/dist/antd.min.css";
-import { Typography, Button } from "antd";
-import { Row, Col } from "antd";
-import { Spin } from "antd";
+import { Typography, Button, Row, Col, Spin } from "antd";
 
+/* import { LeftOutlined } from "@ant-design/icons";
+import { useNavigate } from "react-router-dom";
+ */
 import { API_ENDPOINTS, BASE_URL } from "../constants/api.constants";
 import { useParams } from "react-router";
 
@@ -11,6 +12,7 @@ const { Paragraph } = Typography;
 
 export const OrderSummary = () => {
   const { id } = useParams();
+  /*   const navigate = useNavigate(); */
   const [transaction, setTransaction] = useState(null);
   const [materials, setMaterials] = useState([]);
   const customerTypeMap = {
@@ -68,13 +70,33 @@ export const OrderSummary = () => {
     return customerTypeMap[customerType];
   };
 
+  /*  const goToWeightMgmt = () => {
+    navigate(`/weighm`);
+  };
+ */
   const printTransaction = (event) => {
     window.print();
   };
+
   return (
     <Row>
       {transaction ? (
         <>
+          {/*   <Col span={24}>
+            <Typography.Title
+              level={4}
+              style={{ margin: 0, marginBottom: "20px" }}
+            >
+              <LeftOutlined />{" "}
+              <Button
+                type="link"
+                size={"small"}
+                onClick={() => goToWeightMgmt()}
+              >
+                Back to Weight Management
+              </Button>
+            </Typography.Title>
+          </Col> */}
           <Col span={24}>
             <Typography.Title
               level={4}
