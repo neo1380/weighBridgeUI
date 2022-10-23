@@ -917,12 +917,12 @@ export const WeighManagement = () => {
         return child;
       });
     }
-
+    /* 
     const allTransactionsCompleted = () => {
       return (
         childTransactions.filter((child) => !child.secondWeight).length === 0
       );
-    };
+    }; */
     const payload = {
       customerName: values.customerName,
       customerId: values.customerId,
