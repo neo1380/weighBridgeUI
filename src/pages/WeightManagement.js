@@ -48,7 +48,7 @@ export const WeighManagement = () => {
   const transactionTypes = [
     { label: "Incoming", value: "INC" },
     { label: "Outgoing", value: "OUT" },
-    { label: "Weight Only", value: "weightonly" },
+    { label: "Weight Only", value: "WEIGH" },
   ];
 
   const vehicleTypes = [
@@ -132,7 +132,7 @@ export const WeighManagement = () => {
   };
 
   const CustomerType = ({ disabled }) => {
-    if (transactionType === "weightonly") {
+    if (transactionType === "WEIGH") {
       return null;
     }
     return (
@@ -158,7 +158,7 @@ export const WeighManagement = () => {
   };
 
   const CustomerName = ({ disabled }) => {
-    if (transactionType === "weightonly") {
+    if (transactionType === "WEIGH") {
       return null;
     }
     return (
@@ -182,7 +182,7 @@ export const WeighManagement = () => {
   };
 
   const PhoneNumber = ({ disabled }) => {
-    if (transactionType === "weightonly") {
+    if (transactionType === "WEIGH") {
       return null;
     }
 
@@ -208,7 +208,7 @@ export const WeighManagement = () => {
   };
 
   const CustomerID = ({ disabled }) => {
-    if (transactionType === "weightonly") {
+    if (transactionType === "WEIGH") {
       return null;
     }
     if (selectedCustType !== 2) {
@@ -236,7 +236,7 @@ export const WeighManagement = () => {
   };
 
   const VehicleNumber = ({ disabled }) => {
-    /*  if (transactionType === "weightonly") {
+    /*  if (transactionType === "WEIGH") {
       return null;
     } */
 
@@ -267,7 +267,7 @@ export const WeighManagement = () => {
   };
 
   const VehicleType = () => {
-    if (transactionType === "weightonly") {
+    if (transactionType === "WEIGH") {
       return null;
     }
     return (
@@ -293,7 +293,7 @@ export const WeighManagement = () => {
   };
 
   const DriverCount = ({ disabled }) => {
-    if (transactionType === "weightonly") {
+    if (transactionType === "WEIGH") {
       return null;
     }
     if (selectedCustType !== 1) {
@@ -323,7 +323,7 @@ export const WeighManagement = () => {
   const Materials = ({ field, transaction }) => {
     const [value, setValue] = useState();
     const [filteredMaterials, setfilteredMaterials] = useState([]);
-    if (transactionType === "weightonly") {
+    if (transactionType === "WEIGH") {
       return null;
     }
 
@@ -410,7 +410,7 @@ export const WeighManagement = () => {
   };
 
   const PriceType = ({ field, transaction }) => {
-    if (transactionType === "weightonly") {
+    if (transactionType === "WEIGH") {
       return null;
     }
 
@@ -442,7 +442,7 @@ export const WeighManagement = () => {
   };
 
   const FirstWeight = (field, key) => {
-    /*    if (transactionType === "weightonly") {
+    /*    if (transactionType === "WEIGH") {
       return null;
     } */
 
@@ -493,7 +493,7 @@ export const WeighManagement = () => {
       return null;
     // if (field.transaction && !field.transaction.transactionId) return;
     const { index } = field;
-    /*  if (transactionType === "weightonly") {
+    /*  if (transactionType === "WEIGH") {
       return null;
     } */
 
@@ -579,7 +579,7 @@ export const WeighManagement = () => {
   };
 
   /*  const TotalWeight = (field, key) => {
-    if (transactionType !== "weightonly") {
+    if (transactionType !== "WEIGH") {
       return null;
     }
     return (
@@ -849,7 +849,7 @@ export const WeighManagement = () => {
     const childTransactions = values.childTransactionDtoList || [];
     if (childTransactions.length) {
       childTransactions.map((child) => {
-        if (transactionType !== "weightonly") {
+        if (transactionType !== "WEIGH") {
           child.materialType = child.materialName.value;
           child.vat = materials.find(
             (mat) => mat.materialId === child.materialType
@@ -897,17 +897,24 @@ export const WeighManagement = () => {
     const childTransactions = values.childTransactionDtoList || [];
     if (childTransactions.length) {
       childTransactions.map((child) => {
-        if (transactionType !== "weightonly") {
+        if (transactionType !== "WEIGH") {
           child.materialType = child.materialName.value;
           child.vat = materials.find(
             (mat) => mat.materialId === child.materialType
           ).vat;
           delete child.materialName;
           delete child.materialId;
+        } else {
+          //For weight only. material will be chosen behind the scenes.
+          child.materialType = 31;
+          child.vat = 2.5;
+          child.baleOrLoose = "B";
+          delete child.materialId;
         }
         if (!child.secondWeight) {
           delete child.secondWeight;
         }
+
         delete child.transactionId;
         delete child.id;
         delete child.absoluteWeight;
@@ -917,12 +924,13 @@ export const WeighManagement = () => {
         return child;
       });
     }
-    /* 
+
     const allTransactionsCompleted = () => {
       return (
         childTransactions.filter((child) => !child.secondWeight).length === 0
       );
-    }; */
+    };
+
     const payload = {
       customerName: values.customerName,
       customerId: values.customerId,
@@ -934,13 +942,16 @@ export const WeighManagement = () => {
       transferType: values.transferType,
       childTransactionDtoList: [...childTransactions],
       cancelReason: cancelForm.cancelReason || "",
-      //   isTransactionCompleted: allTransactionsCompleted() ? 1 : 0,
-      isTransactionCompleted: 0,
+      isTransactionCompleted: allTransactionsCompleted() ? 1 : 0,
     };
     if (currentTransactionId) {
       payload.id = currentTransactionId;
       payload.includeVat =
-        transactionType === "OUT" ? true : Boolean(enableVat);
+        transactionType === "OUT"
+          ? true
+          : transactionType === "WEIGH"
+          ? false
+          : Boolean(enableVat);
     }
     axios.post(createTransaction, payload).then(({ data }) => {
       if (data.isTransactionCompleted) {
@@ -1139,7 +1150,7 @@ export const WeighManagement = () => {
                       {/* <p className="ant-col ant-col-16 ant-col-offset-2 ant-form-item-label">
                   Transaction: <b>{index + 1}</b>
                 </p> */}
-                      {transactionType !== "weightonly" ? (
+                      {transactionType !== "WEIGH" ? (
                         <Col span={12} offset={2} className="mb-5">
                           <Typography.Title level={4} style={{ margin: 0 }}>
                             Transaction: {index + 1}

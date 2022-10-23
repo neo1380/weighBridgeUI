@@ -22,7 +22,7 @@ export const OrderSummary = () => {
   const transferTypeMap = {
     INC: "Incoming",
     OUT: "Outgoing",
-    WT: "Weight Only",
+    WEIGH: "Weight Only",
   };
   useEffect(() => {
     const transactionURL =
@@ -121,16 +121,29 @@ export const OrderSummary = () => {
                 <Paragraph>
                   Transaction Type : {getTransferType(transaction)}
                 </Paragraph>
-                <Paragraph>
-                  Customer Type : {getCustomerType(transaction)}
-                </Paragraph>
-                <Paragraph>Customer Name: {transaction.customerName}</Paragraph>
-                <Paragraph>Customer ID : {transaction.customerId}</Paragraph>
-                <Paragraph>Phone Number: {transaction.phoneNumber}</Paragraph>
+                {transaction.transferType !== "WEIGH" ? (
+                  <>
+                    <Paragraph>
+                      Customer Type : {getCustomerType(transaction)}
+                    </Paragraph>
+                    <Paragraph>
+                      Customer Name: {transaction.customerName}
+                    </Paragraph>
+                    <Paragraph>
+                      Customer ID : {transaction.customerId}
+                    </Paragraph>
+                    <Paragraph>
+                      Phone Number: {transaction.phoneNumber}
+                    </Paragraph>
+                    <Paragraph>
+                      Driver Count: {transaction.driverCount}
+                    </Paragraph>
+                  </>
+                ) : null}
+
                 <Paragraph>
                   Vehicle Number: {transaction.vehicleNumber}
                 </Paragraph>
-                <Paragraph>Driver Count: {transaction.driverCount}</Paragraph>
               </div>
             </div>
             {transaction.childTransactionDtoList.map((child, index) => {
