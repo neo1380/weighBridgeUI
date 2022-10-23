@@ -335,12 +335,14 @@ export const WeighManagement = () => {
       console.log("handleSearch");
       console.log(value);
       console.log(materials);
-      const selectedMaterialIds = form
+      /* const selectedMaterialIds = form
         .getFieldValue("childTransactionDtoList")
-        .map((child) => child.materialType);
+        .map((child) => child.materialName)
+        .map((item) => item.value);
+      console.log(selectedMaterialIds);
       if (selectedMaterialIds.includes(+value)) {
         setfilteredMaterials([]);
-      }
+      } */
       const filteredMat = materials.filter((mat) => mat.materialId === +value);
       console.log(filteredMat);
       setfilteredMaterials(filteredMat);
@@ -846,6 +848,10 @@ export const WeighManagement = () => {
         }
         delete child.transactionId;
         delete child.id;
+        delete child.absoluteWeight;
+        delete child.materialPricewithVat;
+        delete child.materialPricewithoutVat;
+        delete child.vatCost;
         return child;
       });
     }
