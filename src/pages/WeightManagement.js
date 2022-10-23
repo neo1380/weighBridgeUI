@@ -858,7 +858,8 @@ export const WeighManagement = () => {
     };
     if (currentTransactionId) {
       payload.id = currentTransactionId;
-      payload.includeVat = transactionType === "OUT" ? true : enableVat;
+      payload.includeVat =
+        transactionType === "OUT" ? true : Boolean(enableVat);
     }
     axios.post(createTransaction, payload).then(({ data }) => {
       if (data.isTransactionCompleted) {
