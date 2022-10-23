@@ -37,7 +37,7 @@ export const WeighManagement = () => {
   const [form] = Form.useForm();
   const [cancelForm] = Form.useForm();
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const [canReason, setCanReason] = useState("");
+
   const [tempTransactions, setTempTransactions] = useState([]);
   const [currentTransactionId, setCurrentTransactionId] = useState(null);
   const [enablePhoneNumber, setEnablePhoneNumber] = useState(false);
@@ -332,17 +332,6 @@ export const WeighManagement = () => {
     };
 
     const handleSearch = (value) => {
-      console.log("handleSearch");
-      console.log(value);
-      console.log(materials);
-      /* const selectedMaterialIds = form
-        .getFieldValue("childTransactionDtoList")
-        .map((child) => child.materialName)
-        .map((item) => item.value);
-      console.log(selectedMaterialIds);
-      if (selectedMaterialIds.includes(+value)) {
-        setfilteredMaterials([]);
-      } */
       const currentTransaction = tempTransactions.filter(
         (item) => item.id === currentTransactionId
       );
@@ -622,43 +611,78 @@ export const WeighManagement = () => {
     );
   };
 
-  const CancellationReasons = () => {
+  const CancellationReasons = ({ setButtonDisabled }) => {
+    const [others, showOthers] = useState(false);
+
     const onSelectCanReason = (reason) => {
-      setCanReason(reason);
+      if (reason?.toLowerCase() === "others") {
+        showOthers(true);
+      } else {
+        showOthers(false);
+      }
+      setTimeout(() => {
+        setButtonDisabled(!others);
+      }, 100);
     };
 
     return (
-      <Form form={cancelForm} layout="vertical" autoComplete="off">
+      <Form
+        form={cancelForm}
+        layout="vertical"
+        shouldUpdate
+        autoComplete="off"
+        initialValues={{
+          cancellationReason: null,
+          otherReason: null,
+        }}
+        onFieldsChange={() => {
+          setButtonDisabled(
+            cancelForm.getFieldsError().some((field) => field.errors.length > 0)
+          );
+        }}
+      >
         <Form.Item
           label="Select a Cancellation Reason"
           name="cancellationReason"
+          rules={[
+            {
+              required: true,
+              message: "Please select a reason",
+            },
+          ]}
         >
           <Select
             placeholder="Select Cancellation Reason"
+            allowClear
             onChange={onSelectCanReason}
           >
             {cancelReasons.map((opt) => (
-              <Select.Option key={opt.value} value={opt.value}>
+              <Select.Option
+                key={opt.value}
+                label={opt.label}
+                value={opt.label}
+              >
                 {opt.label}
               </Select.Option>
             ))}
           </Select>
         </Form.Item>
-      </Form>
-    );
-  };
 
-  const CancellationOthers = ({ change }) => {
-    return (
-      <Form.Item>
-        <TextArea
-          showCount
-          maxLength={100}
-          style={{ height: 120 }}
-          onChange={change}
-        />
-        ,
-      </Form.Item>
+        {others ? (
+          <Form.Item
+            label="Enter reason for cancellation"
+            name="otherReason"
+            rules={[
+              {
+                required: true,
+                message: "Please enter a valid reason",
+              },
+            ]}
+          >
+            <TextArea required allowClear showCount maxLength={100} />
+          </Form.Item>
+        ) : null}
+      </Form>
     );
   };
 
@@ -698,14 +722,16 @@ export const WeighManagement = () => {
   };
 
   const handleOk = () => {
-    console.log(form.getFieldValue());
     const formData = form.getFieldValue();
-    formData.cancelReason = canReason;
+    const { cancellationReason, otherReason } = cancelForm.getFieldValue();
+    formData.cancelReason = otherReason ? otherReason : cancellationReason;
     formData.isTransactionCancelled = true;
     formData.isTransactionCompleted = 1;
     delete formData.size;
+    delete formData.transactionStatus;
 
     cleanChildTransactions(formData);
+
     const createTransaction = BASE_URL + API_ENDPOINTS.CREATE_TRANSACTION;
 
     axios.post(createTransaction, formData).then(({ data }) => {
@@ -732,19 +758,16 @@ export const WeighManagement = () => {
   };
 
   const CancelModal = () => {
-    const otherReason = (e) => {};
-
+    const [buttonDisabled, setButtonDisabled] = useState(true);
     return (
       <Modal
         title="Cancel Transaction"
         visible={isModalVisible}
         onOk={handleOk}
         onCancel={handleCancel}
+        okButtonProps={{ disabled: buttonDisabled }}
       >
-        <CancellationReasons />
-        {canReason.toLowerCase() === "others" ? (
-          <CancellationOthers change={otherReason} />
-        ) : null}
+        <CancellationReasons setButtonDisabled={setButtonDisabled} />
       </Modal>
     );
   };
