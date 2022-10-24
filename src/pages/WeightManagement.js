@@ -365,6 +365,12 @@ export const WeighManagement = () => {
         label="Select Material"
         name={[field.name, "materialName"]}
         fieldKey={[field.fieldKey, "materialName"]}
+        rules={[
+          {
+            required: true,
+            message: "Please select material",
+          },
+        ]}
       >
         <Select
           placeholder="Type Material ID"
@@ -985,6 +991,7 @@ export const WeighManagement = () => {
         getTemporaryTransactions();
         setCurrentTransactionId(null);
         setTransactionCreation(null);
+        setTransactionType("INC");
         setIsLoading(false);
       }
     });
@@ -1025,8 +1032,7 @@ export const WeighManagement = () => {
 
     if (transaction.transferType === "INC") setTransactionType("INC");
     if (transaction.transferType === "OUT") setTransactionType("OUT");
-    if (transaction.transferType === "weighonly")
-      setTransactionType("weighonly");
+    if (transaction.transferType === "WEIGH") setTransactionType("WEIGH");
     setSelectedCustType(transaction.customerType);
     setTransactionCreation("IN_PROGRESS");
     if (!transaction.phoneNumber) setEnablePhoneNumber(true);
