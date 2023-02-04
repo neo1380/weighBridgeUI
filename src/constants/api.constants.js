@@ -1,5 +1,7 @@
 // export const BASE_URL = "http://localhost:8389/";
-export const BASE_URL = "https://wbmheroku-boot.herokuapp.com/";
+// export const BASE_URL = "https://wbmheroku-boot.herokuapp.com/";
+export const BASE_URL =
+  "http://ec2-13-233-224-164.ap-south-1.compute.amazonaws.com/";
 
 export const API_ENDPOINTS = {
   //   GET_MATERIAL: "material/materialList?sortby=asc",
