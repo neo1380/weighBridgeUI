@@ -3,8 +3,11 @@
 export const BASE_URL =
   "http://ec2-13-233-224-164.ap-south-1.compute.amazonaws.com/";
 
+export const AUTH_URL = "https://aldakheel-api-v1.vercel.app/api/v1/";
+
 export const API_ENDPOINTS = {
   //   GET_MATERIAL: "material/materialList?sortby=asc",
+  LOGIN: "users/login",
   GET_MATERIAL: "material/materialList/materialName/1",
   SAVE_MATERIAL: "material/savematerial",
   CREATE_TRANSACTION: "transaction/saveTransactions",

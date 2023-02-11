@@ -1,5 +1,6 @@
 import { Component } from "react";
 import { HashRouter as Router, Route, Link, Routes } from "react-router-dom";
+import axios from "axios";
 import { Layout, Menu } from "antd";
 import {
   DeploymentUnitOutlined,
@@ -17,6 +18,7 @@ import { EmployeeManagement } from "./EmployeeManagement";
 import { MaterialManagement } from "./MaterialManagement";
 import { OrderSummary } from "./OrderSummary";
 import { OnGoingTransactions } from "./OngoingTransactions";
+import { API_ENDPOINTS, BASE_URL, AUTH_URL } from "../constants/api.constants";
 
 const { Sider, Content } = Layout;
 
@@ -32,9 +34,15 @@ export class Home extends Component {
   };
 
   loginHandler = (values) => {
-    if (values.username === "admin" && values.password === "admin") {
-      this.setState({ isLoggedIn: true });
-    }
+    const loginUrl = AUTH_URL + API_ENDPOINTS.LOGIN;
+
+    axios.post(loginUrl, values).then(({ data }) => {
+      console.log(data);
+
+      if (data && typeof data.token !== "undefined") {
+        this.setState({ isLoggedIn: true });
+      }
+    });
   };
 
   render() {

@@ -40,7 +40,7 @@ export const Login = (props) => {
           onFinish={onFinish}
         >
           <Form.Item
-            name="username"
+            name="firstname"
             rules={[
               {
                 required: true,
@@ -50,7 +50,21 @@ export const Login = (props) => {
           >
             <Input
               prefix={<UserOutlined className="site-form-item-icon" />}
-              placeholder="Username"
+              placeholder="Enter firstname"
+            />
+          </Form.Item>
+          <Form.Item
+            name="lastname"
+            rules={[
+              {
+                required: true,
+                message: "Please input your last name!",
+              },
+            ]}
+          >
+            <Input
+              prefix={<UserOutlined className="site-form-item-icon" />}
+              placeholder="Enter lastname"
             />
           </Form.Item>
           <Form.Item
