@@ -18,7 +18,7 @@ import { EmployeeManagement } from "./EmployeeManagement";
 import { MaterialManagement } from "./MaterialManagement";
 import { OrderSummary } from "./OrderSummary";
 import { OnGoingTransactions } from "./OngoingTransactions";
-import { API_ENDPOINTS, BASE_URL, AUTH_URL } from "../constants/api.constants";
+import { API_ENDPOINTS, AUTH_URL } from "../constants/api.constants";
 
 const { Sider, Content } = Layout;
 
