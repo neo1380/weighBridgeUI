@@ -1,7 +1,8 @@
-// export const BASE_URL = "http://localhost:8389/";
 // export const BASE_URL = "https://wbmheroku-boot.herokuapp.com/";
+// export const BASE_URL = "http://ec2-13-233-224-164.ap-south-1.compute.amazonaws.com/";
+// export const BASE_URL = "http://localhost:8389/";
 export const BASE_URL =
-  "http://ec2-13-233-224-164.ap-south-1.compute.amazonaws.com/";
+  "https://ec2-13-232-33-95.ap-south-1.compute.amazonaws.com:8443/";
 
 export const AUTH_URL = "https://aldakheel-api-v1.vercel.app/api/v1/";
 
