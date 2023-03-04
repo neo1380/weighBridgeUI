@@ -1,10 +1,12 @@
 import React from "react";
 import { Form, Input, Button, Select, Typography, InputNumber } from "antd";
 import { DatePicker, Space, Row, Col } from "antd";
+import { getSerialData } from "../serialData";
 
 const { Title } = Typography;
 
 export const EmployeeManagement = () => {
+  getSerialData();
   const onFinish = (values) => {
     console.log("Received values of form: ", values);
   };
@@ -25,76 +27,20 @@ export const EmployeeManagement = () => {
     console.log(date, dateString);
   };
 
-  const ReadWriteSerialData = () => {
-    if ("serial" in navigator) {
-      console.log("Awesome, The serial port is supported.");
-      // The Web Serial API is supported.
-    }
-
-    const openSerialPort = async () => {
-      let port = await navigator.serial.requestPort();
-      await port.open({
-        baudRate: 6000,
-      });
-      while (port.readable) {
-        try {
-          // eslint-disable-next-line no-undef
-          const textDecoder = new TextDecoderStream();
-          // eslint-disable-next-line
-          const readableStreamClosed = port.readable.pipeTo(
-            textDecoder.writable
-          );
-          const reader = textDecoder.readable.getReader();
-          while (true) {
-            const { value, done } = await reader.read();
-            if (done) {
-              // Allow the serial port to be closed later.
-              reader.releaseLock();
-              break;
-            }
-            // value is a string will be streaming here.
-            console.log(value);
-          }
-        } catch (error) {
-          // TODO: Handle non-fatal read error.
-        }
-      }
-    };
-    openSerialPort();
-    return (
-      <div>
-        <button onClick={() => openSerialPort()}> Open Serial Port </button>
-      </div>
-    );
-  };
-
   return (
     <Row>
       <Col span={12}>
-        <ReadWriteSerialData />
-
+        <div id="serialResults"></div>
         <Form
           labelCol={{
             offset: 2,
             span: 16,
           }}
-          wrapperCol={{
-            offset: 2,
-            span: 24,
-          }}
           layout="vertical"
           onFinish={onFinish}
         >
           <Form.Item>
-            <Title
-              wrapperCol={{
-                offset: 4,
-                span: 16,
-              }}
-              level={5}
-            >
-              Add New Employee
-            </Title>
+            <Title level={5}>Add New Employee</Title>
           </Form.Item>
 
           <Form.Item label="Employee Type" name="employeeType">

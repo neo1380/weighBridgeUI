@@ -41,3 +41,15 @@
 .ant-spin.ant-spin-show-text .ant-spin-text {
   padding: 10px;
 }
+
+#serialResults {
+  font-family: monospace;
+  white-space: pre;
+  height: calc(100% - 120px);
+  width: calc(100% - 20px);
+  border-style: solid;
+  overflow: scroll;
+  background-color: rgb(88, 92, 92);
+  padding: 10px;
+  margin: 0px;
+}
