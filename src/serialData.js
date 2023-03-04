@@ -43,14 +43,18 @@ async function listenToPort() {
 }
 
 async function appendToTerminal(newStuff) {
-  serialResultsDiv.innerHTML += newStuff;
-  if (serialResultsDiv.innerHTML.length > 3000)
-    serialResultsDiv.innerHTML = serialResultsDiv.innerHTML.slice(
-      serialResultsDiv.innerHTML.length - 3000
-    );
+  console.log(serialResultsDiv);
+  if (serialResultsDiv) {
+    serialResultsDiv.innerHTML += newStuff;
+    if (serialResultsDiv.innerHTML.length > 3000)
+      serialResultsDiv.innerHTML = serialResultsDiv.innerHTML.slice(
+        serialResultsDiv.innerHTML.length - 3000
+      );
 
-  //scroll down to bottom of div
-  serialResultsDiv.scrollTop = serialResultsDiv.scrollHeight;
+    //scroll down to bottom of div
+    serialResultsDiv.scrollTop = serialResultsDiv.scrollHeight;
+  }
+
   return newStuff;
 }
 
