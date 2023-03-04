@@ -68,7 +68,9 @@ export function getSerialData() {
 
 export function readSerialData() {
   console.log("Invoked read serial data method....");
-  const value = connectSerial();
+  const value = (async () => {
+    console.log(await connectSerial());
+  })();
   console.log("Value from serial data...", value);
   return value;
 }
