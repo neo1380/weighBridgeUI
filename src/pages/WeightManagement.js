@@ -729,7 +729,7 @@ export const WeighManagement = () => {
     }
   };
 
-  const Spinner = () => <Spin className="spinner" tip="Loading Data ...." />;
+  //   const Spinner = () => <Spin className="spinner" tip="Loading Data ...." />;
 
   /** Event handlers */
   const showModal = () => {
