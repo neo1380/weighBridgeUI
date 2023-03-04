@@ -25,9 +25,54 @@ export const EmployeeManagement = () => {
     console.log(date, dateString);
   };
 
+  const ReadWriteSerialData = () => {
+    if ("serial" in navigator) {
+      console.log("Awesome, The serial port is supported.");
+      // The Web Serial API is supported.
+    }
+
+    const openSerialPort = async () => {
+      let port = await navigator.serial.requestPort();
+      await port.open({
+        baudRate: 6000,
+      });
+      while (port.readable) {
+        try {
+          // eslint-disable-next-line no-undef
+          const textDecoder = new TextDecoderStream();
+          // eslint-disable-next-line
+          const readableStreamClosed = port.readable.pipeTo(
+            textDecoder.writable
+          );
+          const reader = textDecoder.readable.getReader();
+          while (true) {
+            const { value, done } = await reader.read();
+            if (done) {
+              // Allow the serial port to be closed later.
+              reader.releaseLock();
+              break;
+            }
+            // value is a string will be streaming here.
+            console.log(value);
+          }
+        } catch (error) {
+          // TODO: Handle non-fatal read error.
+        }
+      }
+    };
+    openSerialPort();
+    return (
+      <div>
+        <button onClick={() => openSerialPort()}> Open Serial Port </button>
+      </div>
+    );
+  };
+
   return (
     <Row>
       <Col span={12}>
+        <ReadWriteSerialData />
+
         <Form
           labelCol={{
             offset: 2,
