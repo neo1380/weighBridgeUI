@@ -43,7 +43,7 @@ async function listenToPort() {
 }
 
 async function appendToTerminal(newStuff) {
-  console.log(serialResultsDiv);
+  console.log(newStuff);
   if (serialResultsDiv) {
     serialResultsDiv.innerHTML += newStuff;
     if (serialResultsDiv.innerHTML.length > 3000)
