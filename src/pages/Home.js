@@ -27,6 +27,7 @@ export class Home extends Component {
     collapsed: false,
     isLoggedIn: false,
   };
+  user = null;
 
   onCollapse = (collapsed) => {
     console.log(collapsed);
@@ -35,13 +36,19 @@ export class Home extends Component {
 
   loginHandler = (values) => {
     const loginUrl = AUTH_URL + API_ENDPOINTS.LOGIN;
-
     axios.post(loginUrl, values).then(({ data }) => {
-      console.log(data);
-
       if (data && typeof data.token !== "undefined") {
         this.setState({ isLoggedIn: true });
+        this.getUserDetails(data.token);
       }
+    });
+  };
+
+  getUserDetails = (token) => {
+    const url = AUTH_URL + API_ENDPOINTS.USER;
+    axios.get(url).then(({ data }) => {
+      console.log(data);
+      this.setState({ user: data.data.user });
     });
   };
 

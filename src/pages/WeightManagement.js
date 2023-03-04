@@ -320,6 +320,20 @@ export const WeighManagement = () => {
     }
   };
 
+  const ReadWriteSerialData = () => {
+    const openSerialPort = async () => {
+      let port = await navigator.serial.requestPort();
+      await port.open({
+        baudRate: 6000,
+      });
+    };
+    return (
+      <div>
+        <button onClick={() => openSerialPort()}> Open Serial Port </button>
+      </div>
+    );
+  };
+
   const Materials = ({ field, transaction }) => {
     const [value, setValue] = useState();
     const [filteredMaterials, setfilteredMaterials] = useState([]);
@@ -1146,6 +1160,7 @@ export const WeighManagement = () => {
     return (
       <Row>
         <Col span={12}>
+          <ReadWriteSerialData />
           <CancelModal />
           <Form
             form={form}

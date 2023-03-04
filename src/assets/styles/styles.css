@@ -1,12 +1,21 @@
 @import "antd/dist/antd.css";
 @import "~print.css";
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  color: #fff;
+}
 .logo {
-  float: left;
+  /* float: left; */
   width: 200px;
   height: 31px;
   margin: 16px 24px 16px 0;
   color: #fff;
   line-height: 32px;
+}
+
+.user {
 }
 
 .ant-row-rtl .logo {
