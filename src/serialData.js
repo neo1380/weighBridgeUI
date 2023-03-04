@@ -51,9 +51,17 @@ async function appendToTerminal(newStuff) {
 
   //scroll down to bottom of div
   serialResultsDiv.scrollTop = serialResultsDiv.scrollHeight;
+  return newStuff;
 }
 
 export function getSerialData() {
   console.log("Invoked serial data method....");
   connectSerial();
+}
+
+export function readSerialData() {
+  console.log("Invoked read serial data method....");
+  const value = connectSerial();
+  console.log("Value from serial data...", value);
+  return value;
 }

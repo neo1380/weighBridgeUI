@@ -18,6 +18,7 @@ import axios from "axios";
 import { PlusOutlined } from "@ant-design/icons";
 import "antd-css-utilities/utility.min.css";
 import { API_ENDPOINTS, BASE_URL } from "../constants/api.constants";
+import { readSerialData } from "../serialData";
 
 const { Title } = Typography;
 const { TextArea } = Input;
@@ -67,7 +68,7 @@ export const WeighManagement = () => {
     childTransactionDtoList: [
       {
         materialId: null,
-        firstWeight: null,
+        // firstWeight: null,
         secondWeight: null,
         baleOrLoose: "L",
         transactionId: null,
@@ -440,15 +441,23 @@ export const WeighManagement = () => {
     /*    if (transactionType === "WEIGH") {
       return null;
     } */
+    const firstWeightFromDevice = readSerialData();
+    // const firstWeightFromDevice = "1000";
 
     const { index } = field;
 
     const calcFirstWeight = (index) => {
+      console.log("first weigh calculating...");
+      if (firstWeightFromDevice) return firstWeightFromDevice;
       if (index > 0) {
         const prevField = form.getFieldValue("childTransactionDtoList")[
           index - 1
         ];
-        if (!prevField) return;
+        if (!prevField) {
+          const weight = readSerialData();
+          console.log("Weight from serial port:", weight);
+          return weight;
+        }
         const currentFirstWeight = prevField.secondWeight;
         return currentFirstWeight;
       } else {
@@ -1305,7 +1314,8 @@ export const WeighManagement = () => {
     );
   };
 
-  return <>{isLoading ? <Spinner /> : <WeightForm />}</>;
+  //   return <>{isLoading ? <Spinner /> : <WeightForm />}</>;
+  return <>{isLoading ? <WeightForm /> : <WeightForm />}</>;
 };
 
 export default WeighManagement;
