@@ -15,7 +15,8 @@ async function connectSerial() {
     textEncoder = new TextEncoderStream();
     writableStreamClosed = textEncoder.readable.pipeTo(port.writable);
     writer = textEncoder.writable.getWriter();
-    await listenToPort();
+    const value = await listenToPort();
+    return value;
   } catch (e) {
     alert("Serial Connection Failed" + e);
   }
@@ -27,9 +28,10 @@ async function listenToPort() {
   // eslint-disable-next-line no-unused-vars
   const readableStreamClosed = port.readable.pipeTo(textDecoder.writable);
   const reader = textDecoder.readable.getReader();
-
+  let i = 0;
+  let weight = null;
   // Listen to data coming from the serial device.
-  while (true) {
+  while (i === 0) {
     const { value, done } = await reader.read();
     if (done) {
       // Allow the serial port to be closed later.
@@ -37,13 +39,14 @@ async function listenToPort() {
       reader.releaseLock();
       break;
     }
+    i = 1;
     // value is a string.
-    appendToTerminal(value);
+    weight = appendToTerminal(value);
   }
+  return weight;
 }
 
 async function appendToTerminal(newStuff) {
-  console.log(newStuff);
   if (serialResultsDiv) {
     serialResultsDiv.innerHTML += newStuff;
     if (serialResultsDiv.innerHTML.length > 3000)
