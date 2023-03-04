@@ -31,6 +31,7 @@ export const EmployeeManagement = () => {
     <Row>
       <Col span={12}>
         <div id="serialResults"></div>
+        <input id="serialInput" type="text" />
         <Form
           labelCol={{
             offset: 2,

@@ -1155,6 +1155,8 @@ export const WeighManagement = () => {
       <Row>
         <Col span={12}>
           <CancelModal />
+          <div id="serialResults"></div>
+          <input id="serialInput" type="text" />
           <Form
             form={form}
             labelCol={{
