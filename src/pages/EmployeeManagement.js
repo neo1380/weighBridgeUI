@@ -30,7 +30,6 @@ export const EmployeeManagement = () => {
   return (
     <Row>
       <Col span={12}>
-        <div id="serialResults"></div>
         <input id="serialInput" type="text" />
         <Form
           labelCol={{
