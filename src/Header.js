@@ -4,10 +4,9 @@ import dayjs from "dayjs";
 
 const { Header } = Layout;
 
-export const HeaderComp = () => {
+export const HeaderComp = (user) => {
   let now = dayjs();
   const [time, setTime] = useState(now.format("dddd, MMMM D YYYY HH:mm:ss"));
-
   useEffect(() => {
     setInterval(() => {
       let now = dayjs();
@@ -18,7 +17,9 @@ export const HeaderComp = () => {
   return (
     <Header className="header">
       <div className="logo">Al Dakheel Carton Factory</div>
-      <div className=""> Username | {time}</div>
+      <div>
+        {user.user?.firstname} | {time}
+      </div>
     </Header>
   );
 };

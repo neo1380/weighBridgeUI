@@ -26,11 +26,10 @@ export class Home extends Component {
   state = {
     collapsed: false,
     isLoggedIn: false,
+    user: null,
   };
-  user = null;
 
   onCollapse = (collapsed) => {
-    console.log(collapsed);
     this.setState({ collapsed });
   };
 
@@ -38,26 +37,24 @@ export class Home extends Component {
     const loginUrl = AUTH_URL + API_ENDPOINTS.LOGIN;
     axios.post(loginUrl, values).then(({ data }) => {
       if (data && typeof data.token !== "undefined") {
-        this.setState({ isLoggedIn: true });
-        this.getUserDetails(data.token);
+        this.getUserDetails(data.token, values);
       }
     });
   };
 
-  getUserDetails = (token) => {
-    const url = AUTH_URL + API_ENDPOINTS.USER;
+  getUserDetails = (token, { emp_id }) => {
+    const url = AUTH_URL + API_ENDPOINTS.USER + `${emp_id}`;
+    window.localStorage.setItem("token", token);
     axios.get(url).then(({ data }) => {
-      console.log(data);
-      this.setState({ user: data.data.user });
+      this.setState({ user: data.user });
+      this.setState({ isLoggedIn: true });
     });
   };
 
   render() {
-    const state = { ...this.state };
-    console.log(state);
     return (
       <Layout style={{ minHeight: "100vh" }}>
-        {!state.isLoggedIn ? (
+        {!this.state.isLoggedIn ? (
           <Layout>
             <Content className="site-layout-background">
               <Login onLoginHandler={this.loginHandler} />
@@ -65,7 +62,7 @@ export class Home extends Component {
           </Layout>
         ) : (
           <Router>
-            <HeaderComp />
+            <HeaderComp user={this.state.user} />
             <Layout>
               <Sider
                 width={250}

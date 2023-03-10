@@ -1,12 +1,12 @@
 import React from "react";
 import { Form, Input, Button, Select, Typography, InputNumber } from "antd";
 import { DatePicker, Space, Row, Col } from "antd";
-import { getSerialData } from "../serialData";
+// import { getSerialData } from "../serialData";
 
 const { Title } = Typography;
 
 export const EmployeeManagement = () => {
-  getSerialData();
+  //   getSerialData();
   const onFinish = (values) => {
     console.log("Received values of form: ", values);
   };

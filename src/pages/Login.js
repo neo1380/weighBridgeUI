@@ -6,8 +6,6 @@ import { Layout } from "antd";
 
 export const Login = (props) => {
   const onFinish = (values) => {
-    console.log("Received values of form: ", values);
-    console.log(props);
     props.onLoginHandler(values);
   };
 
@@ -40,31 +38,17 @@ export const Login = (props) => {
           onFinish={onFinish}
         >
           <Form.Item
-            name="firstname"
+            name="emp_id"
             rules={[
               {
                 required: true,
-                message: "Please input your Username!",
+                message: "Please input your Employee ID",
               },
             ]}
           >
             <Input
               prefix={<UserOutlined className="site-form-item-icon" />}
-              placeholder="Enter firstname"
-            />
-          </Form.Item>
-          <Form.Item
-            name="lastname"
-            rules={[
-              {
-                required: true,
-                message: "Please input your last name!",
-              },
-            ]}
-          >
-            <Input
-              prefix={<UserOutlined className="site-form-item-icon" />}
-              placeholder="Enter lastname"
+              placeholder="Enter Employee ID"
             />
           </Form.Item>
           <Form.Item
