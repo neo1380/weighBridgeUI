@@ -48,7 +48,7 @@ export const WeighManagement = () => {
   const transactionTypes = [
     { label: "Incoming", value: "INC" },
     { label: "Outgoing", value: "OUT" },
-    { label: "Weight Only", value: "WEIGH" },
+    // { label: "Weight Only", value: "WEIGH" },
   ];
 
   const vehicleTypes = [
