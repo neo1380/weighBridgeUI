@@ -49,13 +49,13 @@ export const EmployeeManagement = () => {
               <Select.Option value="contract">Contract</Select.Option>
             </Select>
           </Form.Item>
-          <Form.Item label="Enter First Name" name="firstName">
+          <Form.Item label="Enter First Name" name="firstname">
             <Input placeholder="Enter First Name" allowClear />
           </Form.Item>
-          <Form.Item label="Enter Middle Name" name="middleName">
+          {/*   <Form.Item label="Enter Middle Name" name="middleName">
             <Input placeholder="Enter Middle Name" allowClear />
-          </Form.Item>
-          <Form.Item label="Enter Last Name" name="lastName">
+          </Form.Item> */}
+          <Form.Item label="Enter Last Name" name="lastname">
             <Input placeholder="Enter Last Name" allowClear />
           </Form.Item>
           <Form.Item label="Enter Email Address" name="email">

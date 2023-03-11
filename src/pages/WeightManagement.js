@@ -17,7 +17,7 @@ import axios from "axios";
 import { PlusOutlined } from "@ant-design/icons";
 import "antd-css-utilities/utility.min.css";
 import { API_ENDPOINTS, BASE_URL } from "../constants/api.constants";
-import { readSerialData, formatValue } from "../serialData";
+import { formatValue } from "../utils/format.utils";
 // import { UserContext } from "../contexts/UserContexts";
 
 const { Title } = Typography;
@@ -25,7 +25,63 @@ const { TextArea } = Input;
 
 export const WeighManagement = () => {
   const navigate = useNavigate();
+  const [serialWeight, setSerialWeight] = useState(null);
   //   const user = useContext(UserContext);
+  useEffect(() => {
+    getWeightFromScale();
+  }, []);
+
+  const getWeightFromScale = () => {
+    var port,
+      textEncoder,
+      // eslint-disable-next-line no-unused-vars
+      writableStreamClosed,
+      // eslint-disable-next-line no-unused-vars
+      writer;
+
+    // const serialResultsDiv = document.getElementById("serialResults");
+    async function connectSerial() {
+      try {
+        // Prompt user to select any serial port.
+        port = await navigator.serial.requestPort();
+        await port.open({ baudRate: 9600 });
+        // eslint-disable-next-line no-undef
+        textEncoder = new TextEncoderStream();
+        writableStreamClosed = textEncoder.readable.pipeTo(port.writable);
+        writer = textEncoder.writable.getWriter();
+        await listenToPort();
+      } catch (e) {
+        console.error("Serial Connection Failed" + e);
+      }
+    }
+
+    async function listenToPort() {
+      // eslint-disable-next-line no-undef
+      const textDecoder = new TextDecoderStream();
+      // eslint-disable-next-line no-unused-vars
+      const readableStreamClosed = port.readable.pipeTo(textDecoder.writable);
+      const reader = textDecoder.readable.getReader();
+
+      // Listen to data coming from the serial device.
+      while (true) {
+        const { value, done } = await reader.read();
+        if (done) {
+          // Allow the serial port to be closed later.
+          console.log("[readLoop] DONE", done);
+          reader.releaseLock();
+          break;
+        }
+        // value is a string.
+        appendToTerminal(value);
+      }
+    }
+
+    function appendToTerminal(newStuff) {
+      console.log(newStuff);
+      setSerialWeight(formatValue(newStuff));
+    }
+    connectSerial();
+  };
 
   const [isLoading, setIsLoading] = useState(true);
   const [transactionType, setTransactionType] = useState(null);
@@ -444,18 +500,15 @@ export const WeighManagement = () => {
     /*    if (transactionType === "WEIGH") {
       return null;
     } */
-
-    async function firstWeightFromDevice() {
-      const data = await readSerialData();
-      console.info(formatValue(data));
-      document.getElementById("serialInput").value = formatValue(data);
-    }
-    firstWeightFromDevice();
-
     const { index } = field;
 
     const calcFirstWeight = (index) => {
-      if (firstWeightFromDevice) return firstWeightFromDevice;
+      if (serialWeight) {
+        console.log("serialWeight", serialWeight);
+        form.getFieldValue("childTransactionDtoList")[index].firstWeight =
+          serialWeight;
+        return serialWeight;
+      }
       if (index > 0) {
         const prevField = form.getFieldValue("childTransactionDtoList")[
           index - 1
@@ -1219,6 +1272,7 @@ export const WeighManagement = () => {
                           form.getFieldValue("childTransactionDtoList")[index]
                         }
                       />
+
                       <FirstWeight
                         {...field}
                         key={`firstWeight_${index}`}
@@ -1232,6 +1286,7 @@ export const WeighManagement = () => {
                         index={index}
                         disabled={transactionCreation === "IN_PROGRESS"}
                       />
+
                       <SecondWeight
                         {...field}
                         key={`secondWeight_${index}`}

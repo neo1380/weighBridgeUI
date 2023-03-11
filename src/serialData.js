@@ -1,3 +1,5 @@
+import { UpdateWeightData } from "./pages/WeightManagement";
+
 var port,
   textEncoder,
   // eslint-disable-next-line no-unused-vars
@@ -6,7 +8,7 @@ var port,
   writer;
 
 // const serialResultsDiv = document.getElementById("serialResults");
-async function connectSerial() {
+export async function connectSerial() {
   try {
     // Prompt user to select any serial port.
     port = await navigator.serial.requestPort();
@@ -15,18 +17,20 @@ async function connectSerial() {
     textEncoder = new TextEncoderStream();
     writableStreamClosed = textEncoder.readable.pipeTo(port.writable);
     writer = textEncoder.writable.getWriter();
-    return await listenToPort(true);
+    await listenToPort();
   } catch (e) {
     console.error("Serial Connection Failed" + e);
+    UpdateWeightData(e);
   }
 }
 
-async function listenToPort(flag) {
+async function listenToPort() {
   // eslint-disable-next-line no-undef
   const textDecoder = new TextDecoderStream();
   // eslint-disable-next-line no-unused-vars
   const readableStreamClosed = port.readable.pipeTo(textDecoder.writable);
   const reader = textDecoder.readable.getReader();
+
   // Listen to data coming from the serial device.
   while (true) {
     const { value, done } = await reader.read();
@@ -37,30 +41,11 @@ async function listenToPort(flag) {
       break;
     }
     // value is a string.
-    return value;
+    appendToTerminal(value);
+    UpdateWeightData(value);
   }
 }
 
-/* function appendToTerminal(newStuff) {
-  return newStuff;
-} */
-
-export function formatValue(str) {
-  // const str = "US,NT,-113.0254kg";
-  if (typeof str === "undefined") return;
-  const res = str
-    .replace("US", "")
-    .replace("NT", "")
-    .replace("kg", "")
-    .replace(/,/g, "");
-
-  return Math.abs(res);
-}
-export function getSerialData() {
-  console.log("Invoked serial data method,GET SERIAL METHOD....");
-  connectSerial();
-}
-
-export async function readSerialData() {
-  return await connectSerial();
+function appendToTerminal(newStuff) {
+  console.log(newStuff);
 }
