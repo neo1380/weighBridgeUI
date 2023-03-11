@@ -25,59 +25,6 @@ import { API_ENDPOINTS, AUTH_URL } from "../constants/api.constants";
 
 const { Sider, Content } = Layout;
 let weightFromScale = null;
-const getWeightFromScale = () => {
-  var port,
-    textEncoder,
-    // eslint-disable-next-line no-unused-vars
-    writableStreamClosed,
-    // eslint-disable-next-line no-unused-vars
-    writer;
-
-  // const serialResultsDiv = document.getElementById("serialResults");
-  async function connectSerial() {
-    try {
-      // Prompt user to select any serial port.
-      port = await navigator.serial.requestPort();
-      await port.open({ baudRate: 9600 });
-      // eslint-disable-next-line no-undef
-      textEncoder = new TextEncoderStream();
-      writableStreamClosed = textEncoder.readable.pipeTo(port.writable);
-      writer = textEncoder.writable.getWriter();
-      await listenToPort();
-    } catch (e) {
-      console.error("Serial Connection Failed" + e);
-    }
-  }
-
-  async function listenToPort() {
-    console.log("HOME PAGE:Listening to port");
-    // eslint-disable-next-line no-undef
-    const textDecoder = new TextDecoderStream();
-    // eslint-disable-next-line no-unused-vars
-    const readableStreamClosed = port.readable.pipeTo(textDecoder.writable);
-    const reader = textDecoder.readable.getReader();
-
-    // Listen to data coming from the serial device.
-    while (true) {
-      const { value, done } = await reader.read();
-      if (done) {
-        // Allow the serial port to be closed later.
-        console.log("[readLoop] DONE", done);
-        reader.releaseLock();
-        break;
-      }
-      // value is a string.
-      console.log("HOME PAGE:value from port", value);
-      appendToTerminal(value);
-    }
-  }
-
-  function appendToTerminal(newStuff) {
-    weightFromScale = formatValue(newStuff);
-    console.log("HOME PAGE:Weight from scale", weightFromScale);
-  }
-  connectSerial();
-};
 
 export class Home extends Component {
   hasToken = window.localStorage.getItem("token");
@@ -85,6 +32,68 @@ export class Home extends Component {
     collapsed: false,
     isLoggedIn: this.hasToken ? true : false,
     user: null,
+  };
+
+  getWeightFromScale = () => {
+    var port,
+      textEncoder,
+      // eslint-disable-next-line no-unused-vars
+      writableStreamClosed,
+      // eslint-disable-next-line no-unused-vars
+      writer;
+
+    // const serialResultsDiv = document.getElementById("serialResults");
+    async function connectSerial() {
+      try {
+        // Prompt user to select any serial port.
+        port = await navigator.serial.requestPort();
+        await port.open({ baudRate: 9600 });
+        // eslint-disable-next-line no-undef
+        textEncoder = new TextEncoderStream();
+        writableStreamClosed = textEncoder.readable.pipeTo(port.writable);
+        writer = textEncoder.writable.getWriter();
+        await listenToPort();
+
+        /*  setInterval(() => {
+          appendToTerminal("100kg");
+        }, 1000); */
+      } catch (e) {
+        console.error("Serial Connection Failed" + e);
+      }
+    }
+
+    async function listenToPort() {
+      console.log("HOME PAGE:Listening to port");
+      // eslint-disable-next-line no-undef
+      const textDecoder = new TextDecoderStream();
+      // eslint-disable-next-line no-unused-vars
+      const readableStreamClosed = port.readable.pipeTo(textDecoder.writable);
+      const reader = textDecoder.readable.getReader();
+
+      // Listen to data coming from the serial device.
+      while (true) {
+        const { value, done } = await reader.read();
+        if (done) {
+          // Allow the serial port to be closed later.
+          console.log("[readLoop] DONE", done);
+          reader.releaseLock();
+          break;
+        }
+        // value is a string.
+        console.log("HOME PAGE:value from port", value);
+        appendToTerminal(value);
+      }
+    }
+
+    const appendToTerminal = (newStuff) => {
+      weightFromScale = formatValue(newStuff);
+      console.log("HOME PAGE:Weight from scale", weightFromScale);
+      const customEvent = new CustomEvent("build", {
+        detail: { weightFromScale: weightFromScale },
+      });
+      document.dispatchEvent(customEvent);
+    };
+    connectSerial();
   };
 
   componentDidMount() {
@@ -123,7 +132,7 @@ export class Home extends Component {
     axios.get(url).then(({ data }) => {
       this.setState({ user: data.user });
       this.setState({ isLoggedIn: true });
-      getWeightFromScale();
+      this.getWeightFromScale();
       window.localStorage.setItem("emp_id", `${emp_id}`);
     });
   };
@@ -139,9 +148,7 @@ export class Home extends Component {
           </Layout>
         ) : (
           <UserContext.Provider value={this.state.user}>
-            <SerialDataContext.Provider
-              value={weightFromScale ? weightFromScale : null}
-            >
+            <SerialDataContext.Provider value={weightFromScale}>
               <Router>
                 <HeaderComp onLogoutHandler={this.logoutHandler} />
                 <Layout>
