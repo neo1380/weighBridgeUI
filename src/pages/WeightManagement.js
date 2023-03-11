@@ -17,7 +17,7 @@ import axios from "axios";
 import { PlusOutlined } from "@ant-design/icons";
 import "antd-css-utilities/utility.min.css";
 import { API_ENDPOINTS, BASE_URL } from "../constants/api.constants";
-import { readSerialData } from "../serialData";
+import { readSerialData, formatValue } from "../serialData";
 // import { UserContext } from "../contexts/UserContexts";
 
 const { Title } = Typography;
@@ -444,13 +444,19 @@ export const WeighManagement = () => {
     /*    if (transactionType === "WEIGH") {
       return null;
     } */
-    const firstWeightFromDevice = readSerialData();
+    const firstWeightFromDevice = readSerialData()
+      .then((data) => formatValue(data))
+      .catch((error) => {
+        console.log("error", error);
+      });
+
     // const firstWeightFromDevice = null;
+
+    console.log("firstWeightFromDevice", firstWeightFromDevice);
 
     const { index } = field;
 
     const calcFirstWeight = (index) => {
-      console.log("first weigh calculating...");
       if (firstWeightFromDevice) return firstWeightFromDevice;
       if (index > 0) {
         const prevField = form.getFieldValue("childTransactionDtoList")[
