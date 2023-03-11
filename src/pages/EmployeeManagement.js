@@ -7,6 +7,7 @@ const { Title } = Typography;
 
 export const EmployeeManagement = () => {
   //   getSerialData();
+
   const onFinish = (values) => {
     console.log("Received values of form: ", values);
   };

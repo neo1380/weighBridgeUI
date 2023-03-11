@@ -15,10 +15,10 @@ async function connectSerial() {
     textEncoder = new TextEncoderStream();
     writableStreamClosed = textEncoder.readable.pipeTo(port.writable);
     writer = textEncoder.writable.getWriter();
-    return await listenToPort();
+    await listenToPort();
   } catch (e) {
     console.log("Serial Connection Failed" + e);
-    return Promise.reject();
+    return Promise.reject(e);
   }
 }
 
@@ -39,45 +39,42 @@ async function listenToPort() {
     }
     // value is a string.
     appendToTerminal(value);
-    return Promise.resolve(value);
   }
 }
 
 async function appendToTerminal(newStuff) {
+  console.log("serialResultsDiv");
+  console.log(serialResultsDiv);
   if (serialResultsDiv) {
     serialResultsDiv.innerHTML += newStuff;
     if (serialResultsDiv.innerHTML.length > 3000)
       serialResultsDiv.innerHTML = serialResultsDiv.innerHTML.slice(
         serialResultsDiv.innerHTML.length - 3000
       );
+
     //scroll down to bottom of div
     serialResultsDiv.scrollTop = serialResultsDiv.scrollHeight;
   }
-  document.getElementById("serialInput").value = formatValue(newStuff);
-  //   return newStuff;
+
+  //   console.log(formatValue(newStuff));
+  return newStuff;
 }
 
 export function formatValue(str) {
   // const str = "US,NT,-113.0254kg";
-
-  if (!str) return;
-
   const res = str
     .replace("US", "")
     .replace("NT", "")
     .replace("kg", "")
     .replace(/,/g, "");
+
   return Math.abs(res);
 }
-
 export function getSerialData() {
-  console.log("Invoked serial data method....");
+  console.log("Invoked serial data method,GET SERIAL METHOD....");
   connectSerial();
 }
 
 export async function readSerialData() {
-  console.log("Invoked read serial data method....");
-  const valuePromise = connectSerial();
-  console.log("Value from serial data...", valuePromise);
-  return valuePromise;
+  await connectSerial();
 }

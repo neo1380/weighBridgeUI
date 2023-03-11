@@ -445,14 +445,13 @@ export const WeighManagement = () => {
       return null;
     } */
     const firstWeightFromDevice = readSerialData()
-      .then((data) => formatValue(data))
-      .catch((error) => {
-        console.log("error", error);
-      });
-
-    // const firstWeightFromDevice = null;
-
-    console.log("firstWeightFromDevice", firstWeightFromDevice);
+      .then((data) => {
+        console.log("Serial data success", data);
+        document.getElementById("serialInput").value = formatValue(data);
+      })
+      .catch((error) =>
+        console.log("Weigh Management:Error in reading serial data...", error)
+      );
 
     const { index } = field;
 
