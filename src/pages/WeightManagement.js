@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useContext } from "react";
 import {
   Form,
   Input,
@@ -18,12 +18,15 @@ import { PlusOutlined } from "@ant-design/icons";
 import "antd-css-utilities/utility.min.css";
 import { API_ENDPOINTS, BASE_URL } from "../constants/api.constants";
 import { readSerialData } from "../serialData";
+import { UserContext } from "../contexts/UserContexts";
 
 const { Title } = Typography;
 const { TextArea } = Input;
 
 export const WeighManagement = () => {
   const navigate = useNavigate();
+  const user = useContext(UserContext);
+
   const [isLoading, setIsLoading] = useState(true);
   const [transactionType, setTransactionType] = useState(null);
   const [vehicleType, setVehicleType] = useState(null);
@@ -43,6 +46,7 @@ export const WeighManagement = () => {
   const [enablePhoneNumber, setEnablePhoneNumber] = useState(false);
   const [enableCustName, setEnableCustName] = useState(false);
   const [enableVat, setEnableVat] = useState(false);
+
   //   const [enableCustId, setEnableCustId] = useState(false);
 
   const transactionTypes = [
@@ -440,8 +444,8 @@ export const WeighManagement = () => {
     /*    if (transactionType === "WEIGH") {
       return null;
     } */
-    const firstWeightFromDevice = readSerialData();
-    // const firstWeightFromDevice = "1000";
+    // const firstWeightFromDevice = readSerialData();
+    const firstWeightFromDevice = null;
 
     const { index } = field;
 
@@ -453,7 +457,8 @@ export const WeighManagement = () => {
           index - 1
         ];
         if (!prevField) {
-          const weight = readSerialData();
+          //   const weight = readSerialData();
+          const weight = null;
           console.log("Weight from serial port:", weight);
           return weight;
         }
@@ -980,6 +985,11 @@ export const WeighManagement = () => {
       childTransactionDtoList: [...childTransactions],
       cancelReason: cancelForm.cancelReason || "",
       isTransactionCompleted: allTransactionsCompleted() ? 1 : 0,
+      //   created_by: !currentTransactionId
+      //     ? user.emp_id
+      //     : tempTransactions.filter((item) => item.id === currentTransactionId)
+      //         .created_by,
+      //   closed_by: user.emp_id,
     };
     if (currentTransactionId) {
       payload.id = currentTransactionId;
@@ -1155,7 +1165,8 @@ export const WeighManagement = () => {
       <Row>
         <Col span={12}>
           <CancelModal />
-          <div id="serialResults"></div>
+          {/* <div id="serialResults"></div> */}
+
           <input id="serialInput" type="text" />
           <Form
             form={form}
