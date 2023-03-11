@@ -54,11 +54,21 @@ async function appendToTerminal(newStuff) {
     //scroll down to bottom of div
     serialResultsDiv.scrollTop = serialResultsDiv.scrollHeight;
   }
-  document.getElementById("serialInput").value = newStuff;
+  document.getElementById("serialInput").value = formatValue(newStuff);
 
   return newStuff;
 }
 
+function formatValue(str) {
+  // const str = "US,NT,-113.0254kg";
+  const res = str
+    .replace("US", "")
+    .replace("NT", "")
+    .replace("kg", "")
+    .replace(/,/g, "");
+
+  return Math.abs(res);
+}
 export function getSerialData() {
   console.log("Invoked serial data method....");
   connectSerial();
@@ -70,5 +80,5 @@ export function readSerialData() {
     console.log(await connectSerial());
   })();
   console.log("Value from serial data...", value);
-  return value;
+  return formatValue(value);
 }

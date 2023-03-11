@@ -18,14 +18,14 @@ import { PlusOutlined } from "@ant-design/icons";
 import "antd-css-utilities/utility.min.css";
 import { API_ENDPOINTS, BASE_URL } from "../constants/api.constants";
 import { readSerialData } from "../serialData";
-import { UserContext } from "../contexts/UserContexts";
+// import { UserContext } from "../contexts/UserContexts";
 
 const { Title } = Typography;
 const { TextArea } = Input;
 
 export const WeighManagement = () => {
   const navigate = useNavigate();
-  const user = useContext(UserContext);
+  //   const user = useContext(UserContext);
 
   const [isLoading, setIsLoading] = useState(true);
   const [transactionType, setTransactionType] = useState(null);
@@ -444,8 +444,8 @@ export const WeighManagement = () => {
     /*    if (transactionType === "WEIGH") {
       return null;
     } */
-    // const firstWeightFromDevice = readSerialData();
-    const firstWeightFromDevice = null;
+    const firstWeightFromDevice = readSerialData();
+    // const firstWeightFromDevice = null;
 
     const { index } = field;
 
@@ -457,8 +457,8 @@ export const WeighManagement = () => {
           index - 1
         ];
         if (!prevField) {
-          //   const weight = readSerialData();
-          const weight = null;
+          const weight = readSerialData();
+          //   const weight = null;
           console.log("Weight from serial port:", weight);
           return weight;
         }
