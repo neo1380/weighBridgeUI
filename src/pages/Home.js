@@ -100,7 +100,6 @@ export class Home extends Component {
       const emp_id = window.localStorage.getItem("emp_id");
       this.getUserDetails({ emp_id });
     }
-    getWeightFromScale();
   }
 
   loginHandler = (values) => {
@@ -124,6 +123,7 @@ export class Home extends Component {
     axios.get(url).then(({ data }) => {
       this.setState({ user: data.user });
       this.setState({ isLoggedIn: true });
+      getWeightFromScale();
       window.localStorage.setItem("emp_id", `${emp_id}`);
     });
   };
