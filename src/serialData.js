@@ -61,6 +61,9 @@ async function appendToTerminal(newStuff) {
 
 function formatValue(str) {
   // const str = "US,NT,-113.0254kg";
+
+  if (!str) return;
+
   const res = str
     .replace("US", "")
     .replace("NT", "")
