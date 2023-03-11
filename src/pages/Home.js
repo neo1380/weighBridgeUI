@@ -25,9 +25,10 @@ import { API_ENDPOINTS, AUTH_URL } from "../constants/api.constants";
 const { Sider, Content } = Layout;
 
 export class Home extends Component {
+  hasToken = window.localStorage.getItem("token");
   state = {
     collapsed: false,
-    isLoggedIn: false,
+    isLoggedIn: this.hasToken ? true : false,
     user: null,
   };
 

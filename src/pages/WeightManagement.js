@@ -444,14 +444,13 @@ export const WeighManagement = () => {
     /*    if (transactionType === "WEIGH") {
       return null;
     } */
-    const firstWeightFromDevice = readSerialData()
-      .then((data) => {
-        console.log("Serial data success", data);
-        document.getElementById("serialInput").value = formatValue(data);
-      })
-      .catch((error) =>
-        console.log("Weigh Management:Error in reading serial data...", error)
-      );
+
+    async function firstWeightFromDevice() {
+      const data = await readSerialData();
+      console.info(formatValue(data));
+      document.getElementById("serialInput").value = formatValue(data);
+    }
+    firstWeightFromDevice();
 
     const { index } = field;
 
@@ -461,12 +460,7 @@ export const WeighManagement = () => {
         const prevField = form.getFieldValue("childTransactionDtoList")[
           index - 1
         ];
-        if (!prevField) {
-          const weight = readSerialData();
-          //   const weight = null;
-          console.log("Weight from serial port:", weight);
-          return weight;
-        }
+
         const currentFirstWeight = prevField.secondWeight;
         return currentFirstWeight;
       } else {

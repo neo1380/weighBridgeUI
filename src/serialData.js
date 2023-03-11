@@ -5,7 +5,7 @@ var port,
   // eslint-disable-next-line no-unused-vars
   writer;
 
-const serialResultsDiv = document.getElementById("serialResults");
+// const serialResultsDiv = document.getElementById("serialResults");
 async function connectSerial() {
   try {
     // Prompt user to select any serial port.
@@ -15,14 +15,13 @@ async function connectSerial() {
     textEncoder = new TextEncoderStream();
     writableStreamClosed = textEncoder.readable.pipeTo(port.writable);
     writer = textEncoder.writable.getWriter();
-    await listenToPort();
+    return await listenToPort(true);
   } catch (e) {
-    console.log("Serial Connection Failed" + e);
-    return Promise.reject(e);
+    console.error("Serial Connection Failed" + e);
   }
 }
 
-async function listenToPort() {
+async function listenToPort(flag) {
   // eslint-disable-next-line no-undef
   const textDecoder = new TextDecoderStream();
   // eslint-disable-next-line no-unused-vars
@@ -38,30 +37,17 @@ async function listenToPort() {
       break;
     }
     // value is a string.
-    appendToTerminal(value);
+    return value;
   }
 }
 
-async function appendToTerminal(newStuff) {
-  console.log("serialResultsDiv");
-  console.log(serialResultsDiv);
-  if (serialResultsDiv) {
-    serialResultsDiv.innerHTML += newStuff;
-    if (serialResultsDiv.innerHTML.length > 3000)
-      serialResultsDiv.innerHTML = serialResultsDiv.innerHTML.slice(
-        serialResultsDiv.innerHTML.length - 3000
-      );
-
-    //scroll down to bottom of div
-    serialResultsDiv.scrollTop = serialResultsDiv.scrollHeight;
-  }
-
-  //   console.log(formatValue(newStuff));
+/* function appendToTerminal(newStuff) {
   return newStuff;
-}
+} */
 
 export function formatValue(str) {
   // const str = "US,NT,-113.0254kg";
+  if (typeof str === "undefined") return;
   const res = str
     .replace("US", "")
     .replace("NT", "")
@@ -76,5 +62,5 @@ export function getSerialData() {
 }
 
 export async function readSerialData() {
-  await connectSerial();
+  return await connectSerial();
 }
