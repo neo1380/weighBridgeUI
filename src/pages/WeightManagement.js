@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useContext } from "react";
 import {
   Form,
   Input,
@@ -17,7 +17,9 @@ import axios from "axios";
 import { PlusOutlined } from "@ant-design/icons";
 import "antd-css-utilities/utility.min.css";
 import { API_ENDPOINTS, BASE_URL } from "../constants/api.constants";
-import { formatValue } from "../utils/format.utils";
+// import { formatValue } from "../utils/format.utils";
+import { SerialDataContext } from "../contexts/SerialDataContexts";
+
 // import { UserContext } from "../contexts/UserContexts";
 
 const { Title } = Typography;
@@ -25,9 +27,10 @@ const { TextArea } = Input;
 
 export const WeighManagement = () => {
   const navigate = useNavigate();
-  const [serialWeight, setSerialWeight] = useState(null);
+  const weightFromScale = useContext(SerialDataContext);
+
   //   const user = useContext(UserContext);
-  useEffect(() => {
+  /* useEffect(() => {
     getWeightFromScale();
   }, []);
 
@@ -81,7 +84,7 @@ export const WeighManagement = () => {
       setSerialWeight(formatValue(newStuff));
     }
     connectSerial();
-  };
+  }; */
 
   const [isLoading, setIsLoading] = useState(true);
   const [transactionType, setTransactionType] = useState(null);
@@ -503,11 +506,10 @@ export const WeighManagement = () => {
     const { index } = field;
 
     const calcFirstWeight = (index) => {
-      if (serialWeight) {
-        console.log("serialWeight", serialWeight);
+      if (weightFromScale) {
+        console.log("WEIGH MGMT: Weight from scale", weightFromScale);
         form.getFieldValue("childTransactionDtoList")[index].firstWeight =
-          serialWeight;
-        return serialWeight;
+          weightFromScale;
       }
       if (index > 0) {
         const prevField = form.getFieldValue("childTransactionDtoList")[

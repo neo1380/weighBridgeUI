@@ -42,6 +42,10 @@
   padding: 10px;
 }
 
+.cursor-pointer {
+  cursor: pointer;
+}
+
 #serialResults {
   font-family: monospace;
   white-space: pre;
