@@ -31,7 +31,6 @@ export const EmployeeManagement = () => {
   return (
     <Row>
       <Col span={12}>
-        <input id="serialInput" type="text" />
         <Form
           labelCol={{
             span: 16,
