@@ -1178,7 +1178,7 @@ export const WeighManagement = () => {
           <CancelModal />
           {/* <div id="serialResults"></div> */}
 
-          <input id="serialInput" type="text" />
+          {/* <input id="serialInput" type="text" /> */}
           <Form
             form={form}
             labelCol={{
