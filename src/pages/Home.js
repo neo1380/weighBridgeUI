@@ -34,7 +34,7 @@ export class Home extends Component {
     user: null,
   };
 
-  getWeightFromScale = () => {
+  /*  getWeightFromScale = () => {
     var port,
       textEncoder,
       // eslint-disable-next-line no-unused-vars
@@ -56,7 +56,7 @@ export class Home extends Component {
 
         /*  setInterval(() => {
           appendToTerminal("100kg");
-        }, 1000); */
+        }, 1000); 
       } catch (e) {
         console.error("Serial Connection Failed" + e);
       }
@@ -94,7 +94,7 @@ export class Home extends Component {
       document.dispatchEvent(customEvent);
     };
     // connectSerial();
-  };
+  }; */
 
   componentDidMount() {
     this.initApplication();
@@ -132,7 +132,7 @@ export class Home extends Component {
     axios.get(url).then(({ data }) => {
       this.setState({ user: data.user });
       this.setState({ isLoggedIn: true });
-      this.getWeightFromScale();
+      //   this.getWeightFromScale();
       window.localStorage.setItem("emp_id", `${emp_id}`);
     });
   };
