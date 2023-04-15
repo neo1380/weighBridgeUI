@@ -20,7 +20,7 @@ import { OrderSummary } from "./OrderSummary";
 import { OnGoingTransactions } from "./OngoingTransactions";
 import { UserContext } from "../contexts/UserContexts";
 import { SerialDataContext } from "../contexts/SerialDataContexts";
-import { formatValue } from "../utils/format.utils";
+// import { formatValue } from "../utils/format.utils";
 import { API_ENDPOINTS, AUTH_URL } from "../constants/api.constants";
 
 const { Sider, Content } = Layout;
