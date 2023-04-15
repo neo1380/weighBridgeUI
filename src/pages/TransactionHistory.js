@@ -45,30 +45,30 @@ export const TransactionHistory = () => {
       render: (text) => <span>{text || "NA"}</span>,
       responsive: ["md"],
     },
-    /* {
+    {
       title: "Created At",
-      dataIndex: "createdAt",
-      key: "createdAt",
+      dataIndex: "created_date",
+      key: "created_date",
       render: (text) => <span>{text}</span>,
     },
     {
       title: "Created By",
-      dataIndex: "createdBy",
-      key: "createdBy",
+      dataIndex: "created_by",
+      key: "created_by",
       render: (text) => <span>{text}</span>,
     },
     {
       title: "Closed At",
-      dataIndex: "closedAt",
-      key: "closedAt",
+      dataIndex: "closed_date",
+      key: "closed_date",
       render: (text) => <span>{text}</span>,
     },
     {
       title: "Closed By",
-      dataIndex: "closedBy",
-      key: "closedBy",
+      dataIndex: "closed_by",
+      key: "closed_by",
       render: (text) => <span>{text}</span>,
-    }, */
+    },
     {
       title: "Status",
       dataIndex: "transactionStatus",

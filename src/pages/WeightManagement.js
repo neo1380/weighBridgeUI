@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useContext } from "react";
 import {
   Form,
   Input,
@@ -21,13 +21,15 @@ import { API_ENDPOINTS, BASE_URL } from "../constants/api.constants";
 /* import { SerialDataContext } from "../contexts/SerialDataContexts";
 import { UserContext } from "../contexts/UserContexts"; */
 
-// import { UserContext } from "../contexts/UserContexts";
+import { UserContext } from "../contexts/UserContexts";
 
 const { Title } = Typography;
 const { TextArea } = Input;
 
 export const WeighManagement = () => {
   const navigate = useNavigate();
+  const user = useContext(UserContext);
+
   const [weightFromScale, setweightFromScale] = useState(null);
   document.addEventListener("build", function ({ detail }) {
     console.log(detail);
@@ -996,11 +998,11 @@ export const WeighManagement = () => {
       childTransactionDtoList: [...childTransactions],
       cancelReason: cancelForm.cancelReason || "",
       isTransactionCompleted: allTransactionsCompleted() ? 1 : 0,
-      //   created_by: !currentTransactionId
-      //     ? user.emp_id
-      //     : tempTransactions.filter((item) => item.id === currentTransactionId)
-      //         .created_by,
-      //   closed_by: user.emp_id,
+      created_by: !currentTransactionId
+        ? user.emp_id
+        : tempTransactions.find((item) => item.id === currentTransactionId)
+            .created_by,
+      closed_by: user.emp_id,
     };
     if (currentTransactionId) {
       payload.id = currentTransactionId;

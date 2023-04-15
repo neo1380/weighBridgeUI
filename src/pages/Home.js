@@ -93,7 +93,7 @@ export class Home extends Component {
       });
       document.dispatchEvent(customEvent);
     };
-    connectSerial();
+    // connectSerial();
   };
 
   componentDidMount() {
