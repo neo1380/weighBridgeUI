@@ -52,7 +52,7 @@ export const WeighManagement = () => {
 
   const [isWeightReadFromDevice, setIsWeightReadFromDevice] = useState(true);
   const [rawWeightId, setRawWeightId] = useState(null);
-
+  const [editMode, setEditMode] = useState(false);
   //   const [enableCustId, setEnableCustId] = useState(false);
 
   const transactionTypes = [
@@ -125,7 +125,7 @@ export const WeighManagement = () => {
           buttonStyle="solid"
           onChange={onChangeTransactionType}
           value={transactionType}
-          disabled={disabled === "IN_PROGRESS"}
+          disabled={disabled}
         >
           {transactionTypes.map(({ label, value }) => (
             <Radio.Button
@@ -151,7 +151,7 @@ export const WeighManagement = () => {
         name="customerType"
         value={selectedCustType}
       >
-        <Radio.Group buttonStyle="solid" disabled={disabled === "IN_PROGRESS"}>
+        <Radio.Group buttonStyle="solid" disabled={disabled}>
           {customerTypeOptions.map(({ label, value }) => (
             <Radio.Button
               value={value}
@@ -185,7 +185,7 @@ export const WeighManagement = () => {
         <Input
           allowClear
           placeholder="Enter Customer Name"
-          disabled={disabled === "IN_PROGRESS" && !enableCustName}
+          disabled={disabled && !enableCustName}
         />
       </Form.Item>
     );
@@ -211,7 +211,7 @@ export const WeighManagement = () => {
           addonBefore="+966"
           style={{ width: "100%" }}
           placeholder="Enter Phone Number"
-          disabled={disabled === "IN_PROGRESS" && !enablePhoneNumber}
+          disabled={disabled && !enablePhoneNumber}
         />
       </Form.Item>
     );
@@ -236,7 +236,7 @@ export const WeighManagement = () => {
           <Input
             allowClear
             placeholder="Enter Customer ID"
-            disabled={disabled === "IN_PROGRESS"}
+            disabled={disabled}
           />
         </Form.Item>
       );
@@ -267,7 +267,7 @@ export const WeighManagement = () => {
             allowClear
             placeholder="Enter Vehicle Number"
             onBlur={validateVehicleNumber}
-            disabled={disabled === "IN_PROGRESS"}
+            disabled={disabled}
           />
         </Form.Item>
       );
@@ -294,7 +294,7 @@ export const WeighManagement = () => {
         <Radio.Group
           buttonStyle="solid"
           value={vehicleType}
-          disabled={disabled === "IN_PROGRESS"}
+          disabled={disabled}
         >
           {vehicleTypes.map(({ label, value }) => (
             <Radio.Button value={value} key={value}>
@@ -334,7 +334,7 @@ export const WeighManagement = () => {
     }
   };
 
-  const Materials = ({ field, transaction }) => {
+  const Materials = ({ field }) => {
     const [value, setValue] = useState();
     const [filteredMaterials, setfilteredMaterials] = useState([]);
     if (transactionType === "WEIGH") {
@@ -400,7 +400,7 @@ export const WeighManagement = () => {
           loading={!materials.length}
           //   disabled={transaction?.transactionId}
         >
-          {filteredMaterials.map((opt, index) => (
+          {filteredMaterials.map((opt) => (
             <Select.Option
               key={opt.materialId}
               label={opt.label}
@@ -418,14 +418,14 @@ export const WeighManagement = () => {
     // }
   };
 
-  const PriceType = ({ field, transaction }) => {
+  const PriceType = ({ field }) => {
     if (transactionType === "WEIGH") {
       return null;
     }
 
     return (
       <Form.Item
-        label="Price type"
+        label="Material Collection Type"
         name={[field.name, "baleOrLoose"]}
         fieldKey={[field.fieldKey, "baleOrLoose"]}
         initialValue={field.value || priceType}
@@ -540,7 +540,7 @@ export const WeighManagement = () => {
           initialValue={calcSecondWeight(index)}
           disabled={field.disabled}
           rules={[
-            (obj) => ({
+            () => ({
               validator(_, value) {
                 const fieldName = _.field;
                 let fieldNameArr = fieldName.split(".");
@@ -590,7 +590,7 @@ export const WeighManagement = () => {
 
   const Spinner = () => <Spin className="spinner" tip="Loading..." />;
 
-  const Vat = ({ disabled }) => {
+  const Vat = () => {
     const onChangeVat = (event) => {
       setEnableVat(event.target.checked);
     };
@@ -629,6 +629,13 @@ export const WeighManagement = () => {
           setButtonDisabled(false);
         }
       }, 100);
+    };
+
+    const editCurrentTransaction = () => {
+      console.log("Set Current Transaction to Edit mode...");
+      //   setTransactionCreation(null);
+      setEditMode(true);
+      handleCancel();
     };
 
     return (
@@ -704,7 +711,7 @@ export const WeighManagement = () => {
     );
   };
 
-  const ActionButtons = ({ state }) => {
+  const ActionButtons = () => {
     if (
       areTransactionsInProgress() === 0 ||
       multipleTransactionEnabled ||
@@ -759,7 +766,7 @@ export const WeighManagement = () => {
 
     const createTransaction = BASE_URL + API_ENDPOINTS.CREATE_TRANSACTION;
 
-    axios.post(createTransaction, formData).then(({ data }) => {
+    axios.post(createTransaction, formData).then(() => {
       onReset();
       // openMessage();
       getTemporaryTransactions();
@@ -797,22 +804,13 @@ export const WeighManagement = () => {
     );
   };
 
-  const editCurrentTransaction = () => {
-    console.log("Set Current Transaction to Edit mode...");
-    setTransactionCreation(null);
-    handleCancel();
-  };
-
   // Keep the function reference
-  const handlePriceTypes = useCallback(
-    (type) => {
-      setPriceType("L");
-      form.setFieldsValue({
-        priceType: "L",
-      });
-    },
-    [form]
-  );
+  const handlePriceTypes = useCallback(() => {
+    setPriceType("L");
+    form.setFieldsValue({
+      priceType: "L",
+    });
+  }, [form]);
 
   // Keep the function reference
   const handleCustomerTypes = useCallback(
@@ -927,7 +925,7 @@ export const WeighManagement = () => {
           console.log("Data from weight device");
           console.log(weight);
         })
-        .catch((error) => {
+        .catch(() => {
           setIsWeightReadFromDevice(false);
         });
     };
@@ -957,32 +955,6 @@ export const WeighManagement = () => {
       });
     }
     return filteredTransactions;
-  };
-
-  const cleanChildTransactions = (values) => {
-    const childTransactions = values.childTransactionDtoList || [];
-    if (childTransactions.length) {
-      childTransactions.map((child) => {
-        if (transactionType !== "WEIGH") {
-          child.materialType = child.materialName.value;
-          child.vat = materials.find(
-            (mat) => mat.materialId === child.materialType
-          ).vat;
-          delete child.materialName;
-          delete child.materialId;
-        }
-        if (!child.secondWeight) {
-          delete child.secondWeight;
-        }
-        delete child.transactionId;
-        delete child.id;
-        delete child.absoluteWeight;
-        delete child.materialPricewithVat;
-        delete child.materialPricewithoutVat;
-        delete child.vatCost;
-        return child;
-      });
-    }
   };
 
   const onFinish = (values) => {
@@ -1038,12 +1010,6 @@ export const WeighManagement = () => {
         return child;
       });
     }
-
-    const allTransactionsCompleted = () => {
-      return (
-        childTransactions.filter((child) => !child.secondWeight).length === 0
-      );
-    };
 
     const getTransactionCompletion = () => {
       console.log(childTransactions);
@@ -1106,6 +1072,7 @@ export const WeighManagement = () => {
         setTransactionCreation(null);
         setTransactionType("INC");
         setIsLoading(false);
+        setEditMode(false);
       }
     });
   };
@@ -1153,7 +1120,7 @@ export const WeighManagement = () => {
     form.setFieldsValue(transaction);
   };
 
-  const cancelTransaction = (id) => {
+  const cancelTransaction = () => {
     if (transactionCreation === "IN_PROGRESS") {
       showModal();
     }
@@ -1277,17 +1244,27 @@ export const WeighManagement = () => {
             initialValues={formInitValues}
             onFinish={onFinish}
           >
-            <TransactionType disabled={transactionCreation} />
-            <CustomerType disabled={transactionCreation} />
+            <TransactionType
+              disabled={transactionCreation === "IN_PROGRESS" && !editMode}
+            />
+            <CustomerType
+              disabled={transactionCreation === "IN_PROGRESS" && !editMode}
+            />
             <CustomerName />
             <PhoneNumber />
             <CustomerID />
-            <VehicleType disabled={transactionCreation} />
-            <VehicleNumber disabled={transactionCreation} />
-            <DriverCount disabled={transactionCreation} />
+            <VehicleType
+              disabled={transactionCreation === "IN_PROGRESS" && !editMode}
+            />
+            <VehicleNumber
+              disabled={transactionCreation === "IN_PROGRESS" && !editMode}
+            />
+            <DriverCount
+              disabled={transactionCreation === "IN_PROGRESS" && !editMode}
+            />
 
             <Form.List shouldUpdate name="childTransactionDtoList">
-              {(fields, { add, remove }) => (
+              {(fields, { add }) => (
                 <>
                   {fields.map((field, index) => (
                     <>

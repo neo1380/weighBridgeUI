@@ -91,7 +91,7 @@ export const TransactionHistory = () => {
       responsive: ["md"],
     },
     {
-      title: "Price Type",
+      title: "Material Collection",
       dataIndex: "priceType",
       key: "priceType",
       render: (text) => <span>{text || "NA"}</span>,
