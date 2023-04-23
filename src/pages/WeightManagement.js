@@ -610,6 +610,7 @@ export const WeighManagement = () => {
 
   const CancellationReasons = ({ setButtonDisabled }) => {
     const [others, showOthers] = useState(false);
+    const [allowEdit, setAllowEdit] = useState(false);
 
     const onSelectCanReason = (reason) => {
       if (reason?.toLowerCase() === "others") {
@@ -617,8 +618,16 @@ export const WeighManagement = () => {
       } else {
         showOthers(false);
       }
+
+      if (reason?.toLowerCase().includes("error_data_entry")) {
+        setAllowEdit(true);
+      }
       setTimeout(() => {
-        setButtonDisabled(!others);
+        if (reason?.toLowerCase() === "others") {
+          setButtonDisabled(!others);
+        } else {
+          setButtonDisabled(false);
+        }
       }, 100);
     };
 
@@ -657,7 +666,7 @@ export const WeighManagement = () => {
               <Select.Option
                 key={opt.value}
                 label={opt.label}
-                value={opt.label}
+                value={opt.value}
               >
                 {opt.label}
               </Select.Option>
@@ -679,12 +688,28 @@ export const WeighManagement = () => {
             <TextArea required allowClear showCount maxLength={100} />
           </Form.Item>
         ) : null}
+
+        {allowEdit ? (
+          <Form.Item>
+            <Button
+              type="primary"
+              className="mr-3"
+              onClick={() => editCurrentTransaction()}
+            >
+              Edit this transaction
+            </Button>
+          </Form.Item>
+        ) : null}
       </Form>
     );
   };
 
   const ActionButtons = ({ state }) => {
-    if (areTransactionsInProgress() === 0 || multipleTransactionEnabled) {
+    if (
+      areTransactionsInProgress() === 0 ||
+      multipleTransactionEnabled ||
+      !transactionCreation
+    ) {
       return (
         <Form.Item>
           <Button type="primary" htmlType="submit" className="mr-3">
@@ -726,8 +751,11 @@ export const WeighManagement = () => {
     formData.isTransactionCompleted = 1;
     delete formData.size;
     delete formData.transactionStatus;
+    delete formData.finalAmount;
+    delete formData.totalWeight;
+    delete formData.vatCost;
 
-    cleanChildTransactions(formData);
+    // cleanChildTransactions(formData);
 
     const createTransaction = BASE_URL + API_ENDPOINTS.CREATE_TRANSACTION;
 
@@ -767,6 +795,12 @@ export const WeighManagement = () => {
         <CancellationReasons setButtonDisabled={setButtonDisabled} />
       </Modal>
     );
+  };
+
+  const editCurrentTransaction = () => {
+    console.log("Set Current Transaction to Edit mode...");
+    setTransactionCreation(null);
+    handleCancel();
   };
 
   // Keep the function reference
@@ -1011,6 +1045,26 @@ export const WeighManagement = () => {
       );
     };
 
+    const getTransactionCompletion = () => {
+      console.log(childTransactions);
+      const hasAllFirstWeight = childTransactions.every(
+        (item) =>
+          item.firstWeight &&
+          (item.firstWeight !== null || item.firstWeight !== undefined)
+      );
+      const hasAllSecondWeight = childTransactions.every(
+        (item) =>
+          item.secondWeight &&
+          (item.secondWeight !== null || item.secondWeight !== undefined)
+      );
+
+      if (hasAllFirstWeight && hasAllSecondWeight) {
+        return 1; // transaction is completed
+      } else {
+        return 0; //some transaction is in progress
+      }
+    };
+
     const payload = {
       customerName: values.customerName,
       customerId: values.customerId,
@@ -1022,7 +1076,7 @@ export const WeighManagement = () => {
       transferType: values.transferType,
       childTransactionDtoList: [...childTransactions],
       cancelReason: cancelForm.cancelReason || "",
-      isTransactionCompleted: allTransactionsCompleted() ? 1 : 0,
+      isTransactionCompleted: getTransactionCompletion(),
       created_by: !currentTransactionId
         ? user.emp_id
         : tempTransactions.find((item) => item.id === currentTransactionId)
