@@ -13,7 +13,7 @@ import {
   Checkbox,
 } from "antd";
 import { useNavigate } from "react-router-dom";
-import { Row, Col } from "antd";
+import { Row, Col, Divider } from "antd";
 import axios from "axios";
 import { PlusOutlined } from "@ant-design/icons";
 import "antd-css-utilities/utility.min.css";
@@ -1225,140 +1225,215 @@ export const WeighManagement = () => {
   const WeightForm = () => {
     return (
       <Row>
-        <Col span={12}>
+        <Col span={18}>
           <CancelModal />
           {/* <div id="serialResults"></div> */}
 
           <Form
             form={form}
             labelCol={{
-              offset: 2,
-              span: 16,
-            }}
-            wrapperCol={{
-              offset: 2,
               span: 24,
             }}
-            layout="vertical"
+            wrapperCol={{
+              span: 24,
+            }}
+            layout="horizontal"
+            size="medium"
             autoComplete="off"
             initialValues={formInitValues}
             onFinish={onFinish}
           >
-            <TransactionType
-              disabled={transactionCreation === "IN_PROGRESS" && !editMode}
-            />
-            <CustomerType
-              disabled={transactionCreation === "IN_PROGRESS" && !editMode}
-            />
-            <CustomerName />
-            <PhoneNumber />
-            <CustomerID />
-            <VehicleType
-              disabled={transactionCreation === "IN_PROGRESS" && !editMode}
-            />
-            <VehicleNumber
-              disabled={transactionCreation === "IN_PROGRESS" && !editMode}
-            />
-            <DriverCount
-              disabled={transactionCreation === "IN_PROGRESS" && !editMode}
-            />
+            <Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }}>
+              <Col className="gutter-row" span={8}>
+                <TransactionType
+                  disabled={transactionCreation === "IN_PROGRESS" && !editMode}
+                />
+              </Col>
 
-            <Form.List shouldUpdate name="childTransactionDtoList">
-              {(fields, { add }) => (
-                <>
-                  {fields.map((field, index) => (
+              <Col className="gutter-row" span={8}>
+                <CustomerType
+                  disabled={transactionCreation === "IN_PROGRESS" && !editMode}
+                />
+              </Col>
+              <Col className="gutter-row" span={8}>
+                <VehicleType
+                  disabled={transactionCreation === "IN_PROGRESS" && !editMode}
+                />
+              </Col>
+            </Row>
+            <Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }}>
+              {/*  <Col className="gutter-row" span={9}>
+                <CustomerType
+                  disabled={transactionCreation === "IN_PROGRESS" && !editMode}
+                />
+              </Col> */}
+              <Col className="gutter-row" span={8}>
+                <CustomerName />
+              </Col>
+              <Col className="gutter-row" span={8}>
+                <CustomerID />
+              </Col>
+              <Col className="gutter-row" span={8}>
+                <PhoneNumber />
+              </Col>
+            </Row>
+
+            <Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }}>
+              {/*  <Col className="gutter-row" span={8}>
+                <VehicleType
+                  disabled={transactionCreation === "IN_PROGRESS" && !editMode}
+                />
+              </Col> */}
+              <Col className="gutter-row" span={8}>
+                <VehicleNumber
+                  disabled={transactionCreation === "IN_PROGRESS" && !editMode}
+                />
+              </Col>
+              <Col className="gutter-row" span={8}>
+                <DriverCount
+                  disabled={transactionCreation === "IN_PROGRESS" && !editMode}
+                />
+              </Col>
+            </Row>
+            {/* 
+            <Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }}>
+              <Col className="gutter-row" span={12}>
+                <VehicleNumber
+                  disabled={transactionCreation === "IN_PROGRESS" && !editMode}
+                />
+              </Col>
+              <Col className="gutter-row" span={12}>
+                <DriverCount
+                  disabled={transactionCreation === "IN_PROGRESS" && !editMode}
+                />
+              </Col>
+            </Row> */}
+
+            <Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }}>
+              <Col className="gutter-row" span={24}>
+                <Form.List shouldUpdate name="childTransactionDtoList">
+                  {(fields, { add }) => (
                     <>
-                      {/* <p className="ant-col ant-col-16 ant-col-offset-2 ant-form-item-label">
-                  Transaction: <b>{index + 1}</b>
-                </p> */}
-                      {transactionType !== "WEIGH" ? (
-                        <Col span={12} offset={2} className="mb-5">
-                          <Typography.Title level={4} style={{ margin: 0 }}>
-                            Transaction: {index + 1}
-                          </Typography.Title>
-                        </Col>
-                      ) : null}
+                      {fields.map((field, index) => (
+                        <>
+                          <Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }}>
+                            <Col className="gutter-row" span={12}>
+                              {transactionType !== "WEIGH" ? (
+                                <Typography.Title
+                                  level={4}
+                                  className="mb-5"
+                                  style={{ margin: 0 }}
+                                >
+                                  Transaction: {index + 1}
+                                </Typography.Title>
+                              ) : null}
+                            </Col>
+                          </Row>
 
-                      <Materials
-                        field={field}
-                        transaction={
-                          form.getFieldValue("childTransactionDtoList")[index]
-                        }
-                      />
-                      <PriceType
-                        field={field}
-                        transaction={
-                          form.getFieldValue("childTransactionDtoList")[index]
-                        }
-                      />
+                          <Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }}>
+                            <Col className="gutter-row" span={8}>
+                              <Materials
+                                field={field}
+                                transaction={
+                                  form.getFieldValue("childTransactionDtoList")[
+                                    index
+                                  ]
+                                }
+                              />
+                            </Col>
+                            <Col className="gutter-row" span={8}>
+                              <PriceType
+                                field={field}
+                                transaction={
+                                  form.getFieldValue("childTransactionDtoList")[
+                                    index
+                                  ]
+                                }
+                              />
+                            </Col>
+                          </Row>
 
-                      <FirstWeight
-                        {...field}
-                        key={`firstWeight_${index}`}
-                        /*  weightInputs={
-                          index > 0
-                            ? form.getFieldValue("childTransactionDtoList")[
-                                index - 1
-                              ]
-                            : null
-                        } */
-                        index={index}
-                        disabled={
-                          transactionCreation === "IN_PROGRESS" ||
-                          isWeightReadFromDevice ||
-                          vehicleType === "LT"
-                        }
-                      />
+                          <Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }}>
+                            <Col className="gutter-row" span={8}>
+                              <FirstWeight
+                                {...field}
+                                key={`firstWeight_${index}`}
+                                index={index}
+                                disabled={
+                                  transactionCreation === "IN_PROGRESS" ||
+                                  isWeightReadFromDevice ||
+                                  vehicleType === "LT"
+                                }
+                              />
+                            </Col>
+                            <Col className="gutter-row" span={8}>
+                              <SecondWeight
+                                {...field}
+                                key={`secondWeight_${index}`}
+                                firstWeightDetail={
+                                  form.getFieldValue("childTransactionDtoList")[
+                                    index
+                                  ]
+                                }
+                                transaction={
+                                  form.getFieldValue("childTransactionDtoList")[
+                                    index
+                                  ]
+                                }
+                                disabled={
+                                  transactionCreation === "IN_PROGRESS" ||
+                                  isWeightReadFromDevice ||
+                                  vehicleType === "LT"
+                                }
+                                index={index}
+                              />
+                            </Col>
+                          </Row>
 
-                      <SecondWeight
-                        {...field}
-                        key={`secondWeight_${index}`}
-                        firstWeightDetail={
-                          form.getFieldValue("childTransactionDtoList")[index]
-                        }
-                        transaction={
-                          form.getFieldValue("childTransactionDtoList")[index]
-                        }
-                        disabled={
-                          transactionCreation === "IN_PROGRESS" ||
-                          isWeightReadFromDevice ||
-                          vehicleType === "LT"
-                        }
-                        index={index}
-                      />
-                      {/* 
+                          {/* 
                       <TotalWeight {...field} key={`totalWeight_${index}`} /> */}
 
-                      {/* <MinusCircleOutlined onClick={() => remove(field.name)} /> */}
+                          {/* <MinusCircleOutlined onClick={() => remove(field.name)} /> */}
+                        </>
+                      ))}
+
+                      {!multipleTransactionEnabled ? (
+                        <Form.Item>
+                          <Button
+                            type="dashed"
+                            onClick={() => {
+                              allowAnotherTransaction(add);
+                            }}
+                            block
+                            icon={<PlusOutlined />}
+                            // disabled={disableAnotherTransaction}
+                          >
+                            Add Another Transaction
+                          </Button>
+                        </Form.Item>
+                      ) : null}
                     </>
-                  ))}
+                  )}
+                </Form.List>
+              </Col>
+            </Row>
 
-                  {!multipleTransactionEnabled ? (
-                    <Form.Item>
-                      <Button
-                        type="dashed"
-                        onClick={() => {
-                          allowAnotherTransaction(add);
-                        }}
-                        block
-                        icon={<PlusOutlined />}
-                        // disabled={disableAnotherTransaction}
-                      >
-                        Add Another Transaction
-                      </Button>
-                    </Form.Item>
-                  ) : null}
-                </>
-              )}
-            </Form.List>
+            <Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }}>
+              <Col className="gutter-row" span={12}>
+                {transactionType !== "OUT" ? (
+                  <Vat disabled={transactionCreation} />
+                ) : null}
+              </Col>
+            </Row>
 
-            {transactionType !== "OUT" ? (
-              <Vat disabled={transactionCreation} />
-            ) : null}
-            <ActionButtons state={transactionCreation} />
+            <Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }}>
+              <Col className="gutter-row" span={12}>
+                <ActionButtons state={transactionCreation} />
+              </Col>
+            </Row>
           </Form>
         </Col>
-        <Col span={10} offset={2}>
+        <Col span={4} offset={2}>
           <div
             style={{
               marginLeft: "auto",
@@ -1367,7 +1442,7 @@ export const WeighManagement = () => {
             {/*  <Title type="primary" level={5}>
       Transaction History {tempTransactions.length}
     </Title>
-    <Row gutter={16}>
+    <Row  gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }}>
       <Col span={12}>
         <Statistic title="Active" value={5} />
       </Col>

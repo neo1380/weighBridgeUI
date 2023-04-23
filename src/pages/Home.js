@@ -5,6 +5,7 @@ import { Layout, Menu } from "antd";
 import {
   DeploymentUnitOutlined,
   DollarOutlined,
+  DropboxOutlined,
   AppstoreOutlined,
   GlobalOutlined,
   UsergroupAddOutlined,
@@ -155,7 +156,8 @@ export class Home extends Component {
                   <Sider
                     width={250}
                     breakpoint="lg"
-                    collapsedWidth="0"
+                    collapsedWidth="50"
+                    collapsed={true}
                     onBreakpoint={(broken) => {
                       console.log(broken);
                     }}
@@ -182,7 +184,7 @@ export class Home extends Component {
                       <Menu.Item key="4" icon={<DeploymentUnitOutlined />}>
                         <Link to="/weighm">Weight Management</Link>
                       </Menu.Item>
-                      <Menu.Item key="5" icon={<GlobalOutlined />}>
+                      <Menu.Item key="5" icon={<DropboxOutlined />}>
                         <Link to="/material"> Material Management</Link>
                       </Menu.Item>
                       <Menu.Item key="6" icon={<GlobalOutlined />}>
