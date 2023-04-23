@@ -9,6 +9,7 @@ import {
   Modal,
   InputNumber,
   Radio,
+  Spin,
   Checkbox,
 } from "antd";
 import { useNavigate } from "react-router-dom";
@@ -29,26 +30,6 @@ const { TextArea } = Input;
 export const WeighManagement = () => {
   const navigate = useNavigate();
   const user = useContext(UserContext);
-
-  const [weightFromScale, setweightFromScale] = useState(null);
-  document.addEventListener("build", function ({ detail }) {
-    console.log(detail);
-    updateWeight(detail.weightFromScale);
-  });
-
-  const updateWeight = (data) => {
-    console.log(data);
-    setweightFromScale(data);
-    console.log("weightFromScale", weightFromScale);
-    form.setFieldsValue({
-      childTransactionDtoList: [
-        {
-          firstWeight: weightFromScale,
-        },
-      ],
-    });
-  };
-
   const [isLoading, setIsLoading] = useState(true);
   const [transactionType, setTransactionType] = useState(null);
   const [vehicleType, setVehicleType] = useState(null);
@@ -68,6 +49,8 @@ export const WeighManagement = () => {
   const [enablePhoneNumber, setEnablePhoneNumber] = useState(false);
   const [enableCustName, setEnableCustName] = useState(false);
   const [enableVat, setEnableVat] = useState(false);
+
+  const [isWeightReadFromDevice, setIsWeightReadFromDevice] = useState(true);
 
   //   const [enableCustId, setEnableCustId] = useState(false);
 
@@ -599,31 +582,7 @@ export const WeighManagement = () => {
     }
   };
 
-  /*  const TotalWeight = (field, key) => {
-    if (transactionType !== "WEIGH") {
-      return null;
-    }
-    return (
-      <Form.Item
-        label="Total Weight"
-        name={[field.name, "totalWeight"]}
-        fieldKey={[field.fieldKey, key]}
-        initialValue={field.weight}
-        rules={[
-          {
-            required: true,
-            message: "Please enter Total Weight",
-          },
-        ]}
-      >
-        <InputNumber
-          placeholder="Capture Weight"
-          disabled={field.disabled}
-          addonAfter="Kgs"
-        />
-      </Form.Item>
-    );
-  }; */
+  const Spinner = () => <Spin className="spinner" tip="Loading..." />;
 
   const Vat = ({ disabled }) => {
     const onChangeVat = (event) => {
@@ -861,6 +820,42 @@ export const WeighManagement = () => {
       });
   };
 
+  const setWeightInForm = useCallback(
+    (weightFromDevice) => {
+      /*    const totalTransactions = form.getFieldValue(
+        "childTransactionDtoList"
+      ).length; */
+      const childTransactions = form.getFieldValue("childTransactionDtoList");
+      //New transaction created for the first time, Current Transaction ID will be null. So, directly assign first weight to device weight & second weight to null.
+      // childTransactions[0].firstWeight = weightFromDevice;
+      const firstWeightLists = childTransactions.map(
+        (transaction) => transaction.firstWeight
+      );
+      const secondWeightLists = childTransactions.map(
+        (transaction) => transaction.secondWeight
+      );
+      const emptyFirstWeightIndex = firstWeightLists.findIndex(
+        (item) => item === "undefined" || item === null
+      );
+      const emptySecondWeightIndex = secondWeightLists.findIndex(
+        (item) => item === "undefined" || item === null
+      );
+
+      if (emptyFirstWeightIndex > -1) {
+        childTransactions[emptyFirstWeightIndex].firstWeight = weightFromDevice;
+      } else if (emptySecondWeightIndex > -1) {
+        childTransactions[emptySecondWeightIndex].secondWeight =
+          weightFromDevice;
+      }
+
+      form.setFieldsValue({
+        childTransactionDtoList: childTransactions,
+      });
+      setIsWeightReadFromDevice(true);
+    },
+    [form]
+  );
+
   useEffect(() => {
     handleCustomerTypes("INC");
     getTemporaryTransactions();
@@ -877,6 +872,29 @@ export const WeighManagement = () => {
     handlePriceTypes();
     return () => setMaterials([]);
   }, [handleCustomerTypes, handlePriceTypes]);
+
+  useEffect(() => {
+    const getWeightFromDevice = () => {
+      setIsLoading(true);
+      axios
+        .get(BASE_URL + API_ENDPOINTS.GET_WEIGHT_FROM_DEVICE)
+        .then(({ data }) => {
+          setIsLoading(false);
+          const { weight } = data;
+          //   setWeightFromScale(weight);
+          setWeightInForm(weight);
+          console.log("Data from weight device");
+          console.log(weight);
+        })
+        .catch((error) => {
+          setIsWeightReadFromDevice(false);
+        });
+    };
+
+    getWeightFromDevice();
+
+    return null;
+  }, [setWeightInForm]);
 
   const onChangeUserType = (event) => {
     setSelectedCustType(event.target.value);
@@ -1244,7 +1262,11 @@ export const WeighManagement = () => {
                             : null
                         } */
                         index={index}
-                        disabled={transactionCreation === "IN_PROGRESS"}
+                        disabled={
+                          transactionCreation === "IN_PROGRESS" ||
+                          isWeightReadFromDevice ||
+                          vehicleType === "LT"
+                        }
                       />
 
                       <SecondWeight
@@ -1341,7 +1363,7 @@ export const WeighManagement = () => {
   };
 
   //   return <>{isLoading ? <Spinner /> : <WeightForm />}</>;
-  return <>{isLoading ? <WeightForm /> : <WeightForm />}</>;
+  return <>{isLoading ? <Spinner /> : <WeightForm />}</>;
 };
 
 export default WeighManagement;
