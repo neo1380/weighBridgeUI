@@ -51,6 +51,7 @@ export const WeighManagement = () => {
   const [enableVat, setEnableVat] = useState(false);
 
   const [isWeightReadFromDevice, setIsWeightReadFromDevice] = useState(true);
+  const [rawWeightId, setRawWeightId] = useState(null);
 
   //   const [enableCustId, setEnableCustId] = useState(false);
 
@@ -533,6 +534,7 @@ export const WeighManagement = () => {
           fieldKey={[field.fieldKey, key]}
           validateTrigger="onBlur"
           initialValue={calcSecondWeight(index)}
+          disabled={field.disabled}
           rules={[
             (obj) => ({
               validator(_, value) {
@@ -880,8 +882,9 @@ export const WeighManagement = () => {
         .get(BASE_URL + API_ENDPOINTS.GET_WEIGHT_FROM_DEVICE)
         .then(({ data }) => {
           setIsLoading(false);
-          const { weight } = data;
+          const { weight, id } = data;
           //   setWeightFromScale(weight);
+          setRawWeightId(id);
           setWeightInForm(weight);
           console.log("Data from weight device");
           console.log(weight);
@@ -894,7 +897,7 @@ export const WeighManagement = () => {
     getWeightFromDevice();
 
     return null;
-  }, [setWeightInForm]);
+  }, [setWeightInForm, currentTransactionId]);
 
   const onChangeUserType = (event) => {
     setSelectedCustType(event.target.value);
@@ -1030,6 +1033,9 @@ export const WeighManagement = () => {
           : transactionType === "WEIGH"
           ? false
           : Boolean(enableVat);
+    }
+    if (rawWeightId) {
+      payload.rawWeightId = rawWeightId;
     }
     axios.post(createTransaction, payload).then(({ data }) => {
       if (data.isTransactionCompleted) {
@@ -1277,6 +1283,11 @@ export const WeighManagement = () => {
                         }
                         transaction={
                           form.getFieldValue("childTransactionDtoList")[index]
+                        }
+                        disabled={
+                          transactionCreation === "IN_PROGRESS" ||
+                          isWeightReadFromDevice ||
+                          vehicleType === "LT"
                         }
                         index={index}
                       />
