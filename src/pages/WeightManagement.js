@@ -151,7 +151,7 @@ export const WeighManagement = () => {
         name="customerType"
         value={selectedCustType}
       >
-        <Radio.Group buttonStyle="solid">
+        <Radio.Group buttonStyle="solid" disabled={disabled === "IN_PROGRESS"}>
           {customerTypeOptions.map(({ label, value }) => (
             <Radio.Button
               value={value}
@@ -276,7 +276,7 @@ export const WeighManagement = () => {
     }
   };
 
-  const VehicleType = () => {
+  const VehicleType = ({ disabled }) => {
     if (transactionType === "WEIGH") {
       return null;
     }
@@ -291,7 +291,11 @@ export const WeighManagement = () => {
           },
         ]}
       >
-        <Radio.Group buttonStyle="solid" value={vehicleType}>
+        <Radio.Group
+          buttonStyle="solid"
+          value={vehicleType}
+          disabled={disabled === "IN_PROGRESS"}
+        >
           {vehicleTypes.map(({ label, value }) => (
             <Radio.Button value={value} key={value}>
               {label}
@@ -1219,12 +1223,12 @@ export const WeighManagement = () => {
             initialValues={formInitValues}
             onFinish={onFinish}
           >
-            <TransactionType />
-            <CustomerType />
+            <TransactionType disabled={transactionCreation} />
+            <CustomerType disabled={transactionCreation} />
             <CustomerName />
             <PhoneNumber />
             <CustomerID />
-            <VehicleType />
+            <VehicleType disabled={transactionCreation} />
             <VehicleNumber disabled={transactionCreation} />
             <DriverCount disabled={transactionCreation} />
 
