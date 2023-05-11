@@ -177,7 +177,8 @@ export const WeighManagement = () => {
         name="customerName"
         rules={[
           {
-            required: transactionCreation === "IN_PROGRESS" ? true : false,
+            // required: transactionCreation === "IN_PROGRESS" ? true : false,
+            required: false,
             message: "Please enter Customer's name",
           },
         ]}
@@ -202,7 +203,8 @@ export const WeighManagement = () => {
         name="phoneNumber"
         rules={[
           {
-            required: transactionCreation === "IN_PROGRESS" ? true : false,
+            // required: transactionCreation === "IN_PROGRESS" ? true : false,
+            required: false,
             message: "Please enter Customer's Phone Number",
           },
         ]}
@@ -286,7 +288,8 @@ export const WeighManagement = () => {
         name="vehicleType"
         rules={[
           {
-            required: true,
+            // required: true,
+            required: false,
             message: "Please choose a vehicle type",
           },
         ]}
@@ -317,7 +320,8 @@ export const WeighManagement = () => {
           name="driverCount"
           rules={[
             {
-              required: true,
+              //   required: true,
+              required: false,
               message: "Please enter Driver Count",
             },
           ]}
