@@ -279,6 +279,14 @@ export const WeighManagement = () => {
   };
 
   const VehicleType = ({ disabled }) => {
+    const onChangeVehicleType = (event) => {
+      setVehicleType(event.target.value);
+      if (event.target.value === "LT") {
+        setIsWeightReadFromDevice(true);
+      } else {
+        setIsWeightReadFromDevice(false);
+      }
+    };
     if (transactionType === "WEIGH") {
       return null;
     }
@@ -298,6 +306,7 @@ export const WeighManagement = () => {
           buttonStyle="solid"
           value={vehicleType}
           disabled={disabled}
+          onChange={onChangeVehicleType}
         >
           {vehicleTypes.map(({ label, value }) => (
             <Radio.Button value={value} key={value}>
@@ -321,7 +330,7 @@ export const WeighManagement = () => {
           rules={[
             {
               //   required: true,
-              required: false,
+              required: true,
               message: "Please enter Driver Count",
             },
           ]}
@@ -1044,6 +1053,7 @@ export const WeighManagement = () => {
       phoneNumber: values.phoneNumber,
       driverCount: values.driverCount,
       transferType: values.transferType,
+      vehicleType: values.vehicleType,
       childTransactionDtoList: [...childTransactions],
       cancelReason: cancelForm.cancelReason || "",
       isTransactionCompleted: getTransactionCompletion(),
@@ -1062,9 +1072,10 @@ export const WeighManagement = () => {
           ? false
           : Boolean(enableVat);
     }
-    if (rawWeightId) {
+    if (rawWeightId && isWeightReadFromDevice) {
       payload.rawWeightId = rawWeightId;
     }
+    console.log(payload);
     axios.post(createTransaction, payload).then(({ data }) => {
       if (data.isTransactionCompleted) {
         navigate(`/summary/${currentTransactionId}`);
@@ -1226,6 +1237,14 @@ export const WeighManagement = () => {
     return count;
   };
 
+  const disableWeightField = () => {
+    return !(
+      transactionCreation === "IN_PROGRESS" ||
+      isWeightReadFromDevice ||
+      (transactionCreation === "IN_PROGRESS" && vehicleType === "LT")
+    );
+  };
+
   const WeightForm = () => {
     return (
       <Row>
@@ -1296,6 +1315,8 @@ export const WeighManagement = () => {
                         }
                       />
 
+                      <p>Vehicle type: {vehicleType}</p>
+
                       <FirstWeight
                         {...field}
                         key={`firstWeight_${index}`}
@@ -1310,7 +1331,8 @@ export const WeighManagement = () => {
                         disabled={
                           transactionCreation === "IN_PROGRESS" ||
                           isWeightReadFromDevice ||
-                          vehicleType === "LT"
+                          (transactionCreation === "IN_PROGRESS" &&
+                            vehicleType === "LT")
                         }
                       />
 
@@ -1323,11 +1345,7 @@ export const WeighManagement = () => {
                         transaction={
                           form.getFieldValue("childTransactionDtoList")[index]
                         }
-                        disabled={
-                          transactionCreation === "IN_PROGRESS" ||
-                          isWeightReadFromDevice ||
-                          vehicleType === "LT"
-                        }
+                        disabled={disableWeightField()}
                         index={index}
                       />
                       {/* 

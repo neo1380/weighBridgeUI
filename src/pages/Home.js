@@ -32,6 +32,7 @@ export class Home extends Component {
     collapsed: false,
     isLoggedIn: this.hasToken ? true : false,
     user: null,
+    isAdmin: false,
   };
 
   /*  getWeightFromScale = () => {
@@ -132,6 +133,7 @@ export class Home extends Component {
     axios.get(url).then(({ data }) => {
       this.setState({ user: data.user });
       this.setState({ isLoggedIn: true });
+      this.setState({ isAdmin: data.user.isAdmin });
       //   this.getWeightFromScale();
       window.localStorage.setItem("emp_id", `${emp_id}`);
     });
@@ -151,7 +153,7 @@ export class Home extends Component {
             <SerialDataContext.Provider value={weightFromScale}>
               <Router>
                 <HeaderComp onLogoutHandler={this.logoutHandler} />
-                <Layout>
+                <Layout className={!this.state.isAdmin ? "pt-6" : null}>
                   <Sider
                     width={250}
                     breakpoint="lg"
@@ -170,21 +172,29 @@ export class Home extends Component {
                       defaultOpenKeys={["sub1"]}
                       style={{ height: "100%", borderRight: 0 }}
                     >
-                      <Menu.Item key="1" icon={<AppstoreOutlined />}>
+                      {/*     <Menu.Item key="1" icon={<AppstoreOutlined />}>
                         Dashboard
-                      </Menu.Item>
-                      <Menu.Item key="2" icon={<UsergroupAddOutlined />}>
-                        <Link to="/employee">Employee Management</Link>
-                      </Menu.Item>
-                      <Menu.Item key="3" icon={<DollarOutlined />}>
-                        <Link to="/transactions">Transactions</Link>
-                      </Menu.Item>
+                      </Menu.Item> */}
+                      {this.state.isAdmin ? (
+                        <>
+                          <Menu.Item key="2" icon={<UsergroupAddOutlined />}>
+                            <Link to="/employee">Employee Management</Link>
+                          </Menu.Item>
+                          <Menu.Item key="3" icon={<DollarOutlined />}>
+                            <Link to="/transactions">Transactions</Link>
+                          </Menu.Item>
+                        </>
+                      ) : null}
+
                       <Menu.Item key="4" icon={<DeploymentUnitOutlined />}>
                         <Link to="/weighm">Weight Management</Link>
                       </Menu.Item>
-                      <Menu.Item key="5" icon={<GlobalOutlined />}>
-                        <Link to="/material"> Material Management</Link>
-                      </Menu.Item>
+                      {this.state.isAdmin ? (
+                        <Menu.Item key="5" icon={<GlobalOutlined />}>
+                          <Link to="/material"> Material Management</Link>
+                        </Menu.Item>
+                      ) : null}
+
                       <Menu.Item key="6" icon={<GlobalOutlined />}>
                         <Link to="/ongoing"> Ongoing Transactions</Link>
                       </Menu.Item>
