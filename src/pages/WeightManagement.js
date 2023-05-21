@@ -1315,8 +1315,6 @@ export const WeighManagement = () => {
                         }
                       />
 
-                      <p>Vehicle type: {vehicleType}</p>
-
                       <FirstWeight
                         {...field}
                         key={`firstWeight_${index}`}
