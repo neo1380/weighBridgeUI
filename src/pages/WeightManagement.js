@@ -1112,6 +1112,8 @@ export const WeighManagement = () => {
       payload.rawWeightId = rawWeightId;
     }
 
+    payload.rawWeightId = 196;
+
     if (payload.isTransactionCompleted === 1) {
       payload.customerName = payload.customerName || "NA";
       payload.customerId = payload.customerId || "NA";
