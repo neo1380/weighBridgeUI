@@ -518,7 +518,7 @@ export const WeighManagement = () => {
               }}
               className="mr-3"
             >
-              Read Weight From Device
+              Get Weight
             </Button>
           </Form.Item>
         ) : null}
@@ -633,7 +633,7 @@ export const WeighManagement = () => {
                 }}
                 className="mr-3"
               >
-                Read Weight From Device
+                Get Weight
               </Button>
             </Form.Item>
           ) : null}
