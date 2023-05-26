@@ -1,18 +1,32 @@
 import React from "react";
-import { Form, Input, Button, Select, Typography, InputNumber } from "antd";
-import { DatePicker, Space, Row, Col } from "antd";
+// import { Form, Input, Button, Select, Typography, InputNumber } from "antd";
+import { Form, Input, Button, Select, Typography } from "antd";
+// import { DatePicker, Space, Row, Col } from "antd";
+import { Row, Col } from "antd";
+import axios from "axios";
+import { API_ENDPOINTS, AUTH_URL } from "../constants/api.constants";
+
 // import { getSerialData } from "../serialData";
+import { EyeTwoTone, EyeInvisibleOutlined } from "@ant-design/icons";
 
 const { Title } = Typography;
 
 export const EmployeeManagement = () => {
   //   getSerialData();
+  const [employeeForm] = Form.useForm();
 
-  const onFinish = (values) => {
-    console.log("Received values of form: ", values);
+  const onFinish = (payload) => {
+    console.log("Received payload of form: ", payload);
+    const createEmployee = AUTH_URL + API_ENDPOINTS.SIGN_UP;
+
+    axios.post(createEmployee, payload).then(({ data }) => {
+      console.log(data);
+      console.log("Employee signed up successfully");
+      employeeForm.resetFields();
+    });
   };
 
-  const ShowPhoneNumber = () => {
+  /*  const ShowPhoneNumber = () => {
     return (
       <Form.Item label="Phone Number" name="customerPhoneNo">
         <InputNumber
@@ -27,7 +41,7 @@ export const EmployeeManagement = () => {
   const onChange = (date, dateString) => {
     console.log(date, dateString);
   };
-
+ */
   return (
     <Row>
       <Col span={12}>
@@ -35,6 +49,7 @@ export const EmployeeManagement = () => {
           labelCol={{
             span: 16,
           }}
+          form={employeeForm}
           layout="vertical"
           onFinish={onFinish}
         >
@@ -42,10 +57,10 @@ export const EmployeeManagement = () => {
             <Title level={5}>Add New Employee</Title>
           </Form.Item>
 
-          <Form.Item label="Employee Type" name="employeeType">
+          <Form.Item label="Employee Type" name="isAdmin">
             <Select placeholder="Select a Employee Type">
-              <Select.Option value="permanent">Permanent</Select.Option>
-              <Select.Option value="contract">Contract</Select.Option>
+              <Select.Option value="true">Administrator</Select.Option>
+              <Select.Option value="false">Operator</Select.Option>
             </Select>
           </Form.Item>
           <Form.Item label="Enter First Name" name="firstname">
@@ -60,7 +75,16 @@ export const EmployeeManagement = () => {
           <Form.Item label="Enter Email Address" name="email">
             <Input placeholder="Enter Email Address" allowClear />
           </Form.Item>
-          <ShowPhoneNumber />
+          <Form.Item label="Enter Password" name="password">
+            <Input.Password
+              placeholder="input password"
+              allowClear
+              iconRender={(visible) =>
+                visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />
+              }
+            />
+          </Form.Item>
+          {/*   <ShowPhoneNumber />
           <Form.Item label="Employee Status" name="employeeStatus">
             <Select placeholder="Select a Employee status">
               <Select.Option value="active">Active</Select.Option>
@@ -93,7 +117,7 @@ export const EmployeeManagement = () => {
           </Form.Item>
           <Form.Item label="Department ID" name="departmentID">
             <Input placeholder="Enter Department" allowClear />
-          </Form.Item>
+          </Form.Item> */}
 
           <Form.Item>
             <Button type="primary" htmlType="submit">

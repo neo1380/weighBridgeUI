@@ -11,6 +11,7 @@ export const API_ENDPOINTS = {
   //   GET_MATERIAL: "material/materialList?sortby=asc",
   LOGIN: "users/login",
   USER: "users/userDetails/",
+  SIGN_UP: "users/signup",
   GET_WEIGHT_FROM_DEVICE: "getWeight/latestDeviceWeight",
   GET_MATERIAL: "material/materialList/materialName/1",
   SAVE_MATERIAL: "material/savematerial",
