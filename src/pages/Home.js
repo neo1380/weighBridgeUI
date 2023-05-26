@@ -5,7 +5,6 @@ import { Layout, Menu } from "antd";
 import {
   DeploymentUnitOutlined,
   DollarOutlined,
-  AppstoreOutlined,
   GlobalOutlined,
   UsergroupAddOutlined,
 } from "@ant-design/icons";
