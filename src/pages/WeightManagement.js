@@ -1111,6 +1111,13 @@ export const WeighManagement = () => {
     if (rawWeightId && isWeightReadFromDevice) {
       payload.rawWeightId = rawWeightId;
     }
+
+    if (payload.isTransactionCompleted === 1) {
+      payload.customerName = payload.customerName || "NA";
+      payload.customerId = payload.customerId || "NA";
+      payload.phoneNumber = payload.phoneNumber || "NA";
+    }
+
     axios.post(createTransaction, payload).then(({ data }) => {
       if (data.isTransactionCompleted) {
         navigate(`/summary/${currentTransactionId}`);
