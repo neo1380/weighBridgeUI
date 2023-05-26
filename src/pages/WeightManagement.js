@@ -32,7 +32,7 @@ export const WeighManagement = () => {
   const user = useContext(UserContext);
   const [isLoading, setIsLoading] = useState(true);
   const [transactionType, setTransactionType] = useState(null);
-  const [vehicleType, setVehicleType] = useState(null);
+  const [vehicleType, setVehicleType] = useState("LT");
   const [priceType, setPriceType] = useState("L");
   const [selectedCustType, setSelectedCustType] = useState(null);
   const [customerTypeOptions, setCustomerTypeOptions] = useState([]);
@@ -483,25 +483,46 @@ export const WeighManagement = () => {
       }
     };
 
+    const hasFirstWeight =
+      form.getFieldValue("childTransactionDtoList")[index].firstWeight || null;
+
+    const disableField = hasFirstWeight || vehicleType === "LT";
+
     return (
-      <Form.Item
-        label="First Weight"
-        name={[field.name, "firstWeight"]}
-        fieldKey={[field.fieldKey, key]}
-        initialValue={calcFirstWeight(index)}
-        rules={[
-          {
-            required: true,
-            message: "Please enter First Weight",
-          },
-        ]}
-      >
-        <InputNumber
-          placeholder="Weight before unload"
-          disabled={field.disabled}
-          addonAfter="Kgs"
-        />
-      </Form.Item>
+      <>
+        <Form.Item
+          label="First Weight"
+          name={[field.name, "firstWeight"]}
+          fieldKey={[field.fieldKey, key]}
+          initialValue={calcFirstWeight(index)}
+          rules={[
+            {
+              required: true,
+              message: "Please enter First Weight",
+            },
+          ]}
+        >
+          <InputNumber
+            placeholder="Weight before unload"
+            disabled={disableField}
+            addonAfter="Kgs"
+          />
+        </Form.Item>
+        {!hasFirstWeight && vehicleType === "LT" ? (
+          <Form.Item>
+            <Button
+              type="primary"
+              onClick={(event) => {
+                event.preventDefault();
+                getWeightFromDevice();
+              }}
+              className="mr-3"
+            >
+              Read Weight From Device
+            </Button>
+          </Form.Item>
+        ) : null}
+      </>
     );
   };
 
@@ -513,11 +534,7 @@ export const WeighManagement = () => {
       !currentTransaction.transactionId
     )
       return null;
-    // if (field.transaction && !field.transaction.transactionId) return;
     const { index } = field;
-    /*  if (transactionType === "WEIGH") {
-      return null;
-    } */
 
     const calcSecondWeight = (index) => {
       let secondWeight = null;
@@ -532,69 +549,95 @@ export const WeighManagement = () => {
       return secondWeight;
     };
 
-    const disableSecondWeight = (index) => {
+    const hasFirstWeight = form.getFieldValue("childTransactionDtoList")[index]
+      .firstWeight;
+    const hasSecondWeight = form.getFieldValue("childTransactionDtoList")[index]
+      .secondWeight;
+
+    const readWeightFromDevice =
+      hasFirstWeight && !hasSecondWeight && vehicleType === "LT";
+
+    const disableSecondWeight = () => {
       let isDisabled = false;
-      const currTransaction = form.getFieldValue("childTransactionDtoList")[
-        index
-      ];
-      if (currTransaction.secondWeight && currTransaction.transactionId) {
+
+      if (vehicleType === "HV" && !hasSecondWeight) {
+        return isDisabled;
+      }
+
+      if (vehicleType === "LT" || hasSecondWeight) {
         isDisabled = true;
       }
+
       return isDisabled;
     };
 
     if (transactionCreation === "IN_PROGRESS") {
       return (
-        <Form.Item
-          label="Second Weight"
-          name={[field.name, "secondWeight"]}
-          fieldKey={[field.fieldKey, key]}
-          validateTrigger="onBlur"
-          initialValue={calcSecondWeight(index)}
-          disabled={field.disabled}
-          rules={[
-            () => ({
-              validator(_, value) {
-                const fieldName = _.field;
-                let fieldNameArr = fieldName.split(".");
-                let firstWeight = form.getFieldValue("childTransactionDtoList")[
-                  fieldNameArr[1]
-                ].firstWeight;
+        <>
+          <Form.Item
+            label="Second Weight"
+            name={[field.name, "secondWeight"]}
+            fieldKey={[field.fieldKey, key]}
+            validateTrigger="onBlur"
+            initialValue={calcSecondWeight(index)}
+            rules={[
+              () => ({
+                validator(_, value) {
+                  const fieldName = _.field;
+                  let fieldNameArr = fieldName.split(".");
+                  let firstWeight = form.getFieldValue(
+                    "childTransactionDtoList"
+                  )[fieldNameArr[1]].firstWeight;
 
-                if (!value || value.length === 0) {
-                  return Promise.reject("Please enter Second Weight");
-                }
-                if (transactionType === "INC") {
-                  if (value < firstWeight) {
-                    return Promise.resolve();
-                  } else {
-                    return Promise.reject(
-                      "In Incoming transactions, second weight should be lesser than first weight.."
-                    );
+                  if (!value || value.length === 0) {
+                    return Promise.reject("Please enter Second Weight");
                   }
-                }
+                  if (transactionType === "INC") {
+                    if (value < firstWeight) {
+                      return Promise.resolve();
+                    } else {
+                      return Promise.reject(
+                        "In Incoming transactions, second weight should be lesser than first weight.."
+                      );
+                    }
+                  }
 
-                if (transactionType === "OUT") {
-                  if (value > firstWeight) {
-                    return Promise.resolve();
-                  } else {
-                    return Promise.reject(
-                      "In Outgoing transactions, second weight should be greater than first weight.."
-                    );
+                  if (transactionType === "OUT") {
+                    if (value > firstWeight) {
+                      return Promise.resolve();
+                    } else {
+                      return Promise.reject(
+                        "In Outgoing transactions, second weight should be greater than first weight.."
+                      );
+                    }
                   }
-                }
-                return Promise.resolve();
-              },
-            }),
-          ]}
-        >
-          <InputNumber
-            placeholder="Weight after unload"
-            addonAfter="Kgs"
-            disabled={disableSecondWeight(index)}
-            onChange={(value) => onChangeSecondWeight(value)}
-          />
-        </Form.Item>
+                  return Promise.resolve();
+                },
+              }),
+            ]}
+          >
+            <InputNumber
+              placeholder="Weight after unload"
+              addonAfter="Kgs"
+              disabled={disableSecondWeight(index)}
+              onChange={(value) => onChangeSecondWeight(value)}
+            />
+          </Form.Item>
+          {readWeightFromDevice ? (
+            <Form.Item>
+              <Button
+                type="primary"
+                onClick={(event) => {
+                  event.preventDefault();
+                  getWeightFromDevice();
+                }}
+                className="mr-3"
+              >
+                Read Weight From Device
+              </Button>
+            </Form.Item>
+          ) : null}
+        </>
       );
     } else {
       return null;
@@ -924,29 +967,23 @@ export const WeighManagement = () => {
     return () => setMaterials([]);
   }, [handleCustomerTypes, handlePriceTypes]);
 
-  useEffect(() => {
-    const getWeightFromDevice = () => {
-      setIsLoading(true);
-      axios
-        .get(BASE_URL + API_ENDPOINTS.GET_WEIGHT_FROM_DEVICE)
-        .then(({ data }) => {
-          setIsLoading(false);
-          const { weight, id } = data;
-          //   setWeightFromScale(weight);
-          setRawWeightId(id);
-          setWeightInForm(weight);
-          console.log("Data from weight device");
-          console.log(weight);
-        })
-        .catch(() => {
-          setIsWeightReadFromDevice(false);
-        });
-    };
-
-    getWeightFromDevice();
-
-    return null;
-  }, [setWeightInForm, currentTransactionId]);
+  const getWeightFromDevice = () => {
+    setIsLoading(true);
+    axios
+      .get(BASE_URL + API_ENDPOINTS.GET_WEIGHT_FROM_DEVICE)
+      .then(({ data }) => {
+        setIsLoading(false);
+        const { weight, id } = data;
+        //   setWeightFromScale(weight);
+        setRawWeightId(id);
+        setWeightInForm(weight);
+        console.log("Data from weight device");
+        console.log(weight);
+      })
+      .catch(() => {
+        setIsWeightReadFromDevice(false);
+      });
+  };
 
   const onChangeUserType = (event) => {
     setSelectedCustType(event.target.value);
@@ -1048,7 +1085,6 @@ export const WeighManagement = () => {
       customerName: values.customerName,
       customerId: values.customerId,
       vehicleNumber: values.vehicleNumber,
-      //   vehicleType: values.vehicleType,
       customerType: values.customerType,
       phoneNumber: values.phoneNumber,
       driverCount: values.driverCount,
@@ -1075,13 +1111,11 @@ export const WeighManagement = () => {
     if (rawWeightId && isWeightReadFromDevice) {
       payload.rawWeightId = rawWeightId;
     }
-    console.log(payload);
     axios.post(createTransaction, payload).then(({ data }) => {
       if (data.isTransactionCompleted) {
         navigate(`/summary/${currentTransactionId}`);
       } else {
         onReset();
-        // openMessage();
         getTemporaryTransactions();
         setCurrentTransactionId(null);
         setTransactionCreation(null);
@@ -1091,18 +1125,6 @@ export const WeighManagement = () => {
       }
     });
   };
-
-  /* const closeTransaction = ($event) => {
-    const remainingWeight = calculateRemainingWeight();
-    if (remainingWeight) {
-      Modal.warning({
-        title: "Close Transaction",
-        content:
-          "Cannot Close transaction; Please check If all materials are unloaded !",
-      });
-    }
-    $event.preventDefault();
-  }; */
 
   const loadTempTransaction = (transaction) => {
     if (transaction.id) {
@@ -1120,7 +1142,6 @@ export const WeighManagement = () => {
         value: materialId,
         key: materialId,
       };
-      //   child.secondWeight = null;
       child.transactionId = transaction.id;
       delete child.materialType;
     });
@@ -1128,6 +1149,7 @@ export const WeighManagement = () => {
     if (transaction.transferType === "INC") setTransactionType("INC");
     if (transaction.transferType === "OUT") setTransactionType("OUT");
     if (transaction.transferType === "WEIGH") setTransactionType("WEIGH");
+    if (transaction.vehicleType) setVehicleType(transaction.vehicleType);
     setSelectedCustType(transaction.customerType);
     setTransactionCreation("IN_PROGRESS");
     if (!transaction.phoneNumber) setEnablePhoneNumber(true);
@@ -1196,33 +1218,6 @@ export const WeighManagement = () => {
     // setDisableAnotherTransaction(false);
   };
 
-  /*  const calcInitialWeight = () => {
-    const childTransactions = form.getFieldValue("childTransactionDtoList");
-    return childTransactions[0].firstWeight;
-  }; */
-
-  /*  const calculateRemainingWeight = () => {
-    let remainingWeight = 0;
-    remainingWeight = calcInitialWeight() - calculateEnteredWeight();
-    return remainingWeight;
-  };
- */
-  /* const calculateEnteredWeight = () => {
-    let enteredWeight = 0;
-    const childTransactions = form.getFieldValue("childTransactionDtoList");
-    childTransactions.forEach((element) => {
-      enteredWeight = enteredWeight + element.secondWeight;
-    });
-    return enteredWeight;
-  }; */
-  /*  const isTransactionCreated = (transaction) => {
-    if (transaction && transaction.transactionId) {
-      return true;
-    } else {
-      return false;
-    }
-  }; */
-
   const areTransactionsInProgress = () => {
     const childTransactions = form.getFieldValue("childTransactionDtoList");
     const newTransactions = childTransactions.filter(
@@ -1237,21 +1232,11 @@ export const WeighManagement = () => {
     return count;
   };
 
-  const disableWeightField = () => {
-    return !(
-      transactionCreation === "IN_PROGRESS" ||
-      isWeightReadFromDevice ||
-      (transactionCreation === "IN_PROGRESS" && vehicleType === "LT")
-    );
-  };
-
   const WeightForm = () => {
     return (
       <Row>
         <Col span={12}>
           <CancelModal />
-          {/* <div id="serialResults"></div> */}
-
           <Form
             form={form}
             labelCol={{
@@ -1291,9 +1276,6 @@ export const WeighManagement = () => {
                 <>
                   {fields.map((field, index) => (
                     <>
-                      {/* <p className="ant-col ant-col-16 ant-col-offset-2 ant-form-item-label">
-                  Transaction: <b>{index + 1}</b>
-                </p> */}
                       {transactionType !== "WEIGH" ? (
                         <Col span={12} offset={2} className="mb-5">
                           <Typography.Title level={4} style={{ margin: 0 }}>
@@ -1315,25 +1297,10 @@ export const WeighManagement = () => {
                         }
                       />
 
-                      <p>Vehicle type: {vehicleType}</p>
-
                       <FirstWeight
                         {...field}
                         key={`firstWeight_${index}`}
-                        /*  weightInputs={
-                          index > 0
-                            ? form.getFieldValue("childTransactionDtoList")[
-                                index - 1
-                              ]
-                            : null
-                        } */
                         index={index}
-                        disabled={
-                          transactionCreation === "IN_PROGRESS" ||
-                          isWeightReadFromDevice ||
-                          (transactionCreation === "IN_PROGRESS" &&
-                            vehicleType === "LT")
-                        }
                       />
 
                       <SecondWeight
@@ -1345,13 +1312,8 @@ export const WeighManagement = () => {
                         transaction={
                           form.getFieldValue("childTransactionDtoList")[index]
                         }
-                        disabled={disableWeightField()}
                         index={index}
                       />
-                      {/* 
-                      <TotalWeight {...field} key={`totalWeight_${index}`} /> */}
-
-                      {/* <MinusCircleOutlined onClick={() => remove(field.name)} /> */}
                     </>
                   ))}
 
@@ -1364,7 +1326,6 @@ export const WeighManagement = () => {
                         }}
                         block
                         icon={<PlusOutlined />}
-                        // disabled={disableAnotherTransaction}
                       >
                         Add Another Transaction
                       </Button>
