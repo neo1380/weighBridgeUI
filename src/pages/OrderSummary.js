@@ -53,12 +53,16 @@ export const OrderSummary = () => {
     return isMaterial ? isMaterial.materialName : "Material Not found";
   };
 
-  const getMaterialNetWeight = ({ firstWeight, secondWeight }) => {
+  const getMaterialNetWeight = ({
+    firstWeight,
+    secondWeight,
+    absoluteWeight,
+  }) => {
     const { transferType } = transaction;
     if (transferType === "OUT") {
-      return Number((secondWeight - firstWeight).toFixed(2));
+      return absoluteWeight;
     } else {
-      return Number((firstWeight - secondWeight).toFixed(2));
+      return absoluteWeight;
     }
   };
 
@@ -163,7 +167,7 @@ export const OrderSummary = () => {
                     <div className="ant-card-body">
                       <Paragraph>Material : {getMaterialDesc(child)}</Paragraph>
                       <Paragraph>
-                        Material Net Weight : {getMaterialNetWeight(child)}{" "}
+                        Material Net Weight : {getMaterialNetWeight(child)}
                         {"kgs"}
                       </Paragraph>
                       {/*  <Paragraph>
