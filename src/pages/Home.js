@@ -20,7 +20,7 @@ import { OnGoingTransactions } from "./OngoingTransactions";
 import { UserContext } from "../contexts/UserContexts";
 import { SerialDataContext } from "../contexts/SerialDataContexts";
 // import { formatValue } from "../utils/format.utils";
-import { API_ENDPOINTS, AUTH_URL } from "../constants/api.constants";
+import { API_ENDPOINTS, config } from "../constants/api.constants";
 
 const { Sider, Content } = Layout;
 let weightFromScale = null;
@@ -112,7 +112,7 @@ export class Home extends Component {
   }
 
   loginHandler = (values) => {
-    const loginUrl = AUTH_URL + API_ENDPOINTS.LOGIN;
+    const loginUrl = config.url.AUTH_URL + API_ENDPOINTS.LOGIN;
     axios.post(loginUrl, values).then(({ data }) => {
       if (data && typeof data.token !== "undefined") {
         this.getUserDetails(values);
@@ -128,7 +128,7 @@ export class Home extends Component {
   };
 
   getUserDetails = ({ emp_id }) => {
-    const url = AUTH_URL + API_ENDPOINTS.USER + `${emp_id}`;
+    const url = config.url.AUTH_URL + API_ENDPOINTS.USER + `${emp_id}`;
     axios.get(url).then(({ data }) => {
       this.setState({ user: data.user });
       this.setState({ isLoggedIn: true });

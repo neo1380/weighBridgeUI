@@ -13,7 +13,7 @@ import {
 import axios from "axios";
 import { Row, Col } from "antd";
 
-import { API_ENDPOINTS, BASE_URL } from "../constants/api.constants";
+import { API_ENDPOINTS, config } from "../constants/api.constants";
 
 export const MaterialManagement = () => {
   const [form] = Form.useForm();
@@ -166,7 +166,7 @@ export const MaterialManagement = () => {
   };
   const saveMaterial = (material) => {
     const updatedMaterial = { ...materialInEdit, ...material };
-    const url = BASE_URL + API_ENDPOINTS.SAVE_MATERIAL;
+    const url = config.url.BASE_URL + API_ENDPOINTS.SAVE_MATERIAL;
     const successObj = {
       type: "info",
       message: "Material Management",
@@ -310,7 +310,7 @@ export const MaterialManagement = () => {
   );
 
   useEffect(() => {
-    const materialList = BASE_URL + API_ENDPOINTS.GET_MATERIAL;
+    const materialList = config.url.BASE_URL + API_ENDPOINTS.GET_MATERIAL;
     fetch(materialList)
       .then((response) => response.json())
       .then((materials) => {

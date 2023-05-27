@@ -17,7 +17,7 @@ import { Row, Col } from "antd";
 import axios from "axios";
 import { PlusOutlined } from "@ant-design/icons";
 import "antd-css-utilities/utility.min.css";
-import { API_ENDPOINTS, BASE_URL } from "../constants/api.constants";
+import { API_ENDPOINTS, config } from "../constants/api.constants";
 // import { formatValue } from "../utils/format.utils";
 /* import { SerialDataContext } from "../contexts/SerialDataContexts";
 import { UserContext } from "../contexts/UserContexts"; */
@@ -820,7 +820,8 @@ export const WeighManagement = () => {
 
     // cleanChildTransactions(formData);
 
-    const createTransaction = BASE_URL + API_ENDPOINTS.CREATE_TRANSACTION;
+    const createTransaction =
+      config.url.BASE_URL + API_ENDPOINTS.CREATE_TRANSACTION;
 
     axios.post(createTransaction, formData).then(() => {
       onReset();
@@ -907,7 +908,7 @@ export const WeighManagement = () => {
   const getTemporaryTransactions = () => {
     setIsLoading(true);
     axios
-      .get(BASE_URL + API_ENDPOINTS.TEMP_TRANSACTION)
+      .get(config.url.BASE_URL + API_ENDPOINTS.TEMP_TRANSACTION)
       .then((tempTransactions) => {
         setIsLoading(false);
         setTempTransactions(tempTransactions.data || []);
@@ -953,7 +954,7 @@ export const WeighManagement = () => {
   useEffect(() => {
     handleCustomerTypes("INC");
     getTemporaryTransactions();
-    const materialList = BASE_URL + API_ENDPOINTS.GET_MATERIAL;
+    const materialList = config.url.BASE_URL + API_ENDPOINTS.GET_MATERIAL;
     fetch(materialList)
       .then((response) => response.json())
       .then((materials) => {
@@ -970,7 +971,7 @@ export const WeighManagement = () => {
   const getWeightFromDevice = () => {
     setIsLoading(true);
     axios
-      .get(BASE_URL + API_ENDPOINTS.GET_WEIGHT_FROM_DEVICE)
+      .get(config.url.BASE_URL + API_ENDPOINTS.GET_WEIGHT_FROM_DEVICE)
       .then(({ data }) => {
         setIsLoading(false);
         const { weight, id } = data;
@@ -1029,7 +1030,8 @@ export const WeighManagement = () => {
     }
     console.log("Received values of form: ", values);
 
-    const createTransaction = BASE_URL + API_ENDPOINTS.CREATE_TRANSACTION;
+    const createTransaction =
+      config.url.BASE_URL + API_ENDPOINTS.CREATE_TRANSACTION;
     const childTransactions = values.childTransactionDtoList || [];
     if (childTransactions.length) {
       childTransactions.map((child) => {

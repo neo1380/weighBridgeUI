@@ -3,7 +3,7 @@ import axios from "axios";
 import { Typography, Spin, Table } from "antd";
 import { Alert } from "antd";
 
-import { API_ENDPOINTS, BASE_URL } from "../constants/api.constants";
+import { API_ENDPOINTS, config } from "../constants/api.constants";
 const { Title } = Typography;
 
 export const OnGoingTransactions = () => {
@@ -31,22 +31,24 @@ export const OnGoingTransactions = () => {
   useEffect(() => {
     const getTemporaryTransactions = () => {
       setIsLoading(true);
-      axios.get(BASE_URL + API_ENDPOINTS.TEMP_TRANSACTION).then((response) => {
-        setIsLoading(false);
-        response.data.forEach((element) => {
-          element.childTransactionDtoList.forEach((child) => {
-            if (element.secondWeight === null || !element.secondWeight) {
-              const material = materials.find(
-                (mat) => mat.materialId === child.materialType
-              );
-              element.materialName = material ? material.materialName : "NA";
-            } else {
-              element.materialName = "NA";
-            }
+      axios
+        .get(config.url.BASE_URL + API_ENDPOINTS.TEMP_TRANSACTION)
+        .then((response) => {
+          setIsLoading(false);
+          response.data.forEach((element) => {
+            element.childTransactionDtoList.forEach((child) => {
+              if (element.secondWeight === null || !element.secondWeight) {
+                const material = materials.find(
+                  (mat) => mat.materialId === child.materialType
+                );
+                element.materialName = material ? material.materialName : "NA";
+              } else {
+                element.materialName = "NA";
+              }
+            });
           });
+          setTransactions(response.data || []);
         });
-        setTransactions(response.data || []);
-      });
     };
 
     getTemporaryTransactions();
@@ -58,7 +60,7 @@ export const OnGoingTransactions = () => {
 
   useEffect(() => {
     const getMaterials = () => {
-      const materialList = BASE_URL + API_ENDPOINTS.GET_MATERIAL;
+      const materialList = config.url.BASE_URL + API_ENDPOINTS.GET_MATERIAL;
       fetch(materialList)
         .then((response) => response.json())
         .then((materials) => {

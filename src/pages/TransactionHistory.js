@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Table, Spin } from "antd";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import { API_ENDPOINTS, BASE_URL } from "../constants/api.constants";
+import { API_ENDPOINTS, config } from "../constants/api.constants";
 
 export const TransactionHistory = () => {
   const navigate = useNavigate();
@@ -124,7 +124,7 @@ export const TransactionHistory = () => {
   };
 
   useEffect(() => {
-    const materialList = BASE_URL + API_ENDPOINTS.GET_MATERIAL;
+    const materialList = config.url.BASE_URL + API_ENDPOINTS.GET_MATERIAL;
     fetch(materialList)
       .then((response) => response.json())
       .then((materials) => {
@@ -132,22 +132,24 @@ export const TransactionHistory = () => {
           "{sortParam}",
           "transactionId"
         ).replace("{order}", 2);
-        axios.get(BASE_URL + ALL_TRANSACTIONS).then((tempTransactions) => {
-          console.log(tempTransactions.data);
-          const filterData = [];
-          tempTransactions.data.forEach((item) => {
-            if (item.childTransactionDtoList) {
-              item.childTransactionDtoList.forEach((child) => {
-                item.priceType = child.baleOrLoose === "B" ? "Bale" : "Loose";
-                item.materialName = materials.find(
-                  (mat) => mat.materialId === child.materialType
-                ).materialName;
-                filterData.push(item);
-              });
-            }
+        axios
+          .get(config.url.BASE_URL + ALL_TRANSACTIONS)
+          .then((tempTransactions) => {
+            console.log(tempTransactions.data);
+            const filterData = [];
+            tempTransactions.data.forEach((item) => {
+              if (item.childTransactionDtoList) {
+                item.childTransactionDtoList.forEach((child) => {
+                  item.priceType = child.baleOrLoose === "B" ? "Bale" : "Loose";
+                  item.materialName = materials.find(
+                    (mat) => mat.materialId === child.materialType
+                  ).materialName;
+                  filterData.push(item);
+                });
+              }
+            });
+            settransactionData(filterData);
           });
-          settransactionData(filterData);
-        });
       });
     return () => settransactionData([]);
   }, []);

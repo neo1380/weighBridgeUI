@@ -5,7 +5,7 @@ import { Typography, Button, Row, Col, Spin } from "antd";
 /* import { LeftOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
  */
-import { API_ENDPOINTS, BASE_URL } from "../constants/api.constants";
+import { API_ENDPOINTS, config } from "../constants/api.constants";
 import { useParams } from "react-router";
 
 const { Paragraph } = Typography;
@@ -26,7 +26,7 @@ export const OrderSummary = () => {
   };
   useEffect(() => {
     const transactionURL =
-      BASE_URL + API_ENDPOINTS.GET_TRANSACTION_BY_ID + `${id}`;
+      config.url.BASE_URL + API_ENDPOINTS.GET_TRANSACTION_BY_ID + `${id}`;
     fetch(transactionURL)
       .then((response) => response.json())
       .then((data) => {
@@ -35,7 +35,7 @@ export const OrderSummary = () => {
   }, [id]);
 
   useEffect(() => {
-    const materialList = BASE_URL + API_ENDPOINTS.GET_MATERIAL;
+    const materialList = config.url.BASE_URL + API_ENDPOINTS.GET_MATERIAL;
     fetch(materialList)
       .then((response) => response.json())
       .then((materials) => {

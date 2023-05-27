@@ -4,7 +4,7 @@ import { Form, Input, Button, Select, Typography } from "antd";
 // import { DatePicker, Space, Row, Col } from "antd";
 import { Row, Col } from "antd";
 import axios from "axios";
-import { API_ENDPOINTS, AUTH_URL } from "../constants/api.constants";
+import { API_ENDPOINTS, config } from "../constants/api.constants";
 
 // import { getSerialData } from "../serialData";
 import { EyeTwoTone, EyeInvisibleOutlined } from "@ant-design/icons";
@@ -17,7 +17,7 @@ export const EmployeeManagement = () => {
 
   const onFinish = (payload) => {
     console.log("Received payload of form: ", payload);
-    const createEmployee = AUTH_URL + API_ENDPOINTS.SIGN_UP;
+    const createEmployee = config.url.AUTH_URL + API_ENDPOINTS.SIGN_UP;
 
     axios.post(createEmployee, payload).then(({ data }) => {
       console.log(data);
