@@ -56,9 +56,9 @@ export const OrderSummary = () => {
   const getMaterialNetWeight = ({ firstWeight, secondWeight }) => {
     const { transferType } = transaction;
     if (transferType === "OUT") {
-      return secondWeight - firstWeight;
+      return Number((secondWeight - firstWeight).toFixed(2));
     } else {
-      return firstWeight - secondWeight;
+      return Number((firstWeight - secondWeight).toFixed(2));
     }
   };
 
