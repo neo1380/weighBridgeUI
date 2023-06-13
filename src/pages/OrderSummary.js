@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "antd/dist/antd.min.css";
 import { Typography, Button, Row, Col, Spin } from "antd";
+import dayjs from "dayjs";
 
 /* import { LeftOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
@@ -74,6 +75,12 @@ export const OrderSummary = () => {
     return customerTypeMap[customerType];
   };
 
+  const getClosedDate = ({ closed_date }) => {
+    const date = dayjs(closed_date);
+    const formattedDate = date.format("DD-MM-YYYY HH:mm A");
+    return formattedDate;
+  };
+
   /*  const goToWeightMgmt = () => {
     navigate(`/weighm`);
   };
@@ -110,6 +117,21 @@ export const OrderSummary = () => {
             </Typography.Title>
           </Col>
           <Col span={24}>
+            <div className="ant-card ant-card-bordered">
+              <div
+                className="ant-card-head"
+                style={{ backgroundColor: "#fafafa" }}
+              >
+                <div className="ant-card-head-wrapper">
+                  <div className="ant-card-head-title">Order Information</div>
+                </div>
+              </div>
+              <div className="ant-card-body">
+                <Paragraph>
+                  Transaction Closed Date : {getClosedDate(transaction)}
+                </Paragraph>
+              </div>
+            </div>
             <div className="ant-card ant-card-bordered">
               <div
                 className="ant-card-head"
@@ -168,16 +190,16 @@ export const OrderSummary = () => {
                       <Paragraph>Material : {getMaterialDesc(child)}</Paragraph>
                       <Paragraph>
                         Material Net Weight : {getMaterialNetWeight(child)}
-                        {"kgs"}
-                      </Paragraph>
-                      {/*  <Paragraph>
-                        First Weight : {transaction.firstWeight} Kgs
+                        {" kgs"}
                       </Paragraph>
                       <Paragraph>
-                        Second Weight : {transaction.secondWeight} Kgs
+                        First Weight : {child.firstWeight} Kgs
                       </Paragraph>
                       <Paragraph>
-                        Price : {transaction.materialPricewithVat}
+                        Second Weight : {child.secondWeight} Kgs
+                      </Paragraph>
+                      {/*     <Paragraph>
+                        Price Per Tonne: {getMaterialPricePerTonne(child)}
                       </Paragraph> */}
                     </div>
                   </div>
