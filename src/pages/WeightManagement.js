@@ -15,6 +15,7 @@ import {
 import { useNavigate } from "react-router-dom";
 import { Row, Col } from "antd";
 import axios from "axios";
+import { cloneDeep } from "lodash";
 import { PlusOutlined } from "@ant-design/icons";
 import "antd-css-utilities/utility.min.css";
 import { API_ENDPOINTS, config } from "../constants/api.constants";
@@ -463,6 +464,27 @@ export const WeighManagement = () => {
     );
   };
 
+  const shouldReadWeightFromDevice = (type, index) => {
+    if (!tempTransactions || !tempTransactions.length) {
+      return true;
+    }
+    const currentTransaction = tempTransactions.find(
+      (item) => item.id === currentTransactionId
+    );
+
+    if (!currentTransaction) {
+      return true;
+    }
+
+    const readWeightFromDevice =
+      (currentTransaction?.childTransactionDtoList &&
+        currentTransaction.childTransactionDtoList[index] &&
+        !currentTransaction.childTransactionDtoList[index][type]) ||
+      false;
+
+    return readWeightFromDevice;
+  };
+
   const FirstWeight = (field, key) => {
     /*    if (transactionType === "WEIGH") {
       return null;
@@ -486,6 +508,8 @@ export const WeighManagement = () => {
     const hasFirstWeight =
       form.getFieldValue("childTransactionDtoList")[index].firstWeight || null;
 
+    const showFirstWeight = shouldReadWeightFromDevice("firstWeight", index);
+
     const disableField = hasFirstWeight || vehicleType === "LT";
 
     return (
@@ -508,7 +532,7 @@ export const WeighManagement = () => {
             addonAfter="Kgs"
           />
         </Form.Item>
-        {!hasFirstWeight && vehicleType === "LT" ? (
+        {showFirstWeight && vehicleType === "LT" ? (
           <Form.Item>
             <Button
               type="primary"
@@ -549,13 +573,12 @@ export const WeighManagement = () => {
       return secondWeight;
     };
 
-    const hasFirstWeight = form.getFieldValue("childTransactionDtoList")[index]
-      .firstWeight;
+    // const hasFirstWeight = form.getFieldValue("childTransactionDtoList")[index].firstWeight;
     const hasSecondWeight = form.getFieldValue("childTransactionDtoList")[index]
       .secondWeight;
 
-    const readWeightFromDevice =
-      hasFirstWeight && !hasSecondWeight && vehicleType === "LT";
+    const showSecondWeight = shouldReadWeightFromDevice("secondWeight", index);
+    const readWeightFromDevice = showSecondWeight && vehicleType === "LT";
 
     const disableSecondWeight = () => {
       let isDisabled = false;
@@ -1165,7 +1188,7 @@ export const WeighManagement = () => {
     setTransactionCreation("IN_PROGRESS");
     if (!transaction.phoneNumber) setEnablePhoneNumber(true);
     if (!transaction.customerName) setEnableCustName(true);
-    form.setFieldsValue(transaction);
+    form.setFieldsValue(cloneDeep(transaction));
   };
 
   const cancelTransaction = () => {
