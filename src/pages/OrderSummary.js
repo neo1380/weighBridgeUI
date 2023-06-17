@@ -81,6 +81,19 @@ export const OrderSummary = () => {
     return formattedDate;
   };
 
+  const getTransactionPrice = (data) => {
+    const {
+      includeVat,
+      materialPricewithVatRoundOff,
+      materialPricewithoutVatRoundOff,
+    } = data;
+    const price = includeVat
+      ? materialPricewithVatRoundOff
+      : materialPricewithoutVatRoundOff;
+    const parsedPrice = price + " SAR";
+    return parsedPrice;
+  };
+
   /*  const goToWeightMgmt = () => {
     navigate(`/weighm`);
   };
@@ -205,6 +218,11 @@ export const OrderSummary = () => {
                       {/*     <Paragraph>
                         Price Per Tonne: {getMaterialPricePerTonne(child)}
                       </Paragraph> */}
+                      {
+                        <Paragraph>
+                          Price : {getTransactionPrice(child)}
+                        </Paragraph>
+                      }
                     </div>
                   </div>
                 </div>
