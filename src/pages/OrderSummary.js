@@ -81,15 +81,24 @@ export const OrderSummary = () => {
     return formattedDate;
   };
 
-  const getTransactionPrice = (data) => {
+  const getTransactionPrice = (data, roundoff = false) => {
+    let price = null;
     const {
       includeVat,
+      materialPricewithVat,
+      materialPricewithoutVat,
       materialPricewithVatRoundOff,
       materialPricewithoutVatRoundOff,
     } = data;
-    const price = includeVat
-      ? materialPricewithVatRoundOff
-      : materialPricewithoutVatRoundOff;
+
+    if (roundoff) {
+      price = includeVat
+        ? materialPricewithVatRoundOff
+        : materialPricewithoutVatRoundOff;
+    } else {
+      price = includeVat ? materialPricewithVat : materialPricewithoutVat;
+    }
+
     const parsedPrice = price + " SAR";
     return parsedPrice;
   };
@@ -220,9 +229,12 @@ export const OrderSummary = () => {
                       </Paragraph> */}
                       {
                         <Paragraph>
-                          Price : {getTransactionPrice(child)}
+                          Round off price : {getTransactionPrice(child)}
                         </Paragraph>
                       }
+                      <Paragraph>
+                        Actual Price : {getTransactionPrice(child, true)}
+                      </Paragraph>
                     </div>
                   </div>
                 </div>
