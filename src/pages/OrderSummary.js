@@ -130,25 +130,41 @@ export const OrderSummary = () => {
               </Button>
             </Typography.Title>
           </Col> */}
-          <Col span={24}>
-            <Typography.Title
-              level={4}
-              style={{ margin: 0, marginBottom: "20px" }}
-            >
+          <Col span={12}>
+            <h4 style={{ margin: 0, marginBottom: "15px", fontSize: "18px" }}>
+              {" "}
               Order Summary | Transaction ID: {id}
-            </Typography.Title>
+            </h4>
+          </Col>
+          <Col
+            span={12}
+            style={{ margin: 0, marginBottom: "15px", fontSize: "18px" }}
+          >
+            <Button
+              type="primary"
+              htmlType="submit"
+              onClick={printTransaction}
+              className="mr-3 hide-print ml-10"
+            >
+              Print Transaction
+            </Button>
           </Col>
           <Col span={24}>
             <div className="ant-card ant-card-bordered">
               <div
                 className="ant-card-head"
-                style={{ backgroundColor: "#fafafa" }}
+                style={{ backgroundColor: "#fafafa", minHeight: "35px" }}
               >
                 <div className="ant-card-head-wrapper">
-                  <div className="ant-card-head-title">Order Information</div>
+                  <div className="ant-card-head-title pb-1 pt-1">
+                    Order Information
+                  </div>
                 </div>
               </div>
-              <div className="ant-card-body">
+              <div
+                className="ant-card-body"
+                style={{ padding: "10px 10px 0px 24px" }}
+              >
                 <Paragraph>
                   Transaction Closed Date : {getClosedDate(transaction)}
                 </Paragraph>
@@ -157,44 +173,58 @@ export const OrderSummary = () => {
             <div className="ant-card ant-card-bordered">
               <div
                 className="ant-card-head"
-                style={{ backgroundColor: "#fafafa" }}
+                style={{ backgroundColor: "#fafafa", minHeight: "35px" }}
               >
                 <div className="ant-card-head-wrapper">
-                  <div className="ant-card-head-title">
+                  <div className="ant-card-head-title pb-1 pt-1">
                     Customer Information
                   </div>
                 </div>
               </div>
-              <div className="ant-card-body">
-                <Paragraph>
-                  Transaction Type : {getTransferType(transaction)}
-                </Paragraph>
-                {transaction.transferType !== "WEIGH" ? (
-                  <>
-                    <Paragraph>
-                      Customer Type : {getCustomerType(transaction)}
-                    </Paragraph>
-                    <Paragraph>
-                      Customer Name: {transaction.customerName}
-                    </Paragraph>
-                    <Paragraph>
-                      Customer ID : {transaction.customerId}
-                    </Paragraph>
-                    <Paragraph>
-                      Phone Number: {transaction.phoneNumber}
-                    </Paragraph>
-                    {transaction.driverCount ? (
-                      <Paragraph>
-                        Driver Count: {transaction.driverCount}
-                      </Paragraph>
-                    ) : null}
-                  </>
+              <div
+                className="ant-card-body"
+                style={{ padding: "10px 10px 0px 24px" }}
+              >
+                {transaction.transferType === "WEIGH" ? (
+                  <Paragraph>
+                    Transaction Type : {getTransferType(transaction)}
+                  </Paragraph>
                 ) : null}
 
-                {transaction.vehicleNumber ? (
-                  <Paragraph>
-                    Vehicle Number: {transaction.vehicleNumber}
-                  </Paragraph>
+                {transaction.transferType !== "WEIGH" ? (
+                  <>
+                    <Row>
+                      <Col span={12}>
+                        <Paragraph>
+                          Transaction Type : {getTransferType(transaction)}
+                        </Paragraph>
+                        <Paragraph>
+                          Customer Type : {getCustomerType(transaction)}
+                        </Paragraph>
+                        <Paragraph>
+                          Customer Name: {transaction.customerName}
+                        </Paragraph>
+                        <Paragraph>
+                          Customer ID : {transaction.customerId}
+                        </Paragraph>
+                      </Col>
+                      <Col span={12}>
+                        <Paragraph>
+                          Phone Number: {transaction.phoneNumber}
+                        </Paragraph>
+                        {transaction.vehicleNumber ? (
+                          <Paragraph>
+                            Vehicle Number: {transaction.vehicleNumber}
+                          </Paragraph>
+                        ) : null}
+                        {transaction.driverCount ? (
+                          <Paragraph>
+                            Driver Count: {transaction.driverCount}
+                          </Paragraph>
+                        ) : null}
+                      </Col>
+                    </Row>
+                  </>
                 ) : null}
               </div>
             </div>
@@ -204,42 +234,54 @@ export const OrderSummary = () => {
                   <div className="ant-card ant-card-bordered mb-5">
                     <div
                       className="ant-card-head"
-                      style={{ backgroundColor: "#fafafa" }}
+                      style={{ backgroundColor: "#fafafa", minHeight: "35px" }}
                     >
                       <div className="ant-card-head-wrapper">
-                        <div className="ant-card-head-title">
+                        <div className="ant-card-head-title pt-1 pb-1">
                           Transaction:{index + 1}
                         </div>
                       </div>
                     </div>
-                    <div className="ant-card-body">
-                      <Paragraph>Material : {getMaterialDesc(child)}</Paragraph>
-                      <Paragraph>
-                        Material Net Weight : {getMaterialNetWeight(child)}
-                        {" kgs"}
-                      </Paragraph>
-                      <Paragraph>
-                        First Weight : {child.firstWeight} Kgs
-                      </Paragraph>
-                      <Paragraph>
-                        Second Weight : {child.secondWeight} Kgs
-                      </Paragraph>
+                    <div
+                      className="ant-card-body"
+                      style={{ padding: "10px 10px 0px 24px" }}
+                    >
+                      <Row>
+                        <Col span={12}>
+                          <Paragraph>
+                            Material : {getMaterialDesc(child)}
+                          </Paragraph>
+                          <Paragraph>
+                            Material Net Weight : {getMaterialNetWeight(child)}
+                            {" kgs"}
+                          </Paragraph>
+                          <Paragraph>
+                            First Weight : {child.firstWeight} Kgs
+                          </Paragraph>
+                          <Paragraph>
+                            Second Weight : {child.secondWeight} Kgs
+                          </Paragraph>
+                        </Col>
+                        <Col span={12}>
+                          {
+                            <Paragraph>
+                              Vat Applied : {child.includeVat ? "Yes" : "NA"}
+                            </Paragraph>
+                          }
+                          {
+                            <Paragraph>
+                              Round off price : {getTransactionPrice(child)}
+                            </Paragraph>
+                          }
+                          <Paragraph>
+                            Actual Price : {getTransactionPrice(child, true)}
+                          </Paragraph>
+                        </Col>
+                      </Row>
+
                       {/*     <Paragraph>
                         Price Per Tonne: {getMaterialPricePerTonne(child)}
                       </Paragraph> */}
-                      {
-                        <Paragraph>
-                          Vat Applied : {child.includeVat ? "Yes" : "NA"}
-                        </Paragraph>
-                      }
-                      {
-                        <Paragraph>
-                          Round off price : {getTransactionPrice(child)}
-                        </Paragraph>
-                      }
-                      <Paragraph>
-                        Actual Price : {getTransactionPrice(child, true)}
-                      </Paragraph>
                     </div>
                   </div>
                 </div>
@@ -253,7 +295,7 @@ export const OrderSummary = () => {
                   style={{ backgroundColor: "#fafafa" }}
                 >
                   <div className="ant-card-head-wrapper">
-                    <div className="ant-card-head-title">
+                    <div className="ant-card-head-title pb-1 pt-1">
                       <p>
                         Total price without round off: {transaction.finalAmount}{" "}
                         SAR
@@ -269,7 +311,7 @@ export const OrderSummary = () => {
               </div>
             ) : null}
 
-            <p>
+            {/*   <p>
               <Button
                 type="primary"
                 htmlType="submit"
@@ -278,7 +320,7 @@ export const OrderSummary = () => {
               >
                 Print Transaction
               </Button>
-            </p>
+            </p> */}
           </Col>
         </>
       ) : (
