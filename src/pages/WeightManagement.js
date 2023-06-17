@@ -538,7 +538,7 @@ export const WeighManagement = () => {
               type="primary"
               onClick={(event) => {
                 event.preventDefault();
-                getWeightFromDevice();
+                getWeightFromDevice(index, "firstWeight");
               }}
               className="mr-3"
             >
@@ -652,7 +652,7 @@ export const WeighManagement = () => {
                 type="primary"
                 onClick={(event) => {
                   event.preventDefault();
-                  getWeightFromDevice();
+                  getWeightFromDevice(index, "secondWeight");
                 }}
                 className="mr-3"
               >
@@ -939,14 +939,14 @@ export const WeighManagement = () => {
   };
 
   const setWeightInForm = useCallback(
-    (weightFromDevice) => {
+    (weightFromDevice, index, type) => {
       /*    const totalTransactions = form.getFieldValue(
         "childTransactionDtoList"
       ).length; */
       const childTransactions = form.getFieldValue("childTransactionDtoList");
       //New transaction created for the first time, Current Transaction ID will be null. So, directly assign first weight to device weight & second weight to null.
       // childTransactions[0].firstWeight = weightFromDevice;
-      const firstWeightLists = childTransactions.map(
+      /*  const firstWeightLists = childTransactions.map(
         (transaction) => transaction.firstWeight
       );
       const secondWeightLists = childTransactions.map(
@@ -964,7 +964,9 @@ export const WeighManagement = () => {
       } else if (emptySecondWeightIndex > -1) {
         childTransactions[emptySecondWeightIndex].secondWeight =
           weightFromDevice;
-      }
+      } */
+
+      childTransactions[index][type] = weightFromDevice;
 
       form.setFieldsValue({
         childTransactionDtoList: childTransactions,
@@ -991,7 +993,7 @@ export const WeighManagement = () => {
     return () => setMaterials([]);
   }, [handleCustomerTypes, handlePriceTypes]);
 
-  const getWeightFromDevice = () => {
+  const getWeightFromDevice = (index, type) => {
     setIsLoading(true);
     axios
       .get(config.url.BASE_URL + API_ENDPOINTS.GET_WEIGHT_FROM_DEVICE)
@@ -1000,7 +1002,7 @@ export const WeighManagement = () => {
         const { weight, id } = data;
         //   setWeightFromScale(weight);
         setRawWeightId(id);
-        setWeightInForm(weight);
+        setWeightInForm(weight, index, type);
         console.log("Data from weight device");
         console.log(weight);
       })
