@@ -229,6 +229,11 @@ export const OrderSummary = () => {
                       </Paragraph> */}
                       {
                         <Paragraph>
+                          Vat Applied : {child.includeVat ? "Yes" : "NA"}
+                        </Paragraph>
+                      }
+                      {
+                        <Paragraph>
                           Round off price : {getTransactionPrice(child)}
                         </Paragraph>
                       }
