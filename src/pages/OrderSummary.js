@@ -249,8 +249,16 @@ export const OrderSummary = () => {
                 >
                   <div className="ant-card-head-wrapper">
                     <div className="ant-card-head-title">
-                      Total price: {transaction.finalAmountRoundOff} SAR
+                      <p>
+                        Total price without round off: {transaction.finalAmount}{" "}
+                        SAR
+                      </p>
+                      <p>
+                        {" "}
+                        Total price: {transaction.finalAmountRoundOff} SAR{" "}
+                      </p>
                     </div>
+                    <div className="ant-card-head-title"></div>
                   </div>
                 </div>
               </div>
