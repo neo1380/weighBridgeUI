@@ -288,7 +288,7 @@ export const WeighManagement = () => {
         setIsWeightReadFromDevice(false);
       }
     };
-    if (transactionType === "WEIGH") {
+    if (transactionType === "WEIGH" || selectedCustType === 1) {
       return null;
     }
     return (

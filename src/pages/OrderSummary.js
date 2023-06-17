@@ -161,15 +161,19 @@ export const OrderSummary = () => {
                     <Paragraph>
                       Phone Number: {transaction.phoneNumber}
                     </Paragraph>
-                    <Paragraph>
-                      Driver Count: {transaction.driverCount}
-                    </Paragraph>
+                    {transaction.driverCount ? (
+                      <Paragraph>
+                        Driver Count: {transaction.driverCount}
+                      </Paragraph>
+                    ) : null}
                   </>
                 ) : null}
 
-                <Paragraph>
-                  Vehicle Number: {transaction.vehicleNumber}
-                </Paragraph>
+                {transaction.vehicleNumber ? (
+                  <Paragraph>
+                    Vehicle Number: {transaction.vehicleNumber}
+                  </Paragraph>
+                ) : null}
               </div>
             </div>
             {transaction.childTransactionDtoList.map((child, index) => {
