@@ -1,6 +1,15 @@
 import React, { useState, useEffect } from "react";
 import "antd/dist/antd.min.css";
-import { Typography, Button, Row, Col, Spin } from "antd";
+import {
+  Typography,
+  Button,
+  Row,
+  Col,
+  Spin,
+  Modal,
+  Form,
+  Checkbox,
+} from "antd";
 import dayjs from "dayjs";
 
 /* import { LeftOutlined } from "@ant-design/icons";
@@ -13,9 +22,14 @@ const { Paragraph } = Typography;
 
 export const OrderSummary = () => {
   const { id } = useParams();
+  const [printOptionsForm] = Form.useForm();
+
   /*   const navigate = useNavigate(); */
   const [transaction, setTransaction] = useState(null);
   const [materials, setMaterials] = useState([]);
+  const [showIncomingPrintOptionsModal, setShowIncomingPrintOptionsModal] =
+    useState(false);
+  const [hidePriceInPrint, setHidePriceInPrint] = useState(false);
   const customerTypeMap = {
     3: "Vehicle",
     1: "Layman",
@@ -107,8 +121,49 @@ export const OrderSummary = () => {
     navigate(`/weighm`);
   };
  */
-  const printTransaction = (event) => {
+  const printTransaction = () => {
     window.print();
+  };
+
+  const triggerPrint = (transaction) => {
+    if (transaction.transferType === "INC") {
+      setShowIncomingPrintOptionsModal(true);
+      return;
+    }
+    printTransaction();
+  };
+
+  const PrintOptionsModal = () => {
+    const cancelModal = () => {
+      setShowIncomingPrintOptionsModal(false);
+    };
+    const onPrintOptionsSubmit = () => {
+      const showPrice = printOptionsForm.getFieldValue("togglePrice");
+      setHidePriceInPrint(!showPrice);
+      cancelModal();
+      setTimeout(() => {
+        printTransaction();
+      }, 1000);
+    };
+    return (
+      <Modal
+        title="Incoming Print Options"
+        visible={showIncomingPrintOptionsModal}
+        onOk={onPrintOptionsSubmit}
+        onCancel={cancelModal}
+        afterClose={printTransaction}
+      >
+        <Form
+          form={printOptionsForm}
+          layout="vertical"
+          name="updatePrintOptionsModal"
+        >
+          <Form.Item name="togglePrice" valuePropName="checked">
+            <Checkbox>Display price in order summary</Checkbox>
+          </Form.Item>
+        </Form>
+      </Modal>
+    );
   };
 
   return (
@@ -143,7 +198,7 @@ export const OrderSummary = () => {
             <Button
               type="primary"
               htmlType="submit"
-              onClick={printTransaction}
+              onClick={() => triggerPrint(transaction)}
               className="mr-3 hide-print ml-10"
             >
               Print Transaction
@@ -263,19 +318,21 @@ export const OrderSummary = () => {
                           </Paragraph>
                         </Col>
                         <Col span={12}>
-                          {
+                          <div className={hidePriceInPrint ? "hide-print" : ""}>
+                            {
+                              <Paragraph>
+                                Vat Applied : {child.includeVat ? "Yes" : "NA"}
+                              </Paragraph>
+                            }
+                            {
+                              <Paragraph>
+                                Round off price : {getTransactionPrice(child)}
+                              </Paragraph>
+                            }
                             <Paragraph>
-                              Vat Applied : {child.includeVat ? "Yes" : "NA"}
+                              Actual Price : {getTransactionPrice(child, true)}
                             </Paragraph>
-                          }
-                          {
-                            <Paragraph>
-                              Round off price : {getTransactionPrice(child)}
-                            </Paragraph>
-                          }
-                          <Paragraph>
-                            Actual Price : {getTransactionPrice(child, true)}
-                          </Paragraph>
+                          </div>
                         </Col>
                       </Row>
 
@@ -289,23 +346,27 @@ export const OrderSummary = () => {
             })}
 
             {transaction?.transferType !== "OUT" ? (
-              <div className="ant-card ant-card-bordered mt-5">
-                <div
-                  className="ant-card-head"
-                  style={{ backgroundColor: "#fafafa" }}
-                >
-                  <div className="ant-card-head-wrapper">
-                    <div className="ant-card-head-title pb-1 pt-1">
-                      <p>
-                        Total price without round off: {transaction.finalAmount}{" "}
-                        SAR
-                      </p>
-                      <p>
-                        {" "}
-                        Total price: {transaction.finalAmountRoundOff} SAR{" "}
-                      </p>
+              <div className={hidePriceInPrint ? "hide-print" : ""}>
+                <div className="ant-card ant-card-bordered mt-5">
+                  <div
+                    className="ant-card-head"
+                    style={{ backgroundColor: "#fafafa" }}
+                  >
+                    <div className="ant-card-head-wrapper">
+                      <div className="ant-card-head-title pb-1 pt-1">
+                        <p>
+                          Total price without round off:{" "}
+                          {transaction.finalAmount} SAR
+                        </p>
+                        <p>
+                          {" "}
+                          Total price: {
+                            transaction.finalAmountRoundOff
+                          } SAR{" "}
+                        </p>
+                      </div>
+                      <div className="ant-card-head-title"></div>
                     </div>
-                    <div className="ant-card-head-title"></div>
                   </div>
                 </div>
               </div>
@@ -321,6 +382,7 @@ export const OrderSummary = () => {
                 Print Transaction
               </Button>
             </p> */}
+            <PrintOptionsModal />
           </Col>
         </>
       ) : (
