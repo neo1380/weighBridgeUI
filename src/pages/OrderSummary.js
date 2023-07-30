@@ -114,7 +114,7 @@ export const OrderSummary = () => {
     }
 
     const parsedPrice = price + " SAR";
-    return parsedPrice;
+    return price ? parsedPrice : "NA";
   };
 
   /*  const goToWeightMgmt = () => {
