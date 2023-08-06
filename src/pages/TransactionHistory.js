@@ -3,6 +3,7 @@ import { Table, Spin } from "antd";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { API_ENDPOINTS, config } from "../constants/api.constants";
+import { formatDateInTimeZone } from "../utils/dates.utils";
 
 export const TransactionHistory = () => {
   const navigate = useNavigate();
@@ -49,7 +50,7 @@ export const TransactionHistory = () => {
       title: "Created At",
       dataIndex: "created_date",
       key: "created_date",
-      render: (text) => <span>{text}</span>,
+      render: (text) => <span>{formatDateInTimeZone(text)}</span>,
     },
     {
       title: "Created By",
@@ -61,7 +62,7 @@ export const TransactionHistory = () => {
       title: "Closed At",
       dataIndex: "closed_date",
       key: "closed_date",
-      render: (text) => <span>{text}</span>,
+      render: (text) => <span>{formatDateInTimeZone(text)}</span>,
     },
     {
       title: "Closed By",

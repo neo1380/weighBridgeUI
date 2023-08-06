@@ -10,7 +10,7 @@ import {
   Form,
   Checkbox,
 } from "antd";
-import dayjs from "dayjs";
+import { formatDateInTimeZone } from "../utils/dates.utils";
 
 /* import { LeftOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
@@ -90,9 +90,7 @@ export const OrderSummary = () => {
   };
 
   const getClosedDate = ({ closed_date }) => {
-    const date = dayjs(closed_date);
-    const formattedDate = date.format("DD-MM-YYYY HH:mm A");
-    return formattedDate;
+    return formatDateInTimeZone(closed_date);
   };
 
   const getTransactionPrice = (data, roundoff = false) => {
@@ -316,6 +314,11 @@ export const OrderSummary = () => {
                           <Paragraph>
                             Second Weight : {child.secondWeight} Kgs
                           </Paragraph>
+                          {child.pricePerTonne ? (
+                            <Paragraph>
+                              Price per Tonne : {child.pricePerTonne} Kgs
+                            </Paragraph>
+                          ) : null}
                         </Col>
                         <Col span={12}>
                           <div className={hidePriceInPrint ? "hide-print" : ""}>
