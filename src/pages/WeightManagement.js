@@ -59,7 +59,7 @@ export const WeighManagement = () => {
   const transactionTypes = [
     { label: "Incoming", value: "INC" },
     { label: "Outgoing", value: "OUT" },
-    // { label: "Weight Only", value: "WEIGH" },
+    { label: "Weight Only", value: "WEIGH" },
   ];
 
   const vehicleTypes = [
@@ -1145,6 +1145,15 @@ export const WeighManagement = () => {
       payload.customerName = payload.customerName || "NA";
       payload.customerId = payload.customerId || "NA";
       payload.phoneNumber = payload.phoneNumber || "NA";
+    }
+
+    if (payload.transferType === "WEIGH") {
+      const weightOnlyId = materials.find(
+        (item) => item.materialName === "weightOnly"
+      ).materialId;
+      payload.childTransactionDtoList.forEach((child) => {
+        child.materialType = weightOnlyId;
+      });
     }
 
     axios.post(createTransaction, payload).then(({ data }) => {
