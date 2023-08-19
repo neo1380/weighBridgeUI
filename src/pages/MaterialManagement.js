@@ -238,9 +238,16 @@ export const MaterialManagement = () => {
       dataIndex: "action",
       render: (_, record) => {
         return (
-          <Typography.Link onClick={() => editMaterial(record)}>
-            Edit
-          </Typography.Link>
+          <>
+            {" "}
+            {record.materialName !== "weightOnly" ? (
+              <Typography.Link onClick={() => editMaterial(record)}>
+                Edit
+              </Typography.Link>
+            ) : (
+              "NA"
+            )}
+          </>
         );
       },
     },
