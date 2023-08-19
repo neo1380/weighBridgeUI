@@ -126,13 +126,15 @@ export const OrderSummary = () => {
   const triggerPrint = (transaction) => {
     if (transaction.transferType === "INC") {
       setShowIncomingPrintOptionsModal(true);
-      printOptionsForm.setFieldValue("togglePrice").checked = true;
       return;
     }
     printTransaction();
   };
 
   const PrintOptionsModal = () => {
+    const printFormInitialValues = {
+      togglePrice: true,
+    };
     const cancelModal = () => {
       setShowIncomingPrintOptionsModal(false);
     };
@@ -156,6 +158,7 @@ export const OrderSummary = () => {
           form={printOptionsForm}
           layout="vertical"
           name="updatePrintOptionsModal"
+          initialValues={printFormInitialValues}
         >
           <Form.Item name="togglePrice" valuePropName="checked">
             <Checkbox>Display price in order summary</Checkbox>
