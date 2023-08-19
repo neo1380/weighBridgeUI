@@ -147,6 +147,8 @@ export const TransactionHistory = () => {
                   ).materialName;
                   filterData.push(item);
                 });
+              } else {
+                filterData.push(item);
               }
             });
             settransactionData(filterData);
