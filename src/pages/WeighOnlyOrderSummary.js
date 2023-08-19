@@ -20,7 +20,7 @@ import { useParams } from "react-router";
 
 const { Paragraph } = Typography;
 
-export const OrderSummary = () => {
+export const WeighOnlyOrderSummary = () => {
   const { id } = useParams();
   const [printOptionsForm] = Form.useForm();
 
@@ -37,7 +37,7 @@ export const OrderSummary = () => {
   const transferTypeMap = {
     INC: "Incoming",
     OUT: "Outgoing",
-    WEIGH: "WEIGH",
+    WEIGH: "Weight Only",
   };
   useEffect(() => {
     const transactionURL =
@@ -396,4 +396,4 @@ export const OrderSummary = () => {
   );
 };
 
-export default OrderSummary;
+export default WeighOnlyOrderSummary;

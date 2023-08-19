@@ -16,6 +16,7 @@ import { Login } from "./Login";
 import { EmployeeManagement } from "./EmployeeManagement";
 import { MaterialManagement } from "./MaterialManagement";
 import { OrderSummary } from "./OrderSummary";
+import { WeighOnlyOrderSummary } from "./WeighOnlyOrderSummary";
 import { OnGoingTransactions } from "./OngoingTransactions";
 import { UserContext } from "../contexts/UserContexts";
 import { SerialDataContext } from "../contexts/SerialDataContexts";
@@ -33,68 +34,6 @@ export class Home extends Component {
     user: null,
     isAdmin: false,
   };
-
-  /*  getWeightFromScale = () => {
-    var port,
-      textEncoder,
-      // eslint-disable-next-line no-unused-vars
-      writableStreamClosed,
-      // eslint-disable-next-line no-unused-vars
-      writer;
-
-    // const serialResultsDiv = document.getElementById("serialResults");
-    async function connectSerial() {
-      try {
-        // Prompt user to select any serial port.
-        port = await navigator.serial.requestPort();
-        await port.open({ baudRate: 9600 });
-        // eslint-disable-next-line no-undef
-        textEncoder = new TextEncoderStream();
-        writableStreamClosed = textEncoder.readable.pipeTo(port.writable);
-        writer = textEncoder.writable.getWriter();
-        await listenToPort();
-
-        /*  setInterval(() => {
-          appendToTerminal("100kg");
-        }, 1000); 
-      } catch (e) {
-        console.error("Serial Connection Failed" + e);
-      }
-    }
-
-    async function listenToPort() {
-      console.log("HOME PAGE:Listening to port");
-      // eslint-disable-next-line no-undef
-      const textDecoder = new TextDecoderStream();
-      // eslint-disable-next-line no-unused-vars
-      const readableStreamClosed = port.readable.pipeTo(textDecoder.writable);
-      const reader = textDecoder.readable.getReader();
-
-      // Listen to data coming from the serial device.
-      while (true) {
-        const { value, done } = await reader.read();
-        if (done) {
-          // Allow the serial port to be closed later.
-          console.log("[readLoop] DONE", done);
-          reader.releaseLock();
-          break;
-        }
-        // value is a string.
-        console.log("HOME PAGE:value from port", value);
-        appendToTerminal(value);
-      }
-    }
-
-    const appendToTerminal = (newStuff) => {
-      weightFromScale = formatValue(newStuff);
-      console.log("HOME PAGE:Weight from scale", weightFromScale);
-      const customEvent = new CustomEvent("build", {
-        detail: { weightFromScale: weightFromScale },
-      });
-      document.dispatchEvent(customEvent);
-    };
-    // connectSerial();
-  }; */
 
   componentDidMount() {
     this.initApplication();
@@ -241,6 +180,11 @@ export class Home extends Component {
                           exact
                           path="/summary/:id"
                           element={<OrderSummary />}
+                        />
+                        <Route
+                          exact
+                          path="/weighonlysummary/:id"
+                          element={<WeighOnlyOrderSummary />}
                         />
                         <Route
                           exact

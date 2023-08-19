@@ -1167,6 +1167,9 @@ export const WeighManagement = () => {
         setTransactionType("INC");
         setIsLoading(false);
         setEditMode(false);
+        if (data.transferType === "WEIGH") {
+          navigate(`/weighonlysummary/${data.id}`);
+        }
       }
     });
   };
