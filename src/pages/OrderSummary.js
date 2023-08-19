@@ -97,18 +97,18 @@ export const OrderSummary = () => {
     let price = null;
     const {
       includeVat,
-      materialPricewithVat,
-      materialPricewithoutVat,
-      materialPricewithVatRoundOff,
-      materialPricewithoutVatRoundOff,
+      transactionPricewithVat,
+      transactionPricewithoutVat,
+      transactionPricewithVatRoundOff,
+      transactionPricewithoutVatRoundOff,
     } = data;
 
     if (roundoff) {
       price = includeVat
-        ? materialPricewithVatRoundOff
-        : materialPricewithoutVatRoundOff;
+        ? transactionPricewithVatRoundOff
+        : transactionPricewithoutVatRoundOff;
     } else {
-      price = includeVat ? materialPricewithVat : materialPricewithoutVat;
+      price = includeVat ? transactionPricewithVat : transactionPricewithoutVat;
     }
 
     const parsedPrice = price + " SAR";
@@ -315,9 +315,10 @@ export const OrderSummary = () => {
                           <Paragraph>
                             Second Weight : {child.secondWeight} Kgs
                           </Paragraph>
-                          {child.pricePerTonne ? (
+                          {child.materialPricePerTonne ? (
                             <Paragraph>
-                              Price per Tonne : {child.pricePerTonne} Kgs
+                              Price per Tonne : {child.materialPricePerTonne}{" "}
+                              Kgs
                             </Paragraph>
                           ) : null}
                         </Col>
