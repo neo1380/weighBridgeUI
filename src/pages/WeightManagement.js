@@ -84,6 +84,7 @@ export const WeighManagement = () => {
         transactionId: null,
       },
     ],
+    includeVat: false,
   };
 
   const cancelReasons = [
@@ -1128,6 +1129,13 @@ export const WeighManagement = () => {
     };
     if (currentTransactionId) {
       payload.id = currentTransactionId;
+      payload.includeVat =
+        transactionType === "OUT"
+          ? true
+          : transactionType === "WEIGH"
+          ? false
+          : Boolean(enableVat);
+    } else {
       payload.includeVat =
         transactionType === "OUT"
           ? true

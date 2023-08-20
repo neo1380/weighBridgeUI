@@ -62,13 +62,15 @@ export const TransactionHistory = () => {
       title: "Closed At",
       dataIndex: "closed_date",
       key: "closed_date",
-      render: (text) => <span>{formatDateInTimeZone(text)}</span>,
+      render: (text) => (
+        <span>{text ? formatDateInTimeZone(text) : "In progress"}</span>
+      ),
     },
     {
       title: "Closed By",
       dataIndex: "closed_by",
       key: "closed_by",
-      render: (text) => <span>{text}</span>,
+      render: (text) => <span>{text || "NA"}</span>,
     },
     {
       title: "Status",
@@ -77,13 +79,13 @@ export const TransactionHistory = () => {
       render: (text) => <span>{text || "NA"}</span>,
       responsive: ["md"],
     },
-    {
+    /*   {
       title: "Material",
       dataIndex: "materialName",
       key: "materialName",
       render: (text) => <span>{text || "NA"}</span>,
       responsive: ["md"],
-    },
+    }, */
     {
       title: "Total Weight",
       dataIndex: "totalWeight",
@@ -91,13 +93,13 @@ export const TransactionHistory = () => {
       render: (text) => <span>{text ? text : "NA"}</span>,
       responsive: ["md"],
     },
-    {
+    /*  {
       title: "Material Collection",
       dataIndex: "priceType",
       key: "priceType",
       render: (text) => <span>{text || "NA"}</span>,
       responsive: ["md"],
-    },
+    }, */
     {
       title: "Total Price",
       dataIndex: "finalAmount",
