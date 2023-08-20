@@ -1373,7 +1373,8 @@ export const WeighManagement = () => {
                     </>
                   ))}
 
-                  {!multipleTransactionEnabled ? (
+                  {!multipleTransactionEnabled &&
+                  transactionType !== "WEIGH" ? (
                     <Form.Item>
                       <Button
                         type="dashed"
