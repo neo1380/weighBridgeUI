@@ -68,7 +68,7 @@ export const OrderSummary = () => {
     return isMaterial ? isMaterial.materialName : "Material Not found";
   };
 
-  const getMaterialNetWeight = ({
+  /*  const getMaterialNetWeight = ({
     firstWeight,
     secondWeight,
     absoluteWeight,
@@ -79,7 +79,7 @@ export const OrderSummary = () => {
     } else {
       return absoluteWeight;
     }
-  };
+  }; */
 
   const getTransferType = ({ transferType }) => {
     return transferTypeMap[transferType];
