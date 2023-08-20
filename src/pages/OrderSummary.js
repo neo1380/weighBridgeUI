@@ -93,6 +93,11 @@ export const OrderSummary = () => {
     return formatDateInTimeZone(closed_date);
   };
 
+  const showPricePerTonne = (data) => {
+    return (
+      data.materialPricePerTonne && getTransferType(transaction) !== "WEIGH"
+    );
+  };
   const getTransactionPrice = (data, roundoff = false) => {
     let price = null;
     const {
@@ -308,20 +313,20 @@ export const OrderSummary = () => {
                           <Paragraph>
                             Material : {getMaterialDesc(child)}
                           </Paragraph>
-                          <Paragraph>
+                          {/*     <Paragraph>
                             Material Net Weight : {getMaterialNetWeight(child)}
                             {" kgs"}
-                          </Paragraph>
+                          </Paragraph> */}
                           <Paragraph>
                             First Weight : {child.firstWeight} Kgs
                           </Paragraph>
                           <Paragraph>
                             Second Weight : {child.secondWeight} Kgs
                           </Paragraph>
-                          {child.materialPricePerTonne ? (
+                          {showPricePerTonne(child) ? (
                             <Paragraph>
                               Price per Tonne : {child.materialPricePerTonne}{" "}
-                              Kgs
+                              SAR
                             </Paragraph>
                           ) : null}
                         </Col>
