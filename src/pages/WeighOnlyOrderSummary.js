@@ -89,26 +89,26 @@ export const WeighOnlyOrderSummary = () => {
     return customerTypeMap[customerType];
   };
 
-  const getClosedDate = ({ closed_date }) => {
-    return formatDateInTimeZone(closed_date);
+  const getFormattedDate = (date) => {
+    return formatDateInTimeZone(date);
   };
 
   const getTransactionPrice = (data, roundoff = false) => {
     let price = null;
     const {
       includeVat,
-      materialPricewithVat,
-      materialPricewithoutVat,
-      materialPricewithVatRoundOff,
-      materialPricewithoutVatRoundOff,
+      transactionPricewithVat,
+      transactionPricewithoutVat,
+      transactionPricewithVatRoundOff,
+      transactionPricewithoutVatRoundOff,
     } = data;
 
     if (roundoff) {
       price = includeVat
-        ? materialPricewithVatRoundOff
-        : materialPricewithoutVatRoundOff;
+        ? transactionPricewithVatRoundOff
+        : transactionPricewithoutVatRoundOff;
     } else {
-      price = includeVat ? materialPricewithVat : materialPricewithoutVat;
+      price = includeVat ? transactionPricewithVat : transactionPricewithoutVat;
     }
 
     const parsedPrice = price + " SAR";
@@ -219,9 +219,18 @@ export const WeighOnlyOrderSummary = () => {
                 className="ant-card-body"
                 style={{ padding: "10px 10px 0px 24px" }}
               >
-                <Paragraph>
-                  Transaction Closed Date : {getClosedDate(transaction)}
-                </Paragraph>
+                {!transaction.isTransactionCompleted ||
+                !transaction.isTransactionCancelled ? (
+                  <Paragraph>
+                    Transaction Created Date :{" "}
+                    {getFormattedDate(transaction.created_date)}
+                  </Paragraph>
+                ) : (
+                  <Paragraph>
+                    Transaction Closed Date :{" "}
+                    {getFormattedDate(transaction.closed_date)}
+                  </Paragraph>
+                )}
               </div>
             </div>
             <div className="ant-card ant-card-bordered">
@@ -312,9 +321,12 @@ export const WeighOnlyOrderSummary = () => {
                           <Paragraph>
                             First Weight : {child.firstWeight} Kgs
                           </Paragraph>
-                          <Paragraph>
-                            Second Weight : {child.secondWeight} Kgs
-                          </Paragraph>
+                          {child.secondWeight ? (
+                            <Paragraph>
+                              Second Weight : {child.secondWeight} Kgsa
+                            </Paragraph>
+                          ) : null}
+
                           {child.pricePerTonne ? (
                             <Paragraph>
                               Price per Tonne : {child.pricePerTonne} Kgs
