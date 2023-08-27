@@ -135,6 +135,8 @@ export const TransactionHistory = () => {
           "{sortParam}",
           "transactionId"
         ).replace("{order}", 2);
+        // const ALL_TRANSACTIONS = API_ENDPOINTS.TRANSACTION_HISTORY;
+
         axios
           .get(config.url.BASE_URL + ALL_TRANSACTIONS)
           .then((tempTransactions) => {

@@ -36,4 +36,6 @@ export const API_ENDPOINTS = {
   CURRENT_DAY_TRANSACTION: "transaction/currentDayTransactionList",
   GET_TRANSACTION_BY_ID: "transaction/transactionById/",
   GET_ALL_TRANSACTIONS: "transaction/transactionList/{sortParam}/{order}",
+  TRANSACTION_HISTORY:
+    "transaction/transactionList?sortParam=transactionId&sortBy=desc&page=1&size=10",
 };
