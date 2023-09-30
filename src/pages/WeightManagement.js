@@ -340,7 +340,7 @@ export const WeighManagement = () => {
           <Input
             allowClear
             placeholder="Enter Driver Count"
-            disabled={disabled === "IN_PROGRESS"}
+            disabled={disabled}
           />
         </Form.Item>
       );
@@ -715,6 +715,7 @@ export const WeighManagement = () => {
       console.log("Set Current Transaction to Edit mode...");
       //   setTransactionCreation(null);
       setEditMode(true);
+      console.log(transactionCreation);
       handleCancel();
     };
 
@@ -1309,22 +1310,22 @@ export const WeighManagement = () => {
             onFinish={onFinish}
           >
             <TransactionType
-              disabled={transactionCreation === "IN_PROGRESS" && !editMode}
+              disabled={transactionCreation === "IN_PROGRESS" || editMode}
             />
             <CustomerType
-              disabled={transactionCreation === "IN_PROGRESS" && !editMode}
+              disabled={transactionCreation === "IN_PROGRESS" || editMode}
             />
             <CustomerName />
             <PhoneNumber />
             <CustomerID />
             <VehicleType
-              disabled={transactionCreation === "IN_PROGRESS" && !editMode}
+              disabled={transactionCreation === "IN_PROGRESS" || editMode}
             />
             <VehicleNumber
-              disabled={transactionCreation === "IN_PROGRESS" && !editMode}
+              disabled={transactionCreation === "IN_PROGRESS" || editMode}
             />
             <DriverCount
-              disabled={transactionCreation === "IN_PROGRESS" && !editMode}
+              disabled={transactionCreation === "IN_PROGRESS" || editMode}
             />
 
             <Form.List shouldUpdate name="childTransactionDtoList">
