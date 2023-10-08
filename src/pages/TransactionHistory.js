@@ -8,7 +8,14 @@ import { formatDateInTimeZone } from "../utils/dates.utils";
 export const TransactionHistory = () => {
   const navigate = useNavigate();
   const [transactionData, settransactionData] = useState([]);
-  //   const [materials, setMaterials] = useState([]);
+  const [materials, setMaterials] = useState([]);
+  const [tableParams, setTableParams] = useState({
+    pagination: {
+      current: 1,
+      pageSize: 10,
+    },
+  });
+  const [loading, setLoading] = useState(false);
 
   const columns = [
     {
@@ -79,13 +86,13 @@ export const TransactionHistory = () => {
       render: (text) => <span>{text || "NA"}</span>,
       responsive: ["md"],
     },
-    /*   {
+    {
       title: "Material",
       dataIndex: "materialName",
       key: "materialName",
       render: (text) => <span>{text || "NA"}</span>,
       responsive: ["md"],
-    }, */
+    },
     {
       title: "Total Weight",
       dataIndex: "totalWeight",
@@ -93,13 +100,13 @@ export const TransactionHistory = () => {
       render: (text) => <span>{text ? text : "NA"}</span>,
       responsive: ["md"],
     },
-    /*  {
+    {
       title: "Material Collection",
       dataIndex: "priceType",
       key: "priceType",
       render: (text) => <span>{text || "NA"}</span>,
       responsive: ["md"],
-    }, */
+    },
     {
       title: "Total Price",
       dataIndex: "finalAmount",
@@ -127,39 +134,63 @@ export const TransactionHistory = () => {
   };
 
   useEffect(() => {
+    setLoading(true);
     const materialList = config.url.BASE_URL + API_ENDPOINTS.GET_MATERIAL;
     fetch(materialList)
       .then((response) => response.json())
       .then((materials) => {
-        const ALL_TRANSACTIONS = API_ENDPOINTS.GET_ALL_TRANSACTIONS.replace(
-          "{sortParam}",
-          "transactionId"
-        ).replace("{order}", 2);
-        // const ALL_TRANSACTIONS = API_ENDPOINTS.TRANSACTION_HISTORY;
-
-        axios
-          .get(config.url.BASE_URL + ALL_TRANSACTIONS)
-          .then((tempTransactions) => {
-            console.log(tempTransactions.data);
-            const filterData = [];
-            tempTransactions.data.forEach((item) => {
-              if (item.childTransactionDtoList) {
-                item.childTransactionDtoList.forEach((child) => {
-                  item.priceType = child.baleOrLoose === "B" ? "Bale" : "Loose";
-                  item.materialName = materials.find(
-                    (mat) => mat.materialId === child.materialType
-                  ).materialName;
-                  filterData.push(item);
-                });
-              } else {
-                filterData.push(item);
-              }
-            });
-            settransactionData(filterData);
-          });
+        setMaterials(materials);
       });
-    return () => settransactionData([]);
   }, []);
+
+  useEffect(() => {
+    const fetchData = () => {
+      setLoading(true);
+      const pageNo = tableParams.pagination.current;
+      const ALL_TRANSACTIONS =
+        API_ENDPOINTS.TRANSACTION_HISTORY_BY_PAGING.replace(
+          "{pageNum}",
+          pageNo
+        );
+      let materialsData = materials.length > 0 ? materials : [];
+      if (!materials.length) {
+        setLoading(false);
+        return;
+      }
+      axios
+        .get(config.url.BASE_URL + ALL_TRANSACTIONS)
+        .then((tempTransactions) => {
+          console.log(tempTransactions.data);
+          const transactionList = tempTransactions.data;
+          const filterData = [];
+          transactionList.transactionDtoList.forEach((item) => {
+            if (item.childTransactionDtoList) {
+              item.childTransactionDtoList.forEach((child) => {
+                item.priceType = child.baleOrLoose === "B" ? "Bale" : "Loose";
+                item.materialName = materialsData.find(
+                  (mat) => mat.materialId === child.materialType
+                ).materialName;
+                filterData.push(item);
+              });
+            } else {
+              filterData.push(item);
+            }
+          });
+          setLoading(false);
+          settransactionData(filterData);
+          setTableParams({
+            ...tableParams,
+            pagination: {
+              ...tableParams.pagination,
+              total: transactionList.totalTransaction,
+              // 200 is mock data, you should read it from server
+              // total: data.totalCount,
+            },
+          });
+        });
+    };
+    fetchData();
+  }, [materials, JSON.stringify(tableParams)]);
 
   const showSummary = ({ id }) => {
     navigate(`/summary/${id}`);
@@ -168,6 +199,15 @@ export const TransactionHistory = () => {
   const Spinner = () => (
     <Spin className="spinner" tip="Loading transactions..." />
   );
+
+  const handleChange = (pagination, filters, sorter) => {
+    setTableParams({
+      pagination,
+      filters,
+      ...sorter,
+    });
+  };
+
   const TransactionTable = () => (
     <Table
       onRow={(record, rowIndex) => {
@@ -181,6 +221,9 @@ export const TransactionHistory = () => {
       size="small"
       columns={columns}
       dataSource={transactionData}
+      onChange={handleChange}
+      loading={loading}
+      pagination={tableParams.pagination}
     />
   );
   return (
