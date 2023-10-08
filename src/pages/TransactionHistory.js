@@ -190,6 +190,7 @@ export const TransactionHistory = () => {
         });
     };
     fetchData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [materials, JSON.stringify(tableParams)]);
 
   const showSummary = ({ id }) => {
