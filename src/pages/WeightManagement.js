@@ -701,6 +701,7 @@ export const WeighManagement = () => {
 
       if (reason?.toLowerCase().includes("error_data_entry")) {
         setAllowEdit(true);
+        console.log(allowEdit);
       }
       setTimeout(() => {
         if (reason?.toLowerCase() === "others") {
@@ -711,13 +712,13 @@ export const WeighManagement = () => {
       }, 100);
     };
 
-    const editCurrentTransaction = () => {
+    /*    const editCurrentTransaction = () => {
       console.log("Set Current Transaction to Edit mode...");
       //   setTransactionCreation(null);
       setEditMode(true);
       console.log(transactionCreation);
       handleCancel();
-    };
+    }; */
 
     return (
       <Form
