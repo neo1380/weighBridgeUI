@@ -777,7 +777,7 @@ export const WeighManagement = () => {
           </Form.Item>
         ) : null}
 
-        {allowEdit ? (
+        {/*    {allowEdit ? (
           <Form.Item>
             <Button
               type="primary"
@@ -787,7 +787,7 @@ export const WeighManagement = () => {
               Edit this transaction
             </Button>
           </Form.Item>
-        ) : null}
+        ) : null} */}
       </Form>
     );
   };
