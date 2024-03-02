@@ -23,7 +23,6 @@ const { Paragraph } = Typography;
 
 export const OrderSummary = () => {
   const { id } = useParams();
-  const { params } = useLocation();
 
   const [printOptionsForm] = Form.useForm();
 
