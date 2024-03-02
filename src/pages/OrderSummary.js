@@ -352,7 +352,8 @@ export const OrderSummary = () => {
                           <Paragraph>
                             First Weight : {child.firstWeight} Kgs
                           </Paragraph>
-                          {source.toLocaleLowerCase() === "history" ? (
+                          {source.toLocaleLowerCase() === "history" &&
+                          transaction.vehicleType === "HV" ? (
                             <Paragraph>
                               <Button
                                 type="link"
@@ -368,7 +369,8 @@ export const OrderSummary = () => {
                           <Paragraph>
                             Second Weight : {child.secondWeight} Kgs
                           </Paragraph>
-                          {source.toLocaleLowerCase() === "history" ? (
+                          {source.toLocaleLowerCase() === "history" &&
+                          transaction.vehicleType === "HV" ? (
                             <Paragraph>
                               <Button
                                 type="link"
