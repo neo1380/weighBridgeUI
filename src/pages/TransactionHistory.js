@@ -11,7 +11,7 @@ export const TransactionHistory = () => {
   const [materials, setMaterials] = useState([]);
   const [tableParams, setTableParams] = useState({
     pagination: {
-      current: 1,
+      current: 0,
       pageSize: 10,
     },
   });
@@ -167,9 +167,10 @@ export const TransactionHistory = () => {
             if (item.childTransactionDtoList) {
               item.childTransactionDtoList.forEach((child) => {
                 item.priceType = child.baleOrLoose === "B" ? "Bale" : "Loose";
-                item.materialName = materialsData.find(
-                  (mat) => mat.materialId === child.materialType
-                ).materialName;
+                item.materialName =
+                  materialsData.find(
+                    (mat) => mat.materialId === child.materialType
+                  )?.materialName || "NA";
                 filterData.push(item);
               });
             } else {
@@ -194,7 +195,7 @@ export const TransactionHistory = () => {
   }, [materials, JSON.stringify(tableParams)]);
 
   const showSummary = ({ id }) => {
-    navigate(`/summary/${id}`);
+    navigate(`/summary/${id}?source=history`);
   };
 
   const Spinner = () => (

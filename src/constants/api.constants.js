@@ -11,9 +11,16 @@ export const prod = {
   },
 };
 
-export const dev = {
+/* export const dev = {
   url: {
     BASE_URL: "https://ec2-13-232-33-95.ap-south-1.compute.amazonaws.com:8389/",
+    AUTH_URL: "https://aldakheel-api-v1.vercel.app/api/v1/",
+  },
+}; */
+export const dev = {
+  url: {
+    BASE_URL:
+      "https://ec2-13-235-17-142.ap-south-1.compute.amazonaws.com:8389/",
     AUTH_URL: "https://aldakheel-api-v1.vercel.app/api/v1/",
   },
 };
@@ -38,4 +45,5 @@ export const API_ENDPOINTS = {
   GET_ALL_TRANSACTIONS: "transaction/transactionList/{sortParam}/{order}",
   TRANSACTION_HISTORY_BY_PAGING:
     "transaction/transactionList?sortParam=transactionId&sortBy=desc&page={pageNum}&size=10",
+  GET_FILE: "files/{fileId}",
 };

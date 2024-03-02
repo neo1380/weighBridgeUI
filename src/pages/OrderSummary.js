@@ -16,15 +16,20 @@ import { formatDateInTimeZone } from "../utils/dates.utils";
 import { useNavigate } from "react-router-dom";
  */
 import { API_ENDPOINTS, config } from "../constants/api.constants";
-import { useParams } from "react-router";
+import { useParams, useLocation } from "react-router";
+import axios from "axios";
 
 const { Paragraph } = Typography;
 
 export const OrderSummary = () => {
   const { id } = useParams();
+  const { params } = useLocation();
+
   const [printOptionsForm] = Form.useForm();
 
   /*   const navigate = useNavigate(); */
+  const location = useLocation();
+  const source = new URLSearchParams(location.search).get("source");
   const [transaction, setTransaction] = useState(null);
   const [materials, setMaterials] = useState([]);
   const [showIncomingPrintOptionsModal, setShowIncomingPrintOptionsModal] =
@@ -39,6 +44,7 @@ export const OrderSummary = () => {
     OUT: "Outgoing",
     WEIGH: "WEIGH",
   };
+
   useEffect(() => {
     const transactionURL =
       config.url.BASE_URL + API_ENDPOINTS.GET_TRANSACTION_BY_ID + `${id}`;
@@ -171,6 +177,33 @@ export const OrderSummary = () => {
         </Form>
       </Modal>
     );
+  };
+
+  const downloadWeightReceipt = (child) => {
+    const { uploadedFileId } = child;
+    if (!uploadedFileId) return;
+    const fileAPIURL =
+      config.url.BASE_URL +
+      API_ENDPOINTS.GET_FILE.replace("{fileId}", uploadedFileId);
+    axios({
+      url: fileAPIURL,
+      method: "GET",
+      responseType: "blob", // important
+    }).then((response) => {
+      // create file link in browser's memory
+      const href = URL.createObjectURL(response.data);
+      const fileName = response.headers["content-disposition"].split('"')[1];
+      // create "a" HTML element with href to file & click
+      const link = document.createElement("a");
+      link.href = href;
+      link.setAttribute("download", fileName); //or any other extension
+      document.body.appendChild(link);
+      link.click();
+
+      // clean up "a" element & remove ObjectURL
+      document.body.removeChild(link);
+      URL.revokeObjectURL(href);
+    });
   };
 
   return (
@@ -320,9 +353,35 @@ export const OrderSummary = () => {
                           <Paragraph>
                             First Weight : {child.firstWeight} Kgs
                           </Paragraph>
+                          {source.toLocaleLowerCase() === "history" ? (
+                            <Paragraph>
+                              <Button
+                                type="link"
+                                htmlType="submit"
+                                onClick={() => downloadWeightReceipt(child)}
+                                className="pl-0"
+                              >
+                                Download First Weight Evidence
+                              </Button>
+                            </Paragraph>
+                          ) : null}
+
                           <Paragraph>
                             Second Weight : {child.secondWeight} Kgs
                           </Paragraph>
+                          {source.toLocaleLowerCase() === "history" ? (
+                            <Paragraph>
+                              <Button
+                                type="link"
+                                htmlType="submit"
+                                onClick={() => downloadWeightReceipt(child)}
+                                className="pl-0"
+                              >
+                                Download Second Weight Evidence
+                              </Button>
+                            </Paragraph>
+                          ) : null}
+
                           {showPricePerTonne(child) ? (
                             <Paragraph>
                               Price per Tonne : {child.materialPricePerTonne}{" "}

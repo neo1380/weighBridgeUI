@@ -11,12 +11,13 @@ import {
   Radio,
   Spin,
   Checkbox,
+  Upload,
 } from "antd";
 import { useNavigate } from "react-router-dom";
 import { Row, Col } from "antd";
 import axios from "axios";
 import { cloneDeep } from "lodash";
-import { PlusOutlined } from "@ant-design/icons";
+import { PlusOutlined, UploadOutlined } from "@ant-design/icons";
 import "antd-css-utilities/utility.min.css";
 import { API_ENDPOINTS, config } from "../constants/api.constants";
 // import { formatValue } from "../utils/format.utils";
@@ -55,6 +56,24 @@ export const WeighManagement = () => {
   const [rawWeightId, setRawWeightId] = useState(null);
   const [editMode, setEditMode] = useState(false);
   //   const [enableCustId, setEnableCustId] = useState(false);
+
+  // for file uplaod
+
+  const [fileList, setFileList] = useState([]);
+
+  const uploadProps = {
+    onRemove: (file) => {
+      const index = fileList.indexOf(file);
+      const newFileList = fileList.slice();
+      newFileList.splice(index, 1);
+      setFileList(newFileList);
+    },
+    beforeUpload: (file) => {
+      setFileList([...fileList, file]);
+      return false;
+    },
+    fileList,
+  };
 
   const transactionTypes = [
     { label: "Incoming", value: "INC" },
@@ -321,6 +340,9 @@ export const WeighManagement = () => {
   };
 
   const DriverCount = ({ disabled }) => {
+    if (vehicleType === "HV") {
+      return null;
+    }
     if (transactionType === "WEIGH") {
       return null;
     }
@@ -1117,7 +1139,7 @@ export const WeighManagement = () => {
       vehicleNumber: values.vehicleNumber,
       customerType: values.customerType,
       phoneNumber: values.phoneNumber,
-      driverCount: values.driverCount,
+      driverCount: values.driverCount || 0,
       transferType: values.transferType,
       vehicleType: values.vehicleType,
       childTransactionDtoList: [...childTransactions],
@@ -1166,22 +1188,45 @@ export const WeighManagement = () => {
       });
     }
 
-    axios.post(createTransaction, payload).then(({ data }) => {
-      if (data.isTransactionCompleted) {
-        navigate(`/summary/${currentTransactionId}`);
-      } else {
-        onReset();
-        getTemporaryTransactions();
-        setCurrentTransactionId(null);
-        setTransactionCreation(null);
-        setTransactionType("INC");
-        setIsLoading(false);
-        setEditMode(false);
-        if (data.transferType === "WEIGH") {
-          navigate(`/weighonlysummary/${data.id}`);
+    let formData = new FormData();
+    /* if (fileList && fileList.length > 0 && vehicleType === "HT") {
+      formData.append("file", fileList[0]);
+    } else {
+      formData.append("file", fileList[0]);
+    } */
+    formData.append("transactionDetails", JSON.stringify(payload));
+    if (fileList.length) {
+      formData.append("file", fileList[0]);
+    } else {
+      formData.append("file", new Blob([]));
+    }
+
+    setFileList([]);
+
+    axios
+      .post(createTransaction, formData, {
+        header: {
+          "Content-Type": "multipart/form-data",
+          Accept: "application/json",
+        },
+      })
+      .then(({ data }) => {
+        if (data.isTransactionCompleted) {
+          navigate(`/summary/${currentTransactionId}`);
+        } else {
+          onReset();
+          getTemporaryTransactions();
+          setCurrentTransactionId(null);
+          setTransactionCreation(null);
+          setTransactionType("INC");
+          setIsLoading(false);
+          setEditMode(false);
+          setFileList([]);
+          if (data.transferType === "WEIGH") {
+            navigate(`/weighonlysummary/${data.id}`);
+          }
         }
-      }
-    });
+      });
   };
 
   const loadTempTransaction = (transaction) => {
@@ -1372,6 +1417,16 @@ export const WeighManagement = () => {
                         }
                         index={index}
                       />
+
+                      {vehicleType === "HV" ? (
+                        <Col span={12} offset={2} className="mb-5">
+                          <Upload {...uploadProps}>
+                            <Button icon={<UploadOutlined />}>
+                              Click to Upload Weight Receipt
+                            </Button>
+                          </Upload>
+                        </Col>
+                      ) : null}
                     </>
                   ))}
 
