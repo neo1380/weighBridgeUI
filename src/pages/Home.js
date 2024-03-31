@@ -7,6 +7,7 @@ import {
   DollarOutlined,
   GlobalOutlined,
   UsergroupAddOutlined,
+  CheckCircleOutlined,
 } from "@ant-design/icons";
 import { HeaderComp } from "../Header";
 import { WeighManagement } from "./WeightManagement";
@@ -141,7 +142,7 @@ export class Home extends Component {
                                     <Link to="/summary"> Order Summary</Link>
                                 </Menu.Item> */}
 
-                      <Menu.Item key="7" icon={<GlobalOutlined />}>
+                      <Menu.Item key="7" icon={<CheckCircleOutlined />}>
                         <Link to="/auditsummary"> Audit Summary</Link>
                       </Menu.Item>
                     </Menu>
