@@ -17,10 +17,19 @@ export const prod = {
     AUTH_URL: "https://aldakheel-api-v1.vercel.app/api/v1/",
   },
 }; */
-export const dev = {
+/* export const dev = {
   url: {
     BASE_URL:
       "https://ec2-13-235-17-142.ap-south-1.compute.amazonaws.com:8389/",
+    AUTH_URL: "https://aldakheel-api-v1.vercel.app/api/v1/",
+  },
+};
+ */
+//MAR-31 2024
+export const dev = {
+  url: {
+    BASE_URL:
+      "https://ec2-13-200-250-228.ap-south-1.compute.amazonaws.com:8389/",
     AUTH_URL: "https://aldakheel-api-v1.vercel.app/api/v1/",
   },
 };

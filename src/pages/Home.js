@@ -22,6 +22,7 @@ import { UserContext } from "../contexts/UserContexts";
 import { SerialDataContext } from "../contexts/SerialDataContexts";
 // import { formatValue } from "../utils/format.utils";
 import { API_ENDPOINTS, config } from "../constants/api.constants";
+import { AuditSummary } from "./AuditSummary";
 
 const { Sider, Content } = Layout;
 let weightFromScale = null;
@@ -139,6 +140,10 @@ export class Home extends Component {
                       {/*    <Menu.Item key="6" icon={<GlobalOutlined />}>
                                     <Link to="/summary"> Order Summary</Link>
                                 </Menu.Item> */}
+
+                      <Menu.Item key="7" icon={<GlobalOutlined />}>
+                        <Link to="/auditsummary"> Audit Summary</Link>
+                      </Menu.Item>
                     </Menu>
                   </Sider>
 
@@ -190,6 +195,11 @@ export class Home extends Component {
                           exact
                           path="/ongoing"
                           element={<OnGoingTransactions />}
+                        />
+                        <Route
+                          exact
+                          path="/auditsummary"
+                          element={<AuditSummary />}
                         />
                         <Route path="*" element={<NotFound />} />
                       </Routes>
