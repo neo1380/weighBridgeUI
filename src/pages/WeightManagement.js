@@ -83,7 +83,7 @@ export const WeighManagement = () => {
 
   const vehicleTypes = [
     { label: "Light", value: "LT" },
-    { label: "Heavy", value: "HV" },
+    { label: "Heavy", value: "HT" },
   ];
   const priceTypes = [
     { label: "Loose", value: "L" },
@@ -340,7 +340,7 @@ export const WeighManagement = () => {
   };
 
   const DriverCount = ({ disabled }) => {
-    if (vehicleType === "HV") {
+    if (vehicleType === "HT") {
       return null;
     }
     if (transactionType === "WEIGH") {
@@ -606,7 +606,7 @@ export const WeighManagement = () => {
     const disableSecondWeight = () => {
       let isDisabled = false;
 
-      if (vehicleType === "HV" && !hasSecondWeight) {
+      if (vehicleType === "HT" && !hasSecondWeight) {
         return isDisabled;
       }
 
@@ -1418,7 +1418,7 @@ export const WeighManagement = () => {
                         index={index}
                       />
 
-                      {vehicleType === "HV" ? (
+                      {vehicleType === "HT" ? (
                         <Col span={12} offset={2} className="mb-5">
                           <Upload {...uploadProps}>
                             <Button icon={<UploadOutlined />}>

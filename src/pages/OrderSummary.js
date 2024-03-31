@@ -34,6 +34,7 @@ export const OrderSummary = () => {
   const [showIncomingPrintOptionsModal, setShowIncomingPrintOptionsModal] =
     useState(false);
   const [hidePriceInPrint, setHidePriceInPrint] = useState(false);
+  const [fileDownloadInProgress, setFileDownloadInProgress] = useState(false);
   const customerTypeMap = {
     3: "Vehicle",
     1: "Layman",
@@ -178,9 +179,19 @@ export const OrderSummary = () => {
     );
   };
 
-  const downloadWeightReceipt = (child) => {
-    const { uploadedFileId } = child;
+  const downloadWeightReceipt = (child, sequence) => {
+    const { firstUploadedFileId, secondUploadedFileId } = child;
+    if (!secondUploadedFileId && !firstUploadedFileId) return;
+
+    const uploadedFileId =
+      sequence === "FIRST_WEIGHT"
+        ? firstUploadedFileId
+        : sequence === "SECOND_WEIGHT"
+        ? secondUploadedFileId
+        : null;
     if (!uploadedFileId) return;
+
+    setFileDownloadInProgress(true);
     const fileAPIURL =
       config.url.BASE_URL +
       API_ENDPOINTS.GET_FILE.replace("{fileId}", uploadedFileId);
@@ -188,26 +199,43 @@ export const OrderSummary = () => {
       url: fileAPIURL,
       method: "GET",
       responseType: "blob", // important
-    }).then((response) => {
-      // create file link in browser's memory
-      const href = URL.createObjectURL(response.data);
-      const fileName = response.headers["content-disposition"].split('"')[1];
-      // create "a" HTML element with href to file & click
-      const link = document.createElement("a");
-      link.href = href;
-      link.setAttribute("download", fileName); //or any other extension
-      document.body.appendChild(link);
-      link.click();
+    }).then(
+      (response) => {
+        // create file link in browser's memory
+        const href = URL.createObjectURL(response.data);
+        const fileName = response.headers["content-disposition"].split('"')[1];
+        // create "a" HTML element with href to file & click
+        const link = document.createElement("a");
+        link.href = href;
+        link.setAttribute("download", fileName); //or any other extension
+        document.body.appendChild(link);
+        link.click();
 
-      // clean up "a" element & remove ObjectURL
-      document.body.removeChild(link);
-      URL.revokeObjectURL(href);
-    });
+        // clean up "a" element & remove ObjectURL
+        document.body.removeChild(link);
+        URL.revokeObjectURL(href);
+        setFileDownloadInProgress(false);
+      },
+      (error) => {
+        setFileDownloadInProgress(false);
+        console.log(error);
+      }
+    );
+  };
+
+  const getLoadingText = () => {
+    let loadingText = null;
+    if (fileDownloadInProgress) {
+      loadingText = "Download In progress";
+    } else {
+      loadingText = "Loading...";
+    }
+    return loadingText;
   };
 
   return (
     <Row>
-      {transaction ? (
+      {transaction && !fileDownloadInProgress ? (
         <>
           {/*   <Col span={24}>
             <Typography.Title
@@ -352,13 +380,15 @@ export const OrderSummary = () => {
                           <Paragraph>
                             First Weight : {child.firstWeight} Kgs
                           </Paragraph>
-                          {source.toLocaleLowerCase() === "history" &&
-                          transaction.vehicleType === "HV" ? (
+                          {source?.toLocaleLowerCase() === "history" &&
+                          transaction.vehicleType === "HT" ? (
                             <Paragraph>
                               <Button
                                 type="link"
                                 htmlType="submit"
-                                onClick={() => downloadWeightReceipt(child)}
+                                onClick={() =>
+                                  downloadWeightReceipt(child, "FIRST_WEIGHT")
+                                }
                                 className="pl-0"
                               >
                                 Download First Weight Evidence
@@ -369,13 +399,15 @@ export const OrderSummary = () => {
                           <Paragraph>
                             Second Weight : {child.secondWeight} Kgs
                           </Paragraph>
-                          {source.toLocaleLowerCase() === "history" &&
-                          transaction.vehicleType === "HV" ? (
+                          {source?.toLocaleLowerCase() === "history" &&
+                          transaction.vehicleType === "HT" ? (
                             <Paragraph>
                               <Button
                                 type="link"
                                 htmlType="submit"
-                                onClick={() => downloadWeightReceipt(child)}
+                                onClick={() =>
+                                  downloadWeightReceipt(child, "SECOND_WEIGHT")
+                                }
                                 className="pl-0"
                               >
                                 Download Second Weight Evidence
@@ -459,7 +491,9 @@ export const OrderSummary = () => {
           </Col>
         </>
       ) : (
-        <Spin className="spinner" tip="Loading..."></Spin>
+        <>
+          <Spin className="spinner" tip={getLoadingText()}></Spin>
+        </>
       )}
     </Row>
   );

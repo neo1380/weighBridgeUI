@@ -184,8 +184,6 @@ export const TransactionHistory = () => {
             pagination: {
               ...tableParams.pagination,
               total: transactionList.totalTransaction,
-              // 200 is mock data, you should read it from server
-              // total: data.totalCount,
             },
           });
         });
