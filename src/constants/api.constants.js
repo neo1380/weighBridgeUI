@@ -55,4 +55,5 @@ export const API_ENDPOINTS = {
   TRANSACTION_HISTORY_BY_PAGING:
     "transaction/transactionList?sortParam=transactionId&sortBy=desc&page={pageNum}&size=10",
   GET_FILE: "files/{fileId}",
+  AUDIT_SUMMARY: "summary/downloadSummaryReport",
 };

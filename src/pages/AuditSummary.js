@@ -1,14 +1,112 @@
 import React from "react";
 import "antd/dist/antd.min.css";
+import axios from "axios";
 import { Row, Col } from "antd";
 import { DatePicker, Button, Select } from "antd";
+import { API_ENDPOINTS, config } from "../constants/api.constants";
+import dayjs from "dayjs";
 
 export const AuditSummary = () => {
-  const onChange = (date, dateString) => {
-    console.log(date, dateString);
+  const onChange = (inputDate) => {
+    const date = dayjs(inputDate).format("YYYY-MM-DD");
+    const payload = {
+      startDate: date,
+      endDate: date,
+    };
+    triggerReportSummary(payload);
   };
 
-  const triggerReportSummary = () => console.log("triggerReportSummary");
+  const onChangeWeek = (inputDate) => {
+    const startOfWeek = dayjs(inputDate).startOf("week").format("YYYY-MM-DD"); // Start of the week (Sunday)
+    const endOfWeek = dayjs(inputDate).endOf("week").format("YYYY-MM-DD"); // End of the week (Saturday)
+
+    const payload = {
+      startDate: startOfWeek,
+      endDate: endOfWeek,
+    };
+    triggerReportSummary(payload);
+  };
+  const onChangeMonth = (inputDate) => {
+    const startOfMonth = dayjs(inputDate).startOf("month").format("YYYY-MM-DD");
+    const endOfMonth = dayjs(inputDate).endOf("month").format("YYYY-MM-DD");
+    const payload = {
+      startDate: startOfMonth,
+      endDate: endOfMonth,
+    };
+    triggerReportSummary(payload);
+  };
+  const onChangeQuarter = (inputDate) => {
+    const startOfQuarter = dayjs(inputDate)
+      .startOf("quarter")
+      .format("YYYY-MM-DD");
+    const today = new Date(startOfQuarter);
+    const quarter = Math.floor(today.getMonth() / 3);
+    const startFullQuarter = new Date(today.getFullYear(), quarter * 3, 1);
+    const endFullQuarter = new Date(
+      startFullQuarter.getFullYear(),
+      startFullQuarter.getMonth() + 3,
+      0
+    );
+
+    const payload = {
+      startDate: startOfQuarter,
+      endDate: dayjs(endFullQuarter).endOf("quarter").format("YYYY-MM-DD"),
+    };
+    console.log(payload);
+    // triggerReportSummary(payload);
+  };
+  const onChangeYear = (inputDate) => {
+    const startOfYear = dayjs(inputDate).startOf("year").format("YYYY-MM-DD");
+    const endOfYear = dayjs(inputDate).endOf("year").format("YYYY-MM-DD");
+    const payload = {
+      startDate: startOfYear,
+      endDate: endOfYear,
+    };
+    triggerReportSummary(payload);
+  };
+
+  const downloadFile = (response) => {
+    // Create a Blob from the response data
+    const blob = new Blob([response.data], { type: response.data.type });
+
+    // Create a URL for the Blob
+    const url = window.URL.createObjectURL(blob);
+    const contentDisposition = response.headers["content-disposition"];
+    let fileName = "downloaded-file"; // Default file name
+
+    if (contentDisposition) {
+      var filenameRegex = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/;
+      var matches = filenameRegex.exec(contentDisposition);
+      if (matches != null && matches[1]) {
+        fileName = matches[1].replace(/['"]/g, "");
+      }
+    }
+    // Create a temporary anchor element
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = fileName; // Replace 'filename.ext' with the desired file name and extension
+    // Append the anchor to the body
+    document.body.appendChild(a);
+    // Trigger a click event on the anchor
+    a.click();
+    // Remove the anchor from the document
+    document.body.removeChild(a);
+    // Revoke the object URL
+    window.URL.revokeObjectURL(url);
+  };
+
+  const triggerReportSummary = (payload) => {
+    const AUDIT_SUMMARY = config.url.BASE_URL + API_ENDPOINTS.AUDIT_SUMMARY;
+    axios({
+      url: AUDIT_SUMMARY, // Replace with your API endpoint
+      method: "POST",
+      responseType: "blob", // Important for file download
+      data: payload,
+    }).then((response) => {
+      downloadFile(response);
+    });
+  };
+
   const handleChange = () => console.log("handleChange");
 
   return (
@@ -41,7 +139,7 @@ export const AuditSummary = () => {
               <Row>
                 <Col span={4}> Download Weekly Report:</Col>
                 <Col span={10}>
-                  <DatePicker onChange={onChange} picker="week" />
+                  <DatePicker onChange={onChangeWeek} picker="week" />
                 </Col>
               </Row>
             </Col>
@@ -49,7 +147,7 @@ export const AuditSummary = () => {
               <Row>
                 <Col span={4}>Download Monthly Report:</Col>
                 <Col span={10}>
-                  <DatePicker onChange={onChange} picker="month" />
+                  <DatePicker onChange={onChangeMonth} picker="month" />
                 </Col>
               </Row>
             </Col>
@@ -58,7 +156,7 @@ export const AuditSummary = () => {
               <Row>
                 <Col span={4}> Download Quarterly Report:</Col>
                 <Col span={10}>
-                  <DatePicker onChange={onChange} picker="quarter" />
+                  <DatePicker onChange={onChangeQuarter} picker="quarter" />
                 </Col>
               </Row>
             </Col>
@@ -66,7 +164,7 @@ export const AuditSummary = () => {
               <Row>
                 <Col span={4}>Download Yearly Report:</Col>
                 <Col span={10}>
-                  <DatePicker onChange={onChange} picker="year" />
+                  <DatePicker onChange={onChangeYear} picker="year" />
                 </Col>
               </Row>
             </Col>
