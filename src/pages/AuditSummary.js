@@ -8,6 +8,7 @@ import dayjs from "dayjs";
 
 export const AuditSummary = () => {
   const onChange = (inputDate) => {
+    if (!inputDate) return;
     const date = dayjs(inputDate).format("YYYY-MM-DD");
     const payload = {
       startDate: date,
@@ -17,16 +18,18 @@ export const AuditSummary = () => {
   };
 
   const onChangeWeek = (inputDate) => {
+    if (!inputDate) return;
     const startOfWeek = dayjs(inputDate).startOf("week").format("YYYY-MM-DD"); // Start of the week (Sunday)
     const endOfWeek = dayjs(inputDate).endOf("week").format("YYYY-MM-DD"); // End of the week (Saturday)
-
     const payload = {
       startDate: startOfWeek,
       endDate: endOfWeek,
     };
     triggerReportSummary(payload);
   };
+
   const onChangeMonth = (inputDate) => {
+    if (!inputDate) return;
     const startOfMonth = dayjs(inputDate).startOf("month").format("YYYY-MM-DD");
     const endOfMonth = dayjs(inputDate).endOf("month").format("YYYY-MM-DD");
     const payload = {
@@ -35,7 +38,9 @@ export const AuditSummary = () => {
     };
     triggerReportSummary(payload);
   };
+
   const onChangeQuarter = (inputDate) => {
+    if (!inputDate) return;
     const startOfQuarter = dayjs(inputDate)
       .startOf("quarter")
       .format("YYYY-MM-DD");
@@ -53,7 +58,9 @@ export const AuditSummary = () => {
     };
     triggerReportSummary(payload);
   };
+
   const onChangeYear = (inputDate) => {
+    if (!inputDate) return;
     const startOfYear = dayjs(inputDate).startOf("year").format("YYYY-MM-DD");
     const endOfYear = dayjs(inputDate).endOf("year").format("YYYY-MM-DD");
     const payload = {
