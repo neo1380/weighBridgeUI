@@ -176,27 +176,7 @@ export const AuditSummary = () => {
                 textAlign: "center",
                 borderTop: "1px solid #f0f0f0",
               }}
-            >
-              <Row>
-                <Col span={24}>
-                  <Button
-                    type="secondary"
-                    htmlType="reset"
-                    onClick={() => triggerReportSummary()}
-                    style={{ margin: "0px 10px 0px 0px" }}
-                  >
-                    Clear
-                  </Button>
-                  <Button
-                    type="primary"
-                    htmlType="submit"
-                    onClick={() => triggerReportSummary()}
-                  >
-                    Download
-                  </Button>
-                </Col>
-              </Row>
-            </Col>
+            ></Col>
           </div>
         </div>
       </Col>
