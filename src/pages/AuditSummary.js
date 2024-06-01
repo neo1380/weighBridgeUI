@@ -47,13 +47,11 @@ export const AuditSummary = () => {
       startFullQuarter.getMonth() + 3,
       0
     );
-
     const payload = {
       startDate: startOfQuarter,
       endDate: dayjs(endFullQuarter).endOf("quarter").format("YYYY-MM-DD"),
     };
-    console.log(payload);
-    // triggerReportSummary(payload);
+    triggerReportSummary(payload);
   };
   const onChangeYear = (inputDate) => {
     const startOfYear = dayjs(inputDate).startOf("year").format("YYYY-MM-DD");
