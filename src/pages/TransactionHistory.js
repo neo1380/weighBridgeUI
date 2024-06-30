@@ -11,7 +11,7 @@ export const TransactionHistory = () => {
   const [materials, setMaterials] = useState([]);
   const [tableParams, setTableParams] = useState({
     pagination: {
-      current: 0,
+      current: 1,
       pageSize: 10,
     },
   });
@@ -146,7 +146,7 @@ export const TransactionHistory = () => {
   useEffect(() => {
     const fetchData = () => {
       setLoading(true);
-      const pageNo = tableParams.pagination.current;
+      const pageNo = tableParams.pagination.current - 1;
       const ALL_TRANSACTIONS =
         API_ENDPOINTS.TRANSACTION_HISTORY_BY_PAGING.replace(
           "{pageNum}",

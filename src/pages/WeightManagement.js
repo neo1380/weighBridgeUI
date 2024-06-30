@@ -1188,45 +1188,64 @@ export const WeighManagement = () => {
       });
     }
 
-    let formData = new FormData();
-    /* if (fileList && fileList.length > 0 && vehicleType === "HT") {
-      formData.append("file", fileList[0]);
-    } else {
-      formData.append("file", fileList[0]);
-    } */
-    formData.append("transactionDetails", JSON.stringify(payload));
-    if (fileList.length) {
-      formData.append("file", fileList[0]);
-    } else {
-      formData.append("file", new Blob([]));
+    if (payload.vehicleType === "HT") {
+      let formData = new FormData();
+      /* if (fileList && fileList.length > 0 && vehicleType === "HT") {
+          formData.append("file", fileList[0]);
+        } else {
+          formData.append("file", fileList[0]);
+        } */
+      formData.append("transactionDetails", JSON.stringify(payload));
+      if (fileList.length) {
+        formData.append("file", fileList[0]);
+      } else {
+        formData.append("file", new Blob([]));
+      }
+      setFileList([]);
+      axios
+        .post(createTransaction, formData, {
+          header: {
+            "Content-Type": "multipart/form-data",
+            Accept: "application/json",
+          },
+        })
+        .then(({ data }) => {
+          if (data.isTransactionCompleted) {
+            navigate(`/summary/${currentTransactionId}`);
+          } else {
+            onReset();
+            getTemporaryTransactions();
+            setCurrentTransactionId(null);
+            setTransactionCreation(null);
+            setTransactionType("INC");
+            setIsLoading(false);
+            setEditMode(false);
+            setFileList([]);
+            if (data.transferType === "WEIGH") {
+              navigate(`/weighonlysummary/${data.id}`);
+            }
+          }
+        });
+      return;
     }
 
-    setFileList([]);
-
-    axios
-      .post(createTransaction, formData, {
-        header: {
-          "Content-Type": "multipart/form-data",
-          Accept: "application/json",
-        },
-      })
-      .then(({ data }) => {
-        if (data.isTransactionCompleted) {
-          navigate(`/summary/${currentTransactionId}`);
-        } else {
-          onReset();
-          getTemporaryTransactions();
-          setCurrentTransactionId(null);
-          setTransactionCreation(null);
-          setTransactionType("INC");
-          setIsLoading(false);
-          setEditMode(false);
-          setFileList([]);
-          if (data.transferType === "WEIGH") {
-            navigate(`/weighonlysummary/${data.id}`);
-          }
+    axios.post(createTransaction, payload).then(({ data }) => {
+      if (data.isTransactionCompleted) {
+        navigate(`/summary/${currentTransactionId}`);
+      } else {
+        onReset();
+        getTemporaryTransactions();
+        setCurrentTransactionId(null);
+        setTransactionCreation(null);
+        setTransactionType("INC");
+        setIsLoading(false);
+        setEditMode(false);
+        setFileList([]);
+        if (data.transferType === "WEIGH") {
+          navigate(`/weighonlysummary/${data.id}`);
         }
-      });
+      }
+    });
   };
 
   const loadTempTransaction = (transaction) => {
