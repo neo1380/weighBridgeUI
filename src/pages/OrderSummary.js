@@ -416,7 +416,9 @@ export const OrderSummary = () => {
                           ) : null}
 
                           {showPricePerTonne(child) ? (
-                            <Paragraph>
+                            <Paragraph
+                              className={hidePriceInPrint ? "hide-print" : ""}
+                            >
                               Price per Tonne : {child.materialPricePerTonne}{" "}
                               SAR
                             </Paragraph>
