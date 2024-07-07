@@ -77,7 +77,7 @@ export const AuditSummary = () => {
     // Create a URL for the Blob
     const url = window.URL.createObjectURL(blob);
     const contentDisposition = response.headers["content-disposition"];
-    let fileName = "downloaded-file"; // Default file name
+    let fileName = "Summary_report.xlsx"; // Default file name
 
     if (contentDisposition) {
       var filenameRegex = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/;

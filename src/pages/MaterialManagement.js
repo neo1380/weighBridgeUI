@@ -22,7 +22,7 @@ export const MaterialManagement = () => {
   const [materials, setMaterials] = useState([]);
   const [visible, setVisible] = useState(false);
   const [materialInEdit, setMaterialInEdit] = useState({});
-  const [fetchMaterials, setFetchMaterials] = useState(false);
+  const [fetchMaterials, setFetchMaterials] = useState(true);
 
   const openNotificationWithIcon = ({ type, message, description }) => {
     notification[type]({
