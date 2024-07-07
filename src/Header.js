@@ -29,7 +29,7 @@ export const HeaderComp = (props) => {
       {user ? (
         <div>
           <span>
-            {user?.firstname} |{" "}
+            {user?.firstname} | {user?.emp_id} |{" "}
             <span className="cursor-pointer" onClick={() => triggerLogout()}>
               Logout
             </span>
