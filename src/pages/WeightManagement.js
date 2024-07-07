@@ -903,6 +903,7 @@ export const WeighManagement = () => {
         onOk={handleOk}
         onCancel={handleCancel}
         okButtonProps={{ disabled: buttonDisabled }}
+        cancelText="Back"
       >
         <CancellationReasons setButtonDisabled={setButtonDisabled} />
       </Modal>
