@@ -165,6 +165,7 @@ export const MaterialManagement = () => {
     );
   };
   const saveMaterial = (material) => {
+    setFetchMaterials(false);
     const updatedMaterial = { ...materialInEdit, ...material };
     const url = config.url.BASE_URL + API_ENDPOINTS.SAVE_MATERIAL;
     const successObj = {
@@ -317,17 +318,21 @@ export const MaterialManagement = () => {
   );
 
   useEffect(() => {
-    const materialList = config.url.BASE_URL + API_ENDPOINTS.GET_MATERIAL;
-    fetch(materialList)
-      .then((response) => response.json())
-      .then((materials) => {
-        if (materials && materials.length) {
-          materials.sort((a, b) => a.materialId - b.materialId);
-          materials.map((material, index) => (material.key = index.toString()));
-          setMaterials(materials);
-        }
-      });
-    return () => setMaterials([]);
+    if (fetchMaterials) {
+      const materialList = config.url.BASE_URL + API_ENDPOINTS.GET_MATERIAL;
+      fetch(materialList)
+        .then((response) => response.json())
+        .then((materials) => {
+          if (materials && materials.length) {
+            materials.sort((a, b) => a.materialId - b.materialId);
+            materials.map(
+              (material, index) => (material.key = index.toString())
+            );
+            setMaterials(materials);
+          }
+        });
+      return () => setMaterials([]);
+    }
   }, [fetchMaterials]);
 
   return <>{materials && materials.length ? <MaterialGrid /> : <Spinner />}</>;
