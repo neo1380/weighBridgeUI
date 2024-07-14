@@ -426,6 +426,12 @@ export const OrderSummary = () => {
                         </Col>
                         <Col span={12}>
                           <div className={hidePriceInPrint ? "hide-print" : ""}>
+                            {child.baleOrLoose ? (
+                              <Paragraph>
+                                Material Collection Type :
+                                {child.baleOrLoose === "L" ? "Loose" : "Bale"}
+                              </Paragraph>
+                            ) : null}
                             {
                               <Paragraph>
                                 Vat Applied : {child.includeVat ? "Yes" : "NA"}
