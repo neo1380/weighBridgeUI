@@ -392,29 +392,10 @@ export const WeighManagement = () => {
     };
 
     const handleSearch = (value) => {
-      const currentTransaction = tempTransactions.filter(
-        (item) => item.id === currentTransactionId
-      );
-      let filteredMaterials = [];
       let filteredMat = [];
-      if (currentTransaction.length) {
-        const childTransactions = currentTransaction[0].childTransactionDtoList;
-        const childTransactionsIds = childTransactions.map(
-          (child) => child.materialName.value
-        );
-        filteredMaterials = materials.filter(
-          (mat) => !childTransactionsIds.includes(mat.materialId)
-        );
-        filteredMat = filteredMaterials.filter(
-          (mat) => mat.materialId === +value
-        );
-        console.log(filteredMat);
-        setfilteredMaterials(filteredMat);
-      } else {
-        filteredMat = materials.filter((mat) => mat.materialId === +value);
-        console.log(filteredMat);
-        setfilteredMaterials(filteredMat);
-      }
+      filteredMat = materials.filter((mat) => mat.materialId === +value);
+      console.log(filteredMat);
+      setfilteredMaterials(filteredMat);
       return filteredMat;
     };
 
@@ -1095,6 +1076,21 @@ export const WeighManagement = () => {
       config.url.BASE_URL + API_ENDPOINTS.CREATE_TRANSACTION;
     const childTransactions = values.childTransactionDtoList || [];
     if (childTransactions.length) {
+      const materialNames = childTransactions.map(
+        (child) => child.materialName.label
+      );
+      const hasDuplicates =
+        new Set(materialNames).size !== materialNames.length;
+
+      if (hasDuplicates) {
+        Modal.warning({
+          title: "Duplicate Materials",
+          content:
+            "Please check whether same material is selected multiple times.",
+        });
+        return;
+      }
+
       childTransactions.map((child) => {
         if (transactionType !== "WEIGH") {
           child.materialType = child.materialName.value;
