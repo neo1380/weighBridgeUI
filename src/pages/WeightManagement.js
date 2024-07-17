@@ -1051,6 +1051,7 @@ export const WeighManagement = () => {
   };
 
   const onFinish = (values) => {
+    setIsLoading(true);
     const { vehicleNumber } = values;
     if (!currentTransactionId) {
       const duplicateTransactions = duplicateTransaction(vehicleNumber);
