@@ -257,18 +257,22 @@ export const WeighManagement = () => {
       }
     }
 
+    const getRequiredRule = () => {
+      let rule = [
+        {
+          required: selectedCustType === 1 ? true : false,
+          message: "Please enter Customer ID",
+        },
+      ];
+      return rule;
+    };
+
     if (selectedCustType !== 2) {
-      const isRequired = selectedCustType === 1 ? true : false;
       return (
         <Form.Item
           label="Customer ID"
           name="customerId"
-          rules={[
-            {
-              required: { isRequired },
-              message: "Please enter Customer's ID",
-            },
-          ]}
+          rules={getRequiredRule()}
         >
           <Input
             allowClear
@@ -1081,7 +1085,7 @@ export const WeighManagement = () => {
     const createTransaction =
       config.url.BASE_URL + API_ENDPOINTS.CREATE_TRANSACTION;
     const childTransactions = values.childTransactionDtoList || [];
-    if (childTransactions.length) {
+    if (childTransactions.length && transactionType !== "WEIGH") {
       const materialNames = childTransactions.map(
         (child) => child.materialName.label
       );
