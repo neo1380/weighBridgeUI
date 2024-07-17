@@ -1,7 +1,7 @@
 import { Component } from "react";
 import { HashRouter as Router, Route, Link, Routes } from "react-router-dom";
 import axios from "axios";
-import { Layout, Menu } from "antd";
+import { Layout, Menu, Modal } from "antd";
 import {
   DeploymentUnitOutlined,
   DollarOutlined,
@@ -54,12 +54,22 @@ export class Home extends Component {
 
   loginHandler = (values) => {
     const loginUrl = config.url.AUTH_URL + API_ENDPOINTS.LOGIN;
-    axios.post(loginUrl, values).then(({ data }) => {
-      if (data && typeof data.token !== "undefined") {
-        this.getUserDetails(values);
-        window.localStorage.setItem("token", data.token);
-      }
-    });
+    axios
+      .post(loginUrl, values)
+      .then(({ data }) => {
+        if (data && typeof data.token !== "undefined") {
+          this.getUserDetails(values);
+          window.localStorage.setItem("token", data.token);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+        const content = "Incorrect User name or password. Please try again.";
+        Modal.error({
+          title: "Login",
+          content,
+        });
+      });
   };
 
   logoutHandler = () => {

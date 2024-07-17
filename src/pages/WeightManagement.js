@@ -247,20 +247,25 @@ export const WeighManagement = () => {
   };
 
   const CustomerID = ({ disabled }) => {
-    if (transactionType === "WEIGH") {
-      return null;
+    // Layman; show the customer ID during temporary transaction creation.
+    if (selectedCustType !== 1) {
+      if (transactionType === "WEIGH") {
+        return null;
+      }
+      if (!currentTransactionId) {
+        return null;
+      }
     }
-    if (!currentTransactionId) {
-      return null;
-    }
+
     if (selectedCustType !== 2) {
+      const isRequired = selectedCustType === 1 ? true : false;
       return (
         <Form.Item
           label="Customer ID"
           name="customerId"
           rules={[
             {
-              required: false,
+              required: { isRequired },
               message: "Please enter Customer's ID",
             },
           ]}
@@ -1392,7 +1397,13 @@ export const WeighManagement = () => {
 
             <CustomerName />
             <PhoneNumber />
-            <CustomerID />
+            <CustomerID
+              disabled={
+                (transactionCreation === "IN_PROGRESS" &&
+                  selectedCustType === 1) ||
+                editMode
+              }
+            />
 
             <VehicleType
               disabled={transactionCreation === "IN_PROGRESS" || editMode}
@@ -1521,7 +1532,9 @@ export const WeighManagement = () => {
                         >
                           {transaction?.vehicleNumber
                             ? transaction.vehicleNumber
-                            : transaction.customerName}
+                            : transaction.customerName
+                            ? transaction.customerName
+                            : transaction.customerId}
                         </Button>
                       );
                     })}

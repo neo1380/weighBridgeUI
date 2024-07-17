@@ -15,6 +15,12 @@ export const OnGoingTransactions = () => {
   );
   const columns = [
     {
+      title: "Customer ID",
+      dataIndex: "customerId",
+      key: "customerId",
+      render: (text) => <span>{text}</span>,
+    },
+    {
       title: "Vehicle Number",
       dataIndex: "vehicleNumber",
       key: "vehicleNumber",
@@ -46,6 +52,8 @@ export const OnGoingTransactions = () => {
                 element.materialName = "NA";
               }
             });
+            element.vehicleNumber = element.vehicleNumber || "Not Applicable";
+            element.customerId = element.customerId || "Not Applicable";
           });
           setTransactions(response.data || []);
         });
