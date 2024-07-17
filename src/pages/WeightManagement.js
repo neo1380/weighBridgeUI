@@ -192,6 +192,9 @@ export const WeighManagement = () => {
     if (transactionType === "WEIGH") {
       return null;
     }
+    if (!currentTransactionId) {
+      return null;
+    }
     return (
       <Form.Item
         label="Customer Name"
@@ -215,6 +218,9 @@ export const WeighManagement = () => {
 
   const PhoneNumber = ({ disabled }) => {
     if (transactionType === "WEIGH") {
+      return null;
+    }
+    if (!currentTransactionId) {
       return null;
     }
 
@@ -242,6 +248,9 @@ export const WeighManagement = () => {
 
   const CustomerID = ({ disabled }) => {
     if (transactionType === "WEIGH") {
+      return null;
+    }
+    if (!currentTransactionId) {
       return null;
     }
     if (selectedCustType !== 2) {
@@ -860,6 +869,7 @@ export const WeighManagement = () => {
     formData.cancelReason = otherReason ? otherReason : cancellationReason;
     formData.isTransactionCancelled = true;
     formData.isTransactionCompleted = 1;
+    formData.closed_by = user.emp_id;
     delete formData.size;
     delete formData.transactionStatus;
     delete formData.finalAmount;
@@ -1381,9 +1391,11 @@ export const WeighManagement = () => {
             <CustomerType
               disabled={transactionCreation === "IN_PROGRESS" || editMode}
             />
+
             <CustomerName />
             <PhoneNumber />
             <CustomerID />
+
             <VehicleType
               disabled={transactionCreation === "IN_PROGRESS" || editMode}
             />
