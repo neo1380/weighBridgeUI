@@ -1083,6 +1083,7 @@ export const WeighManagement = () => {
         new Set(materialNames).size !== materialNames.length;
 
       if (hasDuplicates) {
+        setIsLoading(false);
         Modal.warning({
           title: "Duplicate Materials",
           content:
