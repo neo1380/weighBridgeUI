@@ -6,7 +6,6 @@ import {
   DeploymentUnitOutlined,
   DollarOutlined,
   GlobalOutlined,
-  UsergroupAddOutlined,
   CheckCircleOutlined,
 } from "@ant-design/icons";
 import { HeaderComp } from "../Header";
