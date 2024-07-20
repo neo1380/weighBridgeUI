@@ -29,9 +29,9 @@ const { Sider, Content } = Layout;
 let weightFromScale = null;
 
 export class Home extends Component {
-  hasToken = window.Location.href.includes("localhost")
+  hasToken = window.location.href.includes("localhost")
     ? window.localStorage.getItem("token")
-    : window.sessionStorage.getItem("token");
+    : window.localStorage.getItem("token");
   state = {
     collapsed: false,
     isLoggedIn: this.hasToken ? true : false,
