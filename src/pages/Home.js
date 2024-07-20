@@ -29,7 +29,9 @@ const { Sider, Content } = Layout;
 let weightFromScale = null;
 
 export class Home extends Component {
-  hasToken = window.localStorage.getItem("token");
+  hasToken = window.Location.href.includes("localhost")
+    ? window.localStorage.getItem("token")
+    : window.sessionStorage.getItem("token");
   state = {
     collapsed: false,
     isLoggedIn: this.hasToken ? true : false,
@@ -83,7 +85,11 @@ export class Home extends Component {
   };
 
   logoutHandler = () => {
-    window.localStorage.clear();
+    if (window.location.href.includes("localhost")) {
+      window.localStorage.clear();
+    } else {
+      window.sessionStorage.clear();
+    }
     this.setState({ isLoggedIn: false });
     this.hasToken = null;
   };
@@ -104,7 +110,11 @@ export class Home extends Component {
       }
 
       //   this.getWeightFromScale();
-      window.localStorage.setItem("emp_id", `${emp_id}`);
+      if (window.location.href.includes("localhost")) {
+        window.localStorage.setItem("emp_id", `${emp_id}`);
+      } else {
+        window.sessionStorage.setItem("emp_id", `${emp_id}`);
+      }
     });
   };
 
