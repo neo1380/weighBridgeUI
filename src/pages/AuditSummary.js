@@ -112,7 +112,7 @@ export const AuditSummary = () => {
     });
   };
 
-  const handleChange = () => console.log("handleChange");
+  //   const handleChange = () => console.log("handleChange");
 
   return (
     <Row>
