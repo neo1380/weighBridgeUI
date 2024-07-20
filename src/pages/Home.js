@@ -36,6 +36,7 @@ export class Home extends Component {
     user: null,
     isAdmin: false,
   };
+  OPERATOR_IDS = ["AD1016", "AD1017"];
 
   componentDidMount() {
     this.initApplication();
@@ -47,7 +48,12 @@ export class Home extends Component {
 
   initApplication() {
     if (this.state.isLoggedIn) {
-      const emp_id = window.localStorage.getItem("emp_id");
+      let emp_id = null;
+      if (window.location.href.includes("localhost")) {
+        emp_id = window.localStorage.getItem("emp_id");
+      } else {
+        emp_id = window.sessionStorage.getItem("emp_id");
+      }
       this.getUserDetails({ emp_id });
     }
   }
@@ -59,7 +65,11 @@ export class Home extends Component {
       .then(({ data }) => {
         if (data && typeof data.token !== "undefined") {
           this.getUserDetails(values);
-          window.localStorage.setItem("token", data.token);
+          if (window.location.href.includes("localhost")) {
+            window.localStorage.setItem("token", data.token);
+          } else {
+            window.sessionStorage.setItem("token", data.token);
+          }
         }
       })
       .catch((error) => {
@@ -83,7 +93,16 @@ export class Home extends Component {
     axios.get(url).then(({ data }) => {
       this.setState({ user: data.user });
       this.setState({ isLoggedIn: true });
-      this.setState({ isAdmin: data.user.isAdmin });
+      if (this.OPERATOR_IDS.includes(data.user.emp_id)) {
+        this.setState({
+          isAdmin: false,
+        });
+      } else {
+        this.setState({
+          isAdmin: data.user.isAdmin,
+        });
+      }
+
       //   this.getWeightFromScale();
       window.localStorage.setItem("emp_id", `${emp_id}`);
     });
@@ -122,28 +141,25 @@ export class Home extends Component {
                       defaultOpenKeys={["sub1"]}
                       style={{ height: "100%", borderRight: 0 }}
                     >
-                      {/*     <Menu.Item key="1" icon={<AppstoreOutlined />}>
-                        Dashboard
-                      </Menu.Item> */}
                       {this.state.isAdmin ? (
                         <>
+                          <Menu.Item key="5" icon={<GlobalOutlined />}>
+                            <Link to="/material"> Material Management</Link>
+                          </Menu.Item>
+                          <Menu.Item key="7" icon={<CheckCircleOutlined />}>
+                            <Link to="/auditsummary"> Audit Summary</Link>
+                          </Menu.Item>
                           <Menu.Item key="2" icon={<UsergroupAddOutlined />}>
                             <Link to="/employee">Employee Management</Link>
                           </Menu.Item>
-                          <Menu.Item key="3" icon={<DollarOutlined />}>
-                            <Link to="/transactions">Transactions</Link>
-                          </Menu.Item>
                         </>
                       ) : null}
-
+                      <Menu.Item key="3" icon={<DollarOutlined />}>
+                        <Link to="/transactions">Transactions</Link>
+                      </Menu.Item>
                       <Menu.Item key="4" icon={<DeploymentUnitOutlined />}>
                         <Link to="/weighm">Weight Management</Link>
                       </Menu.Item>
-                      {this.state.isAdmin ? (
-                        <Menu.Item key="5" icon={<GlobalOutlined />}>
-                          <Link to="/material"> Material Management</Link>
-                        </Menu.Item>
-                      ) : null}
 
                       <Menu.Item key="6" icon={<GlobalOutlined />}>
                         <Link to="/ongoing"> Ongoing Transactions</Link>
@@ -151,10 +167,6 @@ export class Home extends Component {
                       {/*    <Menu.Item key="6" icon={<GlobalOutlined />}>
                                     <Link to="/summary"> Order Summary</Link>
                                 </Menu.Item> */}
-
-                      <Menu.Item key="7" icon={<CheckCircleOutlined />}>
-                        <Link to="/auditsummary"> Audit Summary</Link>
-                      </Menu.Item>
                     </Menu>
                   </Sider>
 

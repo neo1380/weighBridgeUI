@@ -2,7 +2,7 @@ import React from "react";
 import "antd/dist/antd.min.css";
 import axios from "axios";
 import { Row, Col } from "antd";
-import { DatePicker, Button, Select } from "antd";
+import { DatePicker } from "antd";
 import { API_ENDPOINTS, config } from "../constants/api.constants";
 import dayjs from "dayjs";
 
@@ -187,7 +187,7 @@ export const AuditSummary = () => {
           </div>
         </div>
       </Col>
-      <Col span={24}>
+      {/*      <Col span={24}>
         <div className="ant-card ant-card-bordered">
           <div
             className="ant-card-head"
@@ -253,7 +253,7 @@ export const AuditSummary = () => {
             </Col>
           </div>
         </div>
-      </Col>
+      </Col> */}
     </Row>
   );
 };
