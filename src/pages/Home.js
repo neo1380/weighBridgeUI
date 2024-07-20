@@ -159,9 +159,9 @@ export class Home extends Component {
                           <Menu.Item key="7" icon={<CheckCircleOutlined />}>
                             <Link to="/auditsummary"> Audit Summary</Link>
                           </Menu.Item>
-                          <Menu.Item key="2" icon={<UsergroupAddOutlined />}>
+                          {/*   <Menu.Item key="2" icon={<UsergroupAddOutlined />}>
                             <Link to="/employee">Employee Management</Link>
-                          </Menu.Item>
+                          </Menu.Item> */}
                         </>
                       ) : null}
                       <Menu.Item key="3" icon={<DollarOutlined />}>
