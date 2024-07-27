@@ -73,7 +73,12 @@ export const MaterialManagement = () => {
               },
             ]}
           >
-            <Input style={{ width: "50%" }} />
+            <Input
+              style={{ width: "50%" }}
+              disabled={
+                modalForm.getFieldValue("materialName") === "weightOnly"
+              }
+            />
           </Form.Item>
           <Form.Item
             name="materialIncBalePrice"
@@ -240,14 +245,9 @@ export const MaterialManagement = () => {
       render: (_, record) => {
         return (
           <>
-            {" "}
-            {record.materialName !== "weightOnly" ? (
-              <Typography.Link onClick={() => editMaterial(record)}>
-                Edit
-              </Typography.Link>
-            ) : (
-              "NA"
-            )}
+            <Typography.Link onClick={() => editMaterial(record)}>
+              Edit
+            </Typography.Link>
           </>
         );
       },

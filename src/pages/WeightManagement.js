@@ -390,21 +390,47 @@ export const WeighManagement = () => {
   };
 
   const Materials = ({ field }) => {
+    let updatedMaterialList = [];
+    const getFilteredMaterials = () => {
+      if (transactionType !== "WEIGH") {
+        updatedMaterialList = materials.filter(
+          (material) => material.materialName !== "weightOnly"
+        );
+      } else {
+        updatedMaterialList = materials;
+      }
+      return updatedMaterialList;
+    };
     const [value, setValue] = useState();
-    const [filteredMaterials, setfilteredMaterials] = useState([]);
+    const [filteredMaterials, setfilteredMaterials] = useState(
+      getFilteredMaterials()
+    );
     if (transactionType === "WEIGH") {
       return null;
+    } else {
+      //   console.clear();
+      //   console.log(filteredMaterials);
+      //   const weighOnly = filteredMaterials.findIndex(
+      //     (material) => material.materialName === "weightOnly"
+      //   );
+      //   filteredMaterials.splice(weighOnly, 1);
     }
 
     const handleChange = (newValue) => {
       setValue(newValue);
+      setfilteredMaterials(updatedMaterialList);
     };
 
     const handleSearch = (value) => {
       let filteredMat = [];
-      filteredMat = materials.filter((mat) => mat.materialId === +value);
-      console.log(filteredMat);
-      setfilteredMaterials(filteredMat);
+      if (value.length) {
+        filteredMat = updatedMaterialList.filter(
+          (mat) => mat.materialId === +value
+        );
+        setfilteredMaterials(filteredMat);
+      } else {
+        setfilteredMaterials(updatedMaterialList);
+      }
       return filteredMat;
     };
 
@@ -428,8 +454,7 @@ export const WeighManagement = () => {
           allowClear
           value={value}
           labelInValue
-          showArrow={false}
-          filterOption={false}
+          showArrow={true}
           onSearch={handleSearch}
           notFoundContent={null}
           onChange={handleChange}
@@ -549,7 +574,7 @@ export const WeighManagement = () => {
           ]}
         >
           <InputNumber
-            placeholder="Weight before unload"
+            placeholder="Get Weight from device"
             disabled={disableField}
             addonAfter="Kgs"
           />
@@ -1070,15 +1095,15 @@ export const WeighManagement = () => {
     }
 
     if (
-      typeof values.customerID === "undefined" &&
+      typeof values.customerId === "undefined" &&
       values.customerName &&
       values.phoneNumber
     ) {
       setIsLoading(true);
-      let newCustomerID = null;
+      let newCustomerId = null;
       const { customerName, phoneNumber } = values;
-      newCustomerID = { customerId: `${customerName}_${phoneNumber}` };
-      values = { ...values, ...newCustomerID };
+      newCustomerId = { customerId: `${customerName}_${phoneNumber}` };
+      values = { ...values, ...newCustomerId };
     }
     console.log("Received values of form: ", values);
 
@@ -1112,9 +1137,19 @@ export const WeighManagement = () => {
           delete child.materialId;
         } else {
           //For weight only. material will be chosen behind the scenes.
-          child.materialType = 31;
+          const weighOnlyMaterial = materials.find(
+            (material) =>
+              (material.materialName === "weightOnly" &&
+                material.materialId === 12) ||
+              material.materialName === "weightOnly"
+          );
+          // OLD WEIGH ONLY DATA
+          /*   child.materialType =  31;
           child.vat = 2.5;
-          child.baleOrLoose = "B";
+          child.baleOrLoose = "B"; */
+          child.materialType = weighOnlyMaterial.materialType;
+          child.vat = weighOnlyMaterial.vat;
+          //   child.baleOrLoose = "B";
           delete child.materialId;
         }
         if (!child.secondWeight) {

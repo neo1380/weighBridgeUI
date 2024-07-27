@@ -274,7 +274,7 @@ export const OrderSummary = () => {
           <Col span={24}>
             <div className="ant-card ant-card-bordered">
               <div
-                className="ant-card-head"
+                className="ant-card-head  hide-print"
                 style={{ backgroundColor: "#fafafa", minHeight: "35px" }}
               >
                 <div className="ant-card-head-wrapper">
