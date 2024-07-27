@@ -16,6 +16,11 @@ body {
   width: 100%;
 }
 
+input:disabled,
+input:disabled::placeholder {
+  color: #1e1e1e !important;
+}
+
 .ant-layout-has-sider {
   position: relative;
   top: 40px;
