@@ -117,8 +117,8 @@ export const TransactionHistory = () => {
 
     {
       title: "Remarks",
-      dataIndex: "comments",
-      key: "comments",
+      dataIndex: "cancelReason",
+      key: "cancelReason",
       render: (text) => <span>{text || "NA"}</span>,
       responsive: ["md"],
     },

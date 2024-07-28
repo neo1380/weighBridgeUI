@@ -589,7 +589,7 @@ export const WeighManagement = () => {
               }}
               className="mr-3"
             >
-              Get Weight
+              Get First Weight
             </Button>
           </Form.Item>
         ) : null}
@@ -703,7 +703,7 @@ export const WeighManagement = () => {
                 }}
                 className="mr-3"
               >
-                Get Weight
+                Get Second Weight
               </Button>
             </Form.Item>
           ) : null}
@@ -848,7 +848,7 @@ export const WeighManagement = () => {
       return (
         <Form.Item>
           <Button type="primary" htmlType="submit" className="mr-3">
-            Create transaction
+            Save
           </Button>
         </Form.Item>
       );
@@ -856,7 +856,7 @@ export const WeighManagement = () => {
       return (
         <Form.Item>
           <Button type="primary" htmlType="submit" className="mr-3">
-            Close Current Transaction
+            Close Transaction
           </Button>
           <Button
             danger

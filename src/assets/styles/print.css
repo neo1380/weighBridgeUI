@@ -1,20 +1,31 @@
 @media print {
+  body {
+    color: #000;
+    margin: 0;
+    background-color: #fff;
+  }
   .hide-print,
   .header {
     display: none !important;
   }
+  .show-print {
+    display: block !important;
+  }
   .ant-layout {
-    padding: 10px !important;
+    padding: 0px !important;
+    background: #fff !important;
   }
   .ant-layout-has-sider {
     top: 0px !important;
   }
+  .order-summary-header-print {
+    margin-bottom: 3px !important;
+  }
   .ant-typography {
-    margin-bottom: 5px !important;
+    margin-bottom: 3px !important;
   }
   .ant-layout-content {
-    padding: 10px !important;
-    flex-grow: 0;
+    padding: 5px !important;
     h4 {
       padding-left: 20px !important;
       font-size: 16px !important;
@@ -23,5 +34,20 @@
   .ant-card-head-wrapper .ant-card-head-title p {
     margin-bottom: 5px !important;
     font-size: 14px !important;
+  }
+  .price-section-print {
+    margin-top: 0px !important;
+  }
+  .price-section-print .ant-card-head-title {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+  }
+  .price-section-print .ant-card-head-title p {
+    margin-right: 15px !important;
+    margin-bottom: 0px !important;
+  }
+  .child-transaction-print {
+    margin-bottom: 5px !important;
   }
 }

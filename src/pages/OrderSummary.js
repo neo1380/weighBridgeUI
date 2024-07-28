@@ -96,7 +96,7 @@ export const OrderSummary = () => {
   };
 
   const getClosedDate = ({ closed_date }) => {
-    return formatDateInTimeZone(closed_date);
+    return closed_date ? formatDateInTimeZone(closed_date) : "NA";
   };
 
   const showPricePerTonne = (data) => {
@@ -252,12 +252,7 @@ export const OrderSummary = () => {
               </Button>
             </Typography.Title>
           </Col> */}
-          <Col span={12}>
-            <h4 style={{ margin: 0, marginBottom: "15px", fontSize: "18px" }}>
-              {" "}
-              Order Summary | Transaction ID: {id}
-            </h4>
-          </Col>
+
           <Col
             span={12}
             style={{ margin: 0, marginBottom: "15px", fontSize: "18px" }}
@@ -266,7 +261,7 @@ export const OrderSummary = () => {
               type="primary"
               htmlType="submit"
               onClick={() => triggerPrint(transaction)}
-              className="mr-3 hide-print ml-10"
+              className="mr-3 hide-print"
             >
               Print Transaction
             </Button>
@@ -288,13 +283,16 @@ export const OrderSummary = () => {
                 style={{ padding: "10px 10px 0px 24px" }}
               >
                 <Paragraph>
-                  Transaction Closed Date : {getClosedDate(transaction)}
+                  <span className="mr-5">Transaction ID:{id}</span>
+                  <span>
+                    Transaction Closed Date : {getClosedDate(transaction)}
+                  </span>
                 </Paragraph>
               </div>
             </div>
             <div className="ant-card ant-card-bordered">
               <div
-                className="ant-card-head"
+                className="ant-card-head hide-print"
                 style={{ backgroundColor: "#fafafa", minHeight: "35px" }}
               >
                 <div className="ant-card-head-wrapper">
@@ -315,7 +313,7 @@ export const OrderSummary = () => {
 
                 {transaction.transferType !== "WEIGH" ? (
                   <>
-                    <Row>
+                    <Row className="hide-print">
                       <Col span={12}>
                         <Paragraph>
                           Transaction Type : {getTransferType(transaction)}
@@ -346,6 +344,16 @@ export const OrderSummary = () => {
                         ) : null}
                       </Col>
                     </Row>
+
+                    <Row className="show-print">
+                      <Col span={12}>
+                        {transaction.vehicleNumber ? (
+                          <Paragraph>
+                            Vehicle Number: {transaction.vehicleNumber}
+                          </Paragraph>
+                        ) : null}
+                      </Col>
+                    </Row>
                   </>
                 ) : null}
               </div>
@@ -353,7 +361,7 @@ export const OrderSummary = () => {
             {transaction.childTransactionDtoList.map((child, index) => {
               return (
                 <div>
-                  <div className="ant-card ant-card-bordered mb-5">
+                  <div className="ant-card ant-card-bordered mb-5 child-transaction-print">
                     <div
                       className="ant-card-head"
                       style={{ backgroundColor: "#fafafa", minHeight: "35px" }}
@@ -426,7 +434,8 @@ export const OrderSummary = () => {
                         </Col>
                         <Col span={12}>
                           <div className={hidePriceInPrint ? "hide-print" : ""}>
-                            {child.baleOrLoose ? (
+                            {child.baleOrLoose &&
+                            getTransferType(transaction) !== "WEIGH" ? (
                               <Paragraph>
                                 Material Collection Type :
                                 {child.baleOrLoose === "L" ? "Loose" : "Bale"}
@@ -460,7 +469,7 @@ export const OrderSummary = () => {
 
             {transaction?.transferType !== "OUT" ? (
               <div className={hidePriceInPrint ? "hide-print" : ""}>
-                <div className="ant-card ant-card-bordered mt-5">
+                <div className="ant-card ant-card-bordered mt-5 price-section-print">
                   <div
                     className="ant-card-head"
                     style={{ backgroundColor: "#fafafa" }}
@@ -478,7 +487,6 @@ export const OrderSummary = () => {
                           } SAR{" "}
                         </p>
                       </div>
-                      <div className="ant-card-head-title"></div>
                     </div>
                   </div>
                 </div>
