@@ -1050,12 +1050,19 @@ export const WeighManagement = () => {
       .get(config.url.BASE_URL + API_ENDPOINTS.GET_WEIGHT_FROM_DEVICE)
       .then(({ data }) => {
         setIsLoading(false);
-        const { weight, id } = data;
-        //   setWeightFromScale(weight);
-        setRawWeightId(id);
-        setWeightInForm(weight, index, type);
-        console.log("Data from weight device");
-        console.log(weight);
+        const { weight, id, weightRead, weightComments } = data;
+        if (weightRead === "Y" && weightComments) {
+          Modal.warning({
+            title: "Reading Weight from Device",
+            content: weightComments,
+          });
+          console.log("weight comments from API", weightComments);
+        } else {
+          setRawWeightId(id);
+          setWeightInForm(weight, index, type);
+          console.log("Data from weight device");
+          console.log(weight);
+        }
       })
       .catch(() => {
         setIsWeightReadFromDevice(false);
