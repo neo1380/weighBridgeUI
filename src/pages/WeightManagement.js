@@ -57,6 +57,11 @@ export const WeighManagement = () => {
   const [editMode, setEditMode] = useState(false);
   //   const [enableCustId, setEnableCustId] = useState(false);
 
+  const [tempIncomingTransactions, settempIncomingTransactions] = useState([]);
+  const [tempOutgoingTransactions, settempOutgoingTransactions] = useState([]);
+  const [tempWeighOnlyTransactions, settempWeighOnlyTransactions] = useState(
+    []
+  );
   // for file uplaod
 
   const [fileList, setFileList] = useState([]);
@@ -986,6 +991,17 @@ export const WeighManagement = () => {
       .then((tempTransactions) => {
         setIsLoading(false);
         setTempTransactions(tempTransactions.data || []);
+        settempIncomingTransactions(
+          tempTransactions.data.filter((data) => data.transferType === "INC")
+        );
+
+        settempOutgoingTransactions(
+          tempTransactions.data.filter((data) => data.transferType === "OUT")
+        );
+
+        settempWeighOnlyTransactions(
+          tempTransactions.data.filter((data) => data.transferType === "WEIGH")
+        );
       });
   };
 
@@ -1422,11 +1438,11 @@ export const WeighManagement = () => {
           <Form
             form={form}
             labelCol={{
-              offset: 2,
+              offset: 0,
               span: 16,
             }}
             wrapperCol={{
-              offset: 2,
+              offset: 0,
               span: 24,
             }}
             layout="vertical"
@@ -1542,7 +1558,9 @@ export const WeighManagement = () => {
             <ActionButtons state={transactionCreation} />
           </Form>
         </Col>
-        <Col span={10} offset={2}>
+
+        {/* <!-- temp transaction begins --> */}
+        <Col span={8} offset={4}>
           <div
             style={{
               marginLeft: "auto",
@@ -1562,28 +1580,87 @@ export const WeighManagement = () => {
 
             {tempTransactions.length > 0 ? (
               <Row gutter={24}>
-                <Col span={24}>
-                  <Space direction="vertical">
+                <Col span={12} offset={12} gutter={0} className="pl-0 pr-0">
+                  <Space direction="vertical" className="w-100">
                     <Title type="primary" level={5} className="mt-2">
                       Ongoing transactions
                     </Title>
 
-                    {tempTransactions.map((transaction) => {
-                      return (
-                        <Button
-                          type="link"
-                          key={transaction.id}
-                          className="pl-0"
-                          onClick={() => loadTempTransaction(transaction)}
-                        >
-                          {transaction?.vehicleNumber
-                            ? transaction.vehicleNumber
-                            : transaction.customerName
-                            ? transaction.customerName
-                            : transaction.customerId}
-                        </Button>
-                      );
-                    })}
+                    {tempIncomingTransactions.length
+                      ? "Incoming Transactions"
+                      : null}
+
+                    {tempIncomingTransactions.length
+                      ? tempIncomingTransactions.map((transaction) => {
+                          return (
+                            <>
+                              {" "}
+                              <div className="tmp-transaction-list">
+                                <Button
+                                  type="link"
+                                  key={transaction.id}
+                                  className="pl-0"
+                                  onClick={() =>
+                                    loadTempTransaction(transaction)
+                                  }
+                                >
+                                  {transaction?.vehicleNumber
+                                    ? transaction.vehicleNumber
+                                    : transaction.customerName
+                                    ? transaction.customerName
+                                    : transaction.customerId}
+                                </Button>
+                              </div>
+                            </>
+                          );
+                        })
+                      : null}
+
+                    {tempOutgoingTransactions.length
+                      ? "Outgoing Transactions"
+                      : null}
+
+                    {tempOutgoingTransactions.length
+                      ? tempOutgoingTransactions.map((transaction) => {
+                          return (
+                            <Button
+                              type="link"
+                              key={transaction.id}
+                              className="pl-0"
+                              onClick={() => loadTempTransaction(transaction)}
+                            >
+                              {transaction?.vehicleNumber
+                                ? transaction.vehicleNumber
+                                : transaction.customerName
+                                ? transaction.customerName
+                                : transaction.customerId}
+                            </Button>
+                          );
+                        })
+                      : null}
+
+                    {tempWeighOnlyTransactions.length
+                      ? "Weigh Only Transactions"
+                      : null}
+
+                    {tempWeighOnlyTransactions.length
+                      ? tempWeighOnlyTransactions.map((transaction) => {
+                          return (
+                            <Button
+                              type="link"
+                              key={transaction.id}
+                              className="pl-0"
+                              onClick={() => loadTempTransaction(transaction)}
+                            >
+                              {transaction?.vehicleNumber
+                                ? transaction.vehicleNumber
+                                : transaction.customerName
+                                ? transaction.customerName
+                                : transaction.customerId}
+                            </Button>
+                          );
+                        })
+                      : null}
                   </Space>
                 </Col>
               </Row>

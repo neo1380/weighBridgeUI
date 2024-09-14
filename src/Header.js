@@ -25,7 +25,7 @@ export const HeaderComp = (props) => {
 
   return (
     <Header className="header">
-      <div className="logo">Al Dakheel Carton Factory</div>
+      <div className="logo">Najmat Al-Beeah Industrial Company</div>
       {user ? (
         <div>
           <span>

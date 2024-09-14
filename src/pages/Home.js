@@ -181,13 +181,14 @@ export class Home extends Component {
 
                   <Layout
                     style={{
-                      padding: "24px",
+                      padding: "5px",
                     }}
                   >
                     <Content
                       className="site-layout-background"
                       style={{
                         padding: 24,
+                        paddingTop: 10,
                         margin: 0,
                       }}
                     >

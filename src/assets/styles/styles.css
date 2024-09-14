@@ -21,6 +21,9 @@ input:disabled::placeholder {
   color: #1e1e1e !important;
 }
 
+.ant-layout-header {
+  padding-left: 25px;
+}
 .ant-layout-has-sider {
   position: relative;
   top: 40px;
@@ -32,8 +35,8 @@ input:disabled::placeholder {
 }
 .logo {
   /* float: left; */
-  width: 200px;
-  margin: 0px 24px 0px 0;
+  width: auto;
+  margin: 0px 10px 0px 0;
   color: #fff;
 }
 
@@ -78,4 +81,15 @@ input:disabled::placeholder {
   background-color: rgb(88, 92, 92);
   padding: 10px;
   margin: 0px;
+}
+
+.tmp-transaction-list {
+  display: flex;
+  flex-direction: column;
+  justify-content: start;
+  align-items: self-start;
+  max-height: 200px;
+  overflow: scroll;
+  width: 100%;
+  overflow-x: hidden;
 }
