@@ -86,7 +86,7 @@ input:disabled::placeholder {
 .tmp-transaction-list {
   display: flex;
   flex-direction: column;
-  justify-content: start;
+  justify-content: flex-start;
   align-items: self-start;
   max-height: 200px;
   overflow: scroll;
