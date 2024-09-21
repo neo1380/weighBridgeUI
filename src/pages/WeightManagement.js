@@ -1433,7 +1433,7 @@ export const WeighManagement = () => {
   const WeightForm = () => {
     return (
       <Row>
-        <Col span={12}>
+        <Col span={14}>
           <CancelModal />
           <Form
             form={form}
@@ -1450,58 +1450,90 @@ export const WeighManagement = () => {
             initialValues={formInitValues}
             onFinish={onFinish}
           >
-            <TransactionType
-              disabled={transactionCreation === "IN_PROGRESS" || editMode}
-            />
-            <CustomerType
-              disabled={transactionCreation === "IN_PROGRESS" || editMode}
-            />
+            <Row gutter={10}>
+              <Col span={10}>
+                <TransactionType
+                  disabled={transactionCreation === "IN_PROGRESS" || editMode}
+                />
+              </Col>
+              <Col span={12}>
+                <CustomerType
+                  disabled={transactionCreation === "IN_PROGRESS" || editMode}
+                />
+              </Col>
+            </Row>
 
-            <CustomerName />
-            <PhoneNumber />
-            <CustomerID
-              disabled={
-                (transactionCreation === "IN_PROGRESS" &&
-                  selectedCustType === 1) ||
-                editMode
-              }
-            />
+            <Row gutter={5}>
+              <Col span={5}>
+                <VehicleType
+                  disabled={transactionCreation === "IN_PROGRESS" || editMode}
+                />
+              </Col>
+              <Col span={10}>
+                <VehicleNumber
+                  disabled={transactionCreation === "IN_PROGRESS" || editMode}
+                />
+              </Col>
+            </Row>
 
-            <VehicleType
-              disabled={transactionCreation === "IN_PROGRESS" || editMode}
-            />
-            <VehicleNumber
-              disabled={transactionCreation === "IN_PROGRESS" || editMode}
-            />
-            <DriverCount
-              disabled={transactionCreation === "IN_PROGRESS" || editMode}
-            />
-
+            <Row gutter={10}>
+              <Col span={5}>
+                <DriverCount
+                  disabled={transactionCreation === "IN_PROGRESS" || editMode}
+                />
+              </Col>
+              <Col span={10}>
+                <CustomerID
+                  disabled={
+                    (transactionCreation === "IN_PROGRESS" &&
+                      selectedCustType === 1) ||
+                    editMode
+                  }
+                />
+              </Col>
+            </Row>
+            <Row gutter={10}>
+              <Col span={9}>
+                <CustomerName />
+              </Col>
+              <Col span={6}>
+                <PhoneNumber />
+              </Col>
+            </Row>
             <Form.List shouldUpdate name="childTransactionDtoList">
               {(fields, { add }) => (
                 <>
                   {fields.map((field, index) => (
                     <>
                       {transactionType !== "WEIGH" ? (
-                        <Col span={12} offset={2} className="mb-5">
-                          <Typography.Title level={4} style={{ margin: 0 }}>
+                        <Col span={12} className="mb-3">
+                          <Typography.Title level={5} style={{ margin: 0 }}>
                             Transaction: {index + 1}
                           </Typography.Title>
                         </Col>
                       ) : null}
-
-                      <Materials
-                        field={field}
-                        transaction={
-                          form.getFieldValue("childTransactionDtoList")[index]
-                        }
-                      />
-                      <PriceType
-                        field={field}
-                        transaction={
-                          form.getFieldValue("childTransactionDtoList")[index]
-                        }
-                      />
+                      <Row gutter={20}>
+                        <Col span={12}>
+                          <Materials
+                            field={field}
+                            transaction={
+                              form.getFieldValue("childTransactionDtoList")[
+                                index
+                              ]
+                            }
+                          />
+                        </Col>
+                        <Col span={12}>
+                          <PriceType
+                            field={field}
+                            transaction={
+                              form.getFieldValue("childTransactionDtoList")[
+                                index
+                              ]
+                            }
+                          />
+                        </Col>
+                      </Row>
 
                       <FirstWeight
                         {...field}
@@ -1560,7 +1592,7 @@ export const WeighManagement = () => {
         </Col>
 
         {/* <!-- temp transaction begins --> */}
-        <Col span={8} offset={4}>
+        <Col span={8} offset={2}>
           <div
             style={{
               marginLeft: "auto",
