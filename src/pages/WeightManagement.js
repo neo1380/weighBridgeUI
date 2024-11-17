@@ -1433,7 +1433,7 @@ export const WeighManagement = () => {
   const WeightForm = () => {
     return (
       <Row>
-        <Col span={14}>
+        <Col span={18}>
           <CancelModal />
           <Form
             form={form}
@@ -1450,12 +1450,15 @@ export const WeighManagement = () => {
             initialValues={formInitValues}
             onFinish={onFinish}
           >
-            <Row gutter={10}>
-              <Col span={10}>
+            <Row>
+              <Col span={12}>
                 <TransactionType
                   disabled={transactionCreation === "IN_PROGRESS" || editMode}
                 />
               </Col>
+            </Row>
+
+            <Row>
               <Col span={12}>
                 <CustomerType
                   disabled={transactionCreation === "IN_PROGRESS" || editMode}
@@ -1463,13 +1466,16 @@ export const WeighManagement = () => {
               </Col>
             </Row>
 
-            <Row gutter={5}>
-              <Col span={5}>
+            <Row>
+              <Col span={12}>
                 <VehicleType
                   disabled={transactionCreation === "IN_PROGRESS" || editMode}
                 />
               </Col>
-              <Col span={10}>
+            </Row>
+
+            <Row>
+              <Col span={12}>
                 <VehicleNumber
                   disabled={transactionCreation === "IN_PROGRESS" || editMode}
                 />
@@ -1477,12 +1483,15 @@ export const WeighManagement = () => {
             </Row>
 
             <Row gutter={10}>
-              <Col span={5}>
+              <Col>
                 <DriverCount
                   disabled={transactionCreation === "IN_PROGRESS" || editMode}
                 />
               </Col>
-              <Col span={10}>
+            </Row>
+
+            <Row>
+              <Col span={12}>
                 <CustomerID
                   disabled={
                     (transactionCreation === "IN_PROGRESS" &&
@@ -1496,6 +1505,8 @@ export const WeighManagement = () => {
               <Col span={9}>
                 <CustomerName />
               </Col>
+            </Row>
+            <Row>
               <Col span={6}>
                 <PhoneNumber />
               </Col>
@@ -1523,6 +1534,9 @@ export const WeighManagement = () => {
                             }
                           />
                         </Col>
+                      </Row>
+
+                      <Row>
                         <Col span={12}>
                           <PriceType
                             field={field}
@@ -1567,18 +1581,20 @@ export const WeighManagement = () => {
 
                   {!multipleTransactionEnabled &&
                   transactionType !== "WEIGH" ? (
-                    <Form.Item>
-                      <Button
-                        type="dashed"
-                        onClick={() => {
-                          allowAnotherTransaction(add);
-                        }}
-                        block
-                        icon={<PlusOutlined />}
-                      >
-                        Add Another Transaction
-                      </Button>
-                    </Form.Item>
+                    <Row gutter={20}>
+                      <Form.Item>
+                        <Button
+                          type="dashed"
+                          onClick={() => {
+                            allowAnotherTransaction(add);
+                          }}
+                          block
+                          icon={<PlusOutlined />}
+                        >
+                          Add Another Transaction
+                        </Button>
+                      </Form.Item>
+                    </Row>
                   ) : null}
                 </>
               )}
@@ -1592,7 +1608,7 @@ export const WeighManagement = () => {
         </Col>
 
         {/* <!-- temp transaction begins --> */}
-        <Col span={8} offset={2}>
+        <Col span={5} offset={1}>
           <div
             style={{
               marginLeft: "auto",
