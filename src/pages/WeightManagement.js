@@ -1655,20 +1655,18 @@ export const WeighManagement = () => {
                     {tempOutgoingTransactions.length
                       ? tempOutgoingTransactions.map((transaction) => {
                           return (
-                            <div className="tmp-transaction-list">
-                              <Button
-                                type="link"
-                                key={transaction.id}
-                                className="pl-0"
-                                onClick={() => loadTempTransaction(transaction)}
-                              >
-                                {transaction?.vehicleNumber
-                                  ? transaction.vehicleNumber
-                                  : transaction.customerName
-                                  ? transaction.customerName
-                                  : transaction.customerId}
-                              </Button>
-                            </div>
+                            <Button
+                              type="link"
+                              key={transaction.id}
+                              className="pl-0"
+                              onClick={() => loadTempTransaction(transaction)}
+                            >
+                              {transaction?.vehicleNumber
+                                ? transaction.vehicleNumber
+                                : transaction.customerName
+                                ? transaction.customerName
+                                : transaction.customerId}
+                            </Button>
                           );
                         })
                       : null}
@@ -1680,20 +1678,18 @@ export const WeighManagement = () => {
                     {tempWeighOnlyTransactions.length
                       ? tempWeighOnlyTransactions.map((transaction) => {
                           return (
-                            <div className="tmp-transaction-list">
-                              <Button
-                                type="link"
-                                key={transaction.id}
-                                className="pl-0"
-                                onClick={() => loadTempTransaction(transaction)}
-                              >
-                                {transaction?.vehicleNumber
-                                  ? transaction.vehicleNumber
-                                  : transaction.customerName
-                                  ? transaction.customerName
-                                  : transaction.customerId}
-                              </Button>
-                            </div>
+                            <Button
+                              type="link"
+                              key={transaction.id}
+                              className="pl-0"
+                              onClick={() => loadTempTransaction(transaction)}
+                            >
+                              {transaction?.vehicleNumber
+                                ? transaction.vehicleNumber
+                                : transaction.customerName
+                                ? transaction.customerName
+                                : transaction.customerId}
+                            </Button>
                           );
                         })
                       : null}
