@@ -1067,7 +1067,10 @@ export const WeighManagement = () => {
       .then(({ data }) => {
         setIsLoading(false);
         const { weight, id, weightRead, weightComments } = data;
-        if (weightRead === "Y" && weightComments) {
+        if (
+          (weightRead === "Y" && weightComments) ||
+          (!weight && weightComments)
+        ) {
           Modal.warning({
             title: "Reading Weight from Device",
             content: weightComments,
