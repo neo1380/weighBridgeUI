@@ -407,6 +407,9 @@ export const OrderSummary = () => {
                           <Paragraph>
                             Second Weight : {child.secondWeight} Kgs
                           </Paragraph>
+                          <Paragraph>
+                            Net Weight : {child.absoluteWeight} Kgs
+                          </Paragraph>
                           {source?.toLocaleLowerCase() === "history" &&
                           transaction.vehicleType === "HT" ? (
                             <Paragraph>
@@ -442,18 +445,18 @@ export const OrderSummary = () => {
                               </Paragraph>
                             ) : null}
                             {
-                              <Paragraph>
+                              <Paragraph className="hide">
                                 Vat Applied : {child.includeVat ? "Yes" : "NA"}
-                              </Paragraph>
-                            }
-                            {
-                              <Paragraph>
-                                Round off price : {getTransactionPrice(child)}
                               </Paragraph>
                             }
                             <Paragraph>
                               Actual Price : {getTransactionPrice(child, true)}
                             </Paragraph>
+                            {
+                              <Paragraph>
+                                Round off price : {getTransactionPrice(child)}
+                              </Paragraph>
+                            }
                           </div>
                         </Col>
                       </Row>

@@ -93,3 +93,7 @@ input:disabled::placeholder {
   width: 100%;
   overflow-x: hidden;
 }
+
+.hide {
+  display: none;
+}
